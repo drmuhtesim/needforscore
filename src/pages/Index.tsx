@@ -35,10 +35,6 @@ const Index = () => {
       {/* Hero Search */}
       <div className="px-4 py-10 lg:py-14 border-b border-border">
         <div className="max-w-3xl mx-auto text-center space-y-5">
-          <div className="flex items-center justify-center gap-2 text-primary">
-            <Shield className="h-5 w-5 animate-pulse-glow" />
-            <span className="text-xs font-mono uppercase tracking-widest">etkileştiğin herkesi yorumla</span>
-          </div>
           <SearchBar onSearch={setSearchQuery} />
         </div>
       </div>
