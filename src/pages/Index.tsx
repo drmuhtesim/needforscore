@@ -39,10 +39,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="px-4 lg:px-6 py-4 border-b border-border">
-        <StatsBar />
-      </div>
 
       {/* Main Content */}
       <div className="flex flex-1">
