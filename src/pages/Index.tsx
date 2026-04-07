@@ -39,10 +39,6 @@ const Index = () => {
             <Shield className="h-5 w-5 animate-pulse-glow" />
             <span className="text-xs font-mono uppercase tracking-widest">etkileştiğin herkesi yorumla</span>
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">
-            İşlem yapmadan önce{" "}
-            <span className="text-primary glow-text-green">araştır</span>
-          </h1>
           <p className="text-muted-foreground text-sm max-w-lg mx-auto">
             Sosyal medya hesapları, telefon numaraları, e-postalar ve web siteleri hakkında
             topluluk deneyimlerini keşfedin. Dolandırıcılıklara karşı korunun.
