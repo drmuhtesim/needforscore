@@ -16,6 +16,9 @@ const Header = () => {
 
 
         <div className="flex items-center gap-3">
+          <button className="hidden md:inline-flex px-4 py-2 border border-border text-foreground text-sm font-semibold rounded-md hover:bg-secondary transition-colors">
+            kayıt ol
+          </button>
           <button className="hidden md:inline-flex px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors">
             giriş yap
           </button>
