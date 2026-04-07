@@ -20,8 +20,6 @@ const Index = () => {
       {/* Ticker Bar */}
       <div className="border-b border-border bg-card/30 overflow-hidden">
         <div className="flex items-center gap-6 px-4 py-2 text-xs animate-marquee whitespace-nowrap">
-          <span className="text-danger">🚨 @sahtemagaza_tr - 142 rapor</span>
-          <span className="text-muted-foreground">•</span>
           <span className="text-danger">⚠️ 05XX 123 45 67 - Banka dolandırıcılığı</span>
           <span className="text-muted-foreground">•</span>
           <span className="text-safe">✅ @guvenilir_satis - Güvenli onay</span>
