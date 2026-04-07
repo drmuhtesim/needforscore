@@ -23,7 +23,7 @@ const Header = () => {
 
         <div className="flex items-center gap-3">
           <button className="hidden md:inline-flex px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors">
-            Rapor Oluştur
+            giriş yap
           </button>
           <button className="md:hidden text-muted-foreground" onClick={() => setMobileMenu(!mobileMenu)}>
             {mobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -38,7 +38,7 @@ const Header = () => {
           <a href="#" className="block text-sm text-muted-foreground hover:text-foreground">API</a>
           <a href="#" className="block text-sm text-muted-foreground hover:text-foreground">Hakkında</a>
           <button className="w-full px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md">
-            Rapor Oluştur
+            giriş yap
           </button>
         </div>
       )}
