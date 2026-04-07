@@ -39,10 +39,6 @@ const Index = () => {
             <Shield className="h-5 w-5 animate-pulse-glow" />
             <span className="text-xs font-mono uppercase tracking-widest">etkileştiğin herkesi yorumla</span>
           </div>
-          <p className="text-muted-foreground text-sm max-w-lg mx-auto">
-            Sosyal medya hesapları, telefon numaraları, e-postalar ve web siteleri hakkında
-            topluluk deneyimlerini keşfedin. Dolandırıcılıklara karşı korunun.
-          </p>
           <SearchBar onSearch={setSearchQuery} />
         </div>
       </div>
