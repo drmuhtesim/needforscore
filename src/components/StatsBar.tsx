@@ -1,9 +1,9 @@
 import { ShieldCheck, AlertTriangle, Eye, TrendingUp } from "lucide-react";
 
 const stats = [
-  { label: "Toplam Rapor", value: "2,847", icon: Eye, color: "text-primary" },
-  { label: "Dolandırıcı Tespit", value: "1,203", icon: AlertTriangle, color: "text-danger" },
-  { label: "Güvenli Onay", value: "892", icon: ShieldCheck, color: "text-safe" },
+  { label: "Toplam Entry", value: "2,847", icon: Eye, color: "text-primary" },
+  { label: "Deneyim sayısı", value: "1,203", icon: AlertTriangle, color: "text-danger" },
+  { label: "Güvenli deneyim", value: "892", icon: ShieldCheck, color: "text-safe" },
   { label: "Bugün Eklenen", value: "+47", icon: TrendingUp, color: "text-suspicious" },
 ];
 

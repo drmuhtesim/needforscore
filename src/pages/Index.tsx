@@ -37,7 +37,7 @@ const Index = () => {
         <div className="max-w-3xl mx-auto text-center space-y-5">
           <div className="flex items-center justify-center gap-2 text-primary">
             <Shield className="h-5 w-5 animate-pulse-glow" />
-            <span className="text-xs font-mono uppercase tracking-widest">Kullanıcı Deneyimi Odaklı OSINT</span>
+            <span className="text-xs font-mono uppercase tracking-widest">etkileştiğin herkesi yorumla</span>
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">
             İşlem yapmadan önce{" "}

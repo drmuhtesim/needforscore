@@ -38,7 +38,7 @@ const Header = () => {
           <a href="#" className="block text-sm text-muted-foreground hover:text-foreground">API</a>
           <a href="#" className="block text-sm text-muted-foreground hover:text-foreground">Hakkında</a>
           <button className="w-full px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md">
-            Rapor Oluştur
+            giriş yap
           </button>
         </div>
       )}
