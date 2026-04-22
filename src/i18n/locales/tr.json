@@ -1,0 +1,61 @@
+{
+  "header": {
+    "signUp": "kayıt ol",
+    "signIn": "giriş yap",
+    "discover": "Keşfet",
+    "addReport": "Rapor Ekle",
+    "api": "API",
+    "about": "Hakkında"
+  },
+  "ticker": {
+    "bankFraud": "05XX 123 45 67 - Banka dolandırıcılığı",
+    "safeApproved": "@guvenilir_satis - Güvenli onay",
+    "phishing": "info@kampanya-ozel.com - 567 rapor",
+    "suspicious": "@xtrader_signals - Şüpheli"
+  },
+  "search": {
+    "placeholder": "Instagram, TikTok, telefon, e-posta veya web sitesi ara...",
+    "button": "Ara"
+  },
+  "categories": {
+    "title": "Kategoriler",
+    "all": "Tümü",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "twitter": "X (Twitter)",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "website": "Web Sitesi"
+  },
+  "filters": {
+    "featured": "Öne çıkanlar",
+    "lastUpdate": "Son güncelleme: az önce"
+  },
+  "table": {
+    "target": "Hedef",
+    "status": "Durum",
+    "reports": "Raporlar",
+    "risk": "Risk",
+    "noResults": "Sonuç bulunamadı"
+  },
+  "status": {
+    "safe": "Güvenli",
+    "danger": "Tehlikeli",
+    "suspicious": "Şüpheli"
+  },
+  "stats": {
+    "totalEntries": "Toplam Entry",
+    "experiences": "Deneyim sayısı",
+    "safeExperiences": "Güvenli deneyim",
+    "addedToday": "Bugün Eklenen"
+  },
+  "notFound": {
+    "message": "Oops! Sayfa bulunamadı",
+    "back": "Anasayfaya dön"
+  },
+  "language": {
+    "label": "Dil",
+    "tr": "Türkçe",
+    "en": "İngilizce"
+  }
+}

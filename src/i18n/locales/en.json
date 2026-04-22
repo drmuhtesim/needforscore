@@ -1,0 +1,61 @@
+{
+  "header": {
+    "signUp": "sign up",
+    "signIn": "sign in",
+    "discover": "Discover",
+    "addReport": "Add Report",
+    "api": "API",
+    "about": "About"
+  },
+  "ticker": {
+    "bankFraud": "05XX 123 45 67 - Bank fraud",
+    "safeApproved": "@guvenilir_satis - Safe approved",
+    "phishing": "info@kampanya-ozel.com - 567 reports",
+    "suspicious": "@xtrader_signals - Suspicious"
+  },
+  "search": {
+    "placeholder": "Search Instagram, TikTok, phone, email or website...",
+    "button": "Search"
+  },
+  "categories": {
+    "title": "Categories",
+    "all": "All",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "twitter": "X (Twitter)",
+    "phone": "Phone",
+    "email": "Email",
+    "website": "Website"
+  },
+  "filters": {
+    "featured": "Featured",
+    "lastUpdate": "Last updated: just now"
+  },
+  "table": {
+    "target": "Target",
+    "status": "Status",
+    "reports": "Reports",
+    "risk": "Risk",
+    "noResults": "No results found"
+  },
+  "status": {
+    "safe": "Safe",
+    "danger": "Dangerous",
+    "suspicious": "Suspicious"
+  },
+  "stats": {
+    "totalEntries": "Total Entries",
+    "experiences": "Experiences",
+    "safeExperiences": "Safe experiences",
+    "addedToday": "Added Today"
+  },
+  "notFound": {
+    "message": "Oops! Page not found",
+    "back": "Return to Home"
+  },
+  "language": {
+    "label": "Language",
+    "tr": "Turkish",
+    "en": "English"
+  }
+}
