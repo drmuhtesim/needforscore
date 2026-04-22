@@ -47,7 +47,7 @@ const Index = () => {
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-primary" />
-              <span className="text-sm font-semibold">Trend Raporlar</span>
+              <span className="text-sm font-semibold">Öne çıkanlar</span>
               <div className="flex items-center gap-1 ml-3">
                 {timeFilters.map((t) => (
                   <button
