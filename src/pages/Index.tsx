@@ -12,7 +12,8 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState<string>("24h");
 
-  const timeFilters = t("filters.timeFilters", { returnObjects: true }) as string[];
+  const tfRaw = t("filters.timeFilters", { returnObjects: true });
+  const timeFilters = Array.isArray(tfRaw) ? (tfRaw as string[]) : ["5m", "1h", "6h", "24h", "7d", "30d"];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
