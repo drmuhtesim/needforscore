@@ -29,7 +29,8 @@
   },
   "filters": {
     "featured": "Öne çıkanlar",
-    "lastUpdate": "Son güncelleme: az önce"
+    "lastUpdate": "Son güncelleme: az önce",
+    "timeFilters": ["5D", "1S", "6S", "24S", "7G", "30G"]
   },
   "table": {
     "target": "Hedef",
@@ -48,6 +49,28 @@
     "experiences": "Deneyim sayısı",
     "safeExperiences": "Güvenli deneyim",
     "addedToday": "Bugün Eklenen"
+  },
+  "time": {
+    "minAgo_one": "{{count}} dk önce",
+    "minAgo_other": "{{count}} dk önce",
+    "hourAgo_one": "{{count}} saat önce",
+    "hourAgo_other": "{{count}} saat önce",
+    "dayAgo_one": "{{count}} gün önce",
+    "dayAgo_other": "{{count}} gün önce"
+  },
+  "reports": {
+    "desc": {
+      "fakeShop": "Sahte ürün satışı, ödeme aldıktan sonra engelliyor",
+      "trustedSeller": "Güvenilir satıcı, hızlı kargo ve iyi iletişim",
+      "bankFraud": "Banka dolandırıcılığı, kendini müşteri temsilcisi olarak tanıtıyor",
+      "mixedReviews": "Bazı ürünlerde sorun yaşandı, karışık yorumlar",
+      "phishing": "Phishing e-postası, sahte kampanya linki gönderiyor",
+      "investmentSignals": "Şüpheli yatırım sinyalleri, bazı kullanıcılar zarara uğradı",
+      "fakeEcommerce": "Sahte e-ticaret sitesi, ödeme alıyor ama ürün göndermiyor",
+      "trustedFashion": "Güvenilir moda mağazası, orijinal ürünler",
+      "realEstateScam": "Emlak dolandırıcılığı şüphesi, sahte ilan numarası",
+      "cryptoScam": "Sahte kripto yatırım vaatleri, para çekme işlemi yapılamıyor"
+    }
   },
   "notFound": {
     "message": "Oops! Sayfa bulunamadı",

@@ -29,7 +29,8 @@
   },
   "filters": {
     "featured": "Featured",
-    "lastUpdate": "Last updated: just now"
+    "lastUpdate": "Last updated: just now",
+    "timeFilters": ["5m", "1h", "6h", "24h", "7d", "30d"]
   },
   "table": {
     "target": "Target",
@@ -48,6 +49,28 @@
     "experiences": "Experiences",
     "safeExperiences": "Safe experiences",
     "addedToday": "Added Today"
+  },
+  "time": {
+    "minAgo_one": "{{count}} min ago",
+    "minAgo_other": "{{count}} min ago",
+    "hourAgo_one": "{{count}} hour ago",
+    "hourAgo_other": "{{count}} hours ago",
+    "dayAgo_one": "{{count}} day ago",
+    "dayAgo_other": "{{count}} days ago"
+  },
+  "reports": {
+    "desc": {
+      "fakeShop": "Fake product sales, blocks customers after taking payment",
+      "trustedSeller": "Trusted seller, fast shipping and good communication",
+      "bankFraud": "Bank fraud, impersonates a customer service agent",
+      "mixedReviews": "Issues with some products, mixed reviews",
+      "phishing": "Phishing email, sends fake campaign links",
+      "investmentSignals": "Suspicious investment signals, some users lost money",
+      "fakeEcommerce": "Fake e-commerce site, takes payment but never ships products",
+      "trustedFashion": "Trusted fashion store, authentic products",
+      "realEstateScam": "Suspected real-estate scam, fake listing number",
+      "cryptoScam": "Fake crypto investment promises, withdrawals are blocked"
+    }
   },
   "notFound": {
     "message": "Oops! Page not found",
