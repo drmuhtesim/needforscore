@@ -15,11 +15,19 @@ i18n
     fallbackLng: "tr",
     supportedLngs: ["tr", "en"],
     interpolation: { escapeValue: false },
+    react: { useSuspense: false },
     detection: {
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
       lookupLocalStorage: "lang",
     },
   });
+
+if (typeof document !== "undefined") {
+  document.documentElement.lang = i18n.language?.startsWith("en") ? "en" : "tr";
+  i18n.on("languageChanged", (lng) => {
+    document.documentElement.lang = lng?.startsWith("en") ? "en" : "tr";
+  });
+}
 
 export default i18n;
