@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
 }
 
-const SearchBar = ({ onSearch, placeholder = "Instagram, TikTok, telefon, e-posta veya web sitesi ara..." }: SearchBarProps) => {
+const SearchBar = ({ onSearch, placeholder }: SearchBarProps) => {
   const [query, setQuery] = useState("");
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,14 +26,14 @@ const SearchBar = ({ onSearch, placeholder = "Instagram, TikTok, telefon, e-post
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
+            placeholder={placeholder ?? t("search.placeholder")}
             className="w-full bg-transparent px-4 py-3.5 text-foreground placeholder:text-muted-foreground focus:outline-none font-mono text-sm"
           />
           <button
             type="submit"
             className="px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors flex-shrink-0"
           >
-            Ara
+            {t("search.button")}
           </button>
         </div>
       </div>
