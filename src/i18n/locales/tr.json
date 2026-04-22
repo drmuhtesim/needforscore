@@ -1,0 +1,84 @@
+{
+  "header": {
+    "signUp": "kayıt ol",
+    "signIn": "giriş yap",
+    "discover": "Keşfet",
+    "addReport": "Rapor Ekle",
+    "api": "API",
+    "about": "Hakkında"
+  },
+  "ticker": {
+    "bankFraud": "05XX 123 45 67 - Banka dolandırıcılığı",
+    "safeApproved": "@guvenilir_satis - Güvenli onay",
+    "phishing": "info@kampanya-ozel.com - 567 rapor",
+    "suspicious": "@xtrader_signals - Şüpheli"
+  },
+  "search": {
+    "placeholder": "Instagram, TikTok, telefon, e-posta veya web sitesi ara...",
+    "button": "Ara"
+  },
+  "categories": {
+    "title": "Kategoriler",
+    "all": "Tümü",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "twitter": "X (Twitter)",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "website": "Web Sitesi"
+  },
+  "filters": {
+    "featured": "Öne çıkanlar",
+    "lastUpdate": "Son güncelleme: az önce",
+    "timeFilters": ["5D", "1S", "6S", "24S", "7G", "30G"]
+  },
+  "table": {
+    "target": "Hedef",
+    "status": "Durum",
+    "reports": "Raporlar",
+    "risk": "Risk",
+    "noResults": "Sonuç bulunamadı"
+  },
+  "status": {
+    "safe": "Güvenli",
+    "danger": "Tehlikeli",
+    "suspicious": "Şüpheli"
+  },
+  "stats": {
+    "totalEntries": "Toplam Entry",
+    "experiences": "Deneyim sayısı",
+    "safeExperiences": "Güvenli deneyim",
+    "addedToday": "Bugün Eklenen"
+  },
+  "time": {
+    "minAgo_one": "{{count}} dk önce",
+    "minAgo_other": "{{count}} dk önce",
+    "hourAgo_one": "{{count}} saat önce",
+    "hourAgo_other": "{{count}} saat önce",
+    "dayAgo_one": "{{count}} gün önce",
+    "dayAgo_other": "{{count}} gün önce"
+  },
+  "reports": {
+    "desc": {
+      "fakeShop": "Sahte ürün satışı, ödeme aldıktan sonra engelliyor",
+      "trustedSeller": "Güvenilir satıcı, hızlı kargo ve iyi iletişim",
+      "bankFraud": "Banka dolandırıcılığı, kendini müşteri temsilcisi olarak tanıtıyor",
+      "mixedReviews": "Bazı ürünlerde sorun yaşandı, karışık yorumlar",
+      "phishing": "Phishing e-postası, sahte kampanya linki gönderiyor",
+      "investmentSignals": "Şüpheli yatırım sinyalleri, bazı kullanıcılar zarara uğradı",
+      "fakeEcommerce": "Sahte e-ticaret sitesi, ödeme alıyor ama ürün göndermiyor",
+      "trustedFashion": "Güvenilir moda mağazası, orijinal ürünler",
+      "realEstateScam": "Emlak dolandırıcılığı şüphesi, sahte ilan numarası",
+      "cryptoScam": "Sahte kripto yatırım vaatleri, para çekme işlemi yapılamıyor"
+    }
+  },
+  "notFound": {
+    "message": "Oops! Sayfa bulunamadı",
+    "back": "Anasayfaya dön"
+  },
+  "language": {
+    "label": "Dil",
+    "tr": "Türkçe",
+    "en": "İngilizce"
+  }
+}

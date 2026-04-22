@@ -1,17 +1,18 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import CategorySidebar, { type CategoryType } from "@/components/CategorySidebar";
 import ReportTable from "@/components/ReportTable";
-import StatsBar from "@/components/StatsBar";
-import { Shield, TrendingUp, Clock } from "lucide-react";
+import { TrendingUp, Clock } from "lucide-react";
 
 const Index = () => {
+  const { t } = useTranslation();
   const [category, setCategory] = useState<CategoryType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState<string>("24h");
 
-  const timeFilters = ["5D", "1S", "6S", "24S", "7G", "30G"];
+  const timeFilters = t("filters.timeFilters", { returnObjects: true }) as string[];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -20,13 +21,13 @@ const Index = () => {
       {/* Ticker Bar */}
       <div className="border-b border-border bg-card/30 overflow-hidden">
         <div className="flex items-center gap-6 px-4 py-2 text-xs animate-marquee whitespace-nowrap">
-          <span className="text-danger">⚠️ 05XX 123 45 67 - Banka dolandırıcılığı</span>
+          <span className="text-danger">⚠️ {t("ticker.bankFraud")}</span>
           <span className="text-muted-foreground">•</span>
-          <span className="text-safe">✅ @guvenilir_satis - Güvenli onay</span>
+          <span className="text-safe">✅ {t("ticker.safeApproved")}</span>
           <span className="text-muted-foreground">•</span>
-          <span className="text-danger">🚨 info@kampanya-ozel.com - 567 rapor</span>
+          <span className="text-danger">🚨 {t("ticker.phishing")}</span>
           <span className="text-muted-foreground">•</span>
-          <span className="text-suspicious">⚡ @xtrader_signals - Şüpheli</span>
+          <span className="text-suspicious">⚡ {t("ticker.suspicious")}</span>
         </div>
       </div>
 
@@ -47,7 +48,7 @@ const Index = () => {
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-primary" />
-              <span className="text-sm font-semibold">Öne çıkanlar</span>
+              <span className="text-sm font-semibold">{t("filters.featured")}</span>
               <div className="flex items-center gap-1 ml-3">
                 {timeFilters.map((t) => (
                   <button
@@ -66,7 +67,7 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Clock className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Son güncelleme: az önce</span>
+              <span className="hidden sm:inline">{t("filters.lastUpdate")}</span>
             </div>
           </div>
 

@@ -1,13 +1,15 @@
 import { ShieldCheck, AlertTriangle, Eye, TrendingUp } from "lucide-react";
-
-const stats = [
-  { label: "Toplam Entry", value: "2,847", icon: Eye, color: "text-primary" },
-  { label: "Deneyim sayısı", value: "1,203", icon: AlertTriangle, color: "text-danger" },
-  { label: "Güvenli deneyim", value: "892", icon: ShieldCheck, color: "text-safe" },
-  { label: "Bugün Eklenen", value: "+47", icon: TrendingUp, color: "text-suspicious" },
-];
+import { useTranslation } from "react-i18next";
 
 const StatsBar = () => {
+  const { t } = useTranslation();
+  const stats = [
+    { label: t("stats.totalEntries"), value: "2,847", icon: Eye, color: "text-primary" },
+    { label: t("stats.experiences"), value: "1,203", icon: AlertTriangle, color: "text-danger" },
+    { label: t("stats.safeExperiences"), value: "892", icon: ShieldCheck, color: "text-safe" },
+    { label: t("stats.addedToday"), value: "+47", icon: TrendingUp, color: "text-suspicious" },
+  ];
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
       {stats.map((stat) => {
