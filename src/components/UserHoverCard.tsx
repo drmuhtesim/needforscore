@@ -1,0 +1,103 @@
+import { useEffect, useState, ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
+
+interface Props {
+  username: string;
+  children: ReactNode;
+}
+
+interface MiniProfile {
+  username: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  entry_count: number;
+}
+
+const cache = new Map<string, MiniProfile | null>();
+
+const UserHoverCard = ({ username, children }: Props) => {
+  const { t } = useTranslation();
+  const [profile, setProfile] = useState<MiniProfile | null | undefined>(cache.get(username));
+
+  useEffect(() => {
+    if (cache.has(username)) {
+      setProfile(cache.get(username) ?? null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("user_id, username, display_name, avatar_url")
+        .eq("username", username)
+        .maybeSingle();
+      if (!data) {
+        cache.set(username, null);
+        if (!cancelled) setProfile(null);
+        return;
+      }
+      const { count } = await supabase
+        .from("entries")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", data.user_id);
+      const mini: MiniProfile = {
+        username: data.username,
+        display_name: data.display_name,
+        avatar_url: data.avatar_url,
+        entry_count: count ?? 0,
+      };
+      cache.set(username, mini);
+      if (!cancelled) setProfile(mini);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [username]);
+
+  return (
+    <HoverCard openDelay={200}>
+      <HoverCardTrigger asChild>
+        <Link to={`/u/${username}`} className="hover:text-primary transition-colors" onClick={(e) => e.stopPropagation()}>
+          {children}
+        </Link>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-64" align="start">
+        {profile === undefined ? (
+          <div className="text-xs text-muted-foreground">...</div>
+        ) : profile === null ? (
+          <div className="text-xs text-muted-foreground">{t("profile.notFound")}</div>
+        ) : (
+          <div className="flex items-start gap-3">
+            <Avatar className="h-10 w-10">
+              {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}
+              <AvatarFallback className="bg-primary/10 text-primary text-xs font-mono">
+                {profile.username.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="font-mono text-sm text-foreground truncate">@{profile.username}</p>
+              {profile.display_name && (
+                <p className="text-xs text-muted-foreground truncate">{profile.display_name}</p>
+              )}
+              <p className="text-xs text-muted-foreground mt-1">
+                <span className="font-mono text-foreground">{profile.entry_count}</span> {t("profile.entries")}
+              </p>
+              <Link
+                to={`/u/${profile.username}`}
+                className="inline-block mt-2 text-xs text-primary hover:underline"
+              >
+                {t("profile.viewProfile")} →
+              </Link>
+            </div>
+          </div>
+        )}
+      </HoverCardContent>
+    </HoverCard>
+  );
+};
+
+export default UserHoverCard;
