@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
+import AddEntryDialog from "./AddEntryDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
@@ -34,6 +35,7 @@ const Header = () => {
         </Link>
 
         <div className="flex items-center gap-2">
+          <AddEntryDialog />
           <LanguageSwitcher />
 
           {user ? (
@@ -49,6 +51,12 @@ const Header = () => {
                   {user.email}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                {profile?.username && (
+                  <DropdownMenuItem onClick={() => navigate(`/u/${profile.username}`)}>
+                    <UserIcon className="h-4 w-4 mr-2" />
+                    {t("header.myProfile")}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={handleSignOut} className="text-danger">
                   <LogOut className="h-4 w-4 mr-2" />
                   {t("header.signOut")}
@@ -80,13 +88,14 @@ const Header = () => {
 
       {mobileMenu && (
         <div className="md:hidden border-t border-border bg-card p-4 space-y-3">
-          <a href="#" className="block text-sm text-muted-foreground hover:text-foreground">{t("header.discover")}</a>
-          <a href="#" className="block text-sm text-muted-foreground hover:text-foreground">{t("header.addReport")}</a>
-          <a href="#" className="block text-sm text-muted-foreground hover:text-foreground">{t("header.api")}</a>
-          <a href="#" className="block text-sm text-muted-foreground hover:text-foreground">{t("header.about")}</a>
           {user ? (
             <>
               <div className="text-xs text-muted-foreground font-mono px-1">@{profile?.username}</div>
+              {profile?.username && (
+                <Link to={`/u/${profile.username}`} className="block text-sm text-foreground hover:text-primary">
+                  {t("header.myProfile")}
+                </Link>
+              )}
               <button onClick={handleSignOut} className="w-full px-4 py-2 border border-border text-danger text-sm font-semibold rounded-md">
                 {t("header.signOut")}
               </button>

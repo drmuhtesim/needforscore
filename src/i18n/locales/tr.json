@@ -4,15 +4,16 @@
     "signIn": "giriş yap",
     "signOut": "çıkış yap",
     "discover": "Keşfet",
-    "addReport": "Rapor Ekle",
+    "addReport": "Entry Ekle",
     "api": "API",
-    "about": "Hakkında"
+    "about": "Hakkında",
+    "myProfile": "Profilim"
   },
   "auth": {
     "signInTitle": "Tekrar hoş geldin",
     "signInSubtitle": "Devam etmek için hesabına giriş yap",
     "signUpTitle": "Hesap oluştur",
-    "signUpSubtitle": "Topluluğa katıl ve raporlarını paylaş",
+    "signUpSubtitle": "Topluluğa katıl ve deneyimlerini paylaş",
     "email": "E-posta",
     "password": "Şifre",
     "username": "Kullanıcı adı",
@@ -60,8 +61,12 @@
     "target": "Hedef",
     "status": "Durum",
     "reports": "Raporlar",
+    "rating": "Puan",
+    "votes": "Oylar",
+    "comments": "Yorum",
     "risk": "Risk",
-    "noResults": "Sonuç bulunamadı"
+    "noResults": "Sonuç bulunamadı",
+    "loading": "Yükleniyor..."
   },
   "status": {
     "safe": "Güvenli",
@@ -75,6 +80,7 @@
     "addedToday": "Bugün Eklenen"
   },
   "time": {
+    "justNow": "az önce",
     "minAgo_one": "{{count}} dk önce",
     "minAgo_other": "{{count}} dk önce",
     "hourAgo_one": "{{count}} saat önce",
@@ -82,19 +88,54 @@
     "dayAgo_one": "{{count}} gün önce",
     "dayAgo_other": "{{count}} gün önce"
   },
-  "reports": {
-    "desc": {
-      "fakeShop": "Sahte ürün satışı, ödeme aldıktan sonra engelliyor",
-      "trustedSeller": "Güvenilir satıcı, hızlı kargo ve iyi iletişim",
-      "bankFraud": "Banka dolandırıcılığı, kendini müşteri temsilcisi olarak tanıtıyor",
-      "mixedReviews": "Bazı ürünlerde sorun yaşandı, karışık yorumlar",
-      "phishing": "Phishing e-postası, sahte kampanya linki gönderiyor",
-      "investmentSignals": "Şüpheli yatırım sinyalleri, bazı kullanıcılar zarara uğradı",
-      "fakeEcommerce": "Sahte e-ticaret sitesi, ödeme alıyor ama ürün göndermiyor",
-      "trustedFashion": "Güvenilir moda mağazası, orijinal ürünler",
-      "realEstateScam": "Emlak dolandırıcılığı şüphesi, sahte ilan numarası",
-      "cryptoScam": "Sahte kripto yatırım vaatleri, para çekme işlemi yapılamıyor"
-    }
+  "entry": {
+    "add": "Entry Ekle",
+    "addTitle": "Yeni entry ekle",
+    "addDesc": "Deneyimini paylaş. Yayınlamadan önce format kontrol edilecek.",
+    "category": "Kategori",
+    "target": "Hedef (kullanıcı adı, telefon, e-posta veya site)",
+    "status": "Karar",
+    "rating": "Güven puanı (1-10)",
+    "description": "Açıklama",
+    "descPlaceholder": "Deneyimini detaylı anlat (en az 10 karakter)...",
+    "publish": "Yayınla",
+    "submitting": "Yayınlanıyor...",
+    "formatOk": "Format geçerli görünüyor",
+    "formatBad": "Bu kategori için geçersiz format",
+    "openProfile": "Profili aç",
+    "invalidInput": "Geçersiz giriş",
+    "checkFields": "Lütfen alanları kontrol edip tekrar dene.",
+    "failed": "Başarısız",
+    "created": "Entry yayınlandı",
+    "placeholder": {
+      "instagram": "kullanıcı adı (örn. nikelab)",
+      "tiktok": "kullanıcı adı (örn. tiktok)",
+      "twitter": "kullanıcı adı (örn. elonmusk)",
+      "phone": "+90 555 123 45 67",
+      "email": "ad@ornek.com",
+      "website": "ornek.com"
+    },
+    "by": "tarafından",
+    "verifiedTarget": "Doğrulanmış hedef",
+    "verifiedTitle": "Doğrulandı",
+    "verifiedDesc": "Artık bu entry'nin hedefi olarak cevap verebilirsin.",
+    "claimAsMe": "Bu benim — sahiplen",
+    "comments": "Yorumlar",
+    "commentPlaceholder": "Görüşünü paylaş...",
+    "postComment": "Yorum yap",
+    "replyAsTarget": "Hedef olarak cevap ver",
+    "targetResponse": "Hedef cevabı",
+    "noComments": "Henüz yorum yok. İlk paylaşan sen ol.",
+    "noEntries": "Henüz entry yok.",
+    "signInToComment": "yapıp yorum yazabilirsin.",
+    "backToList": "Listeye dön"
+  },
+  "profile": {
+    "viewProfile": "Profili gör",
+    "entries": "entry",
+    "comments": "yorum",
+    "joined": "Katılım",
+    "notFound": "Kullanıcı bulunamadı"
   },
   "notFound": {
     "message": "Oops! Sayfa bulunamadı",

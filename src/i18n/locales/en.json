@@ -6,7 +6,8 @@
     "discover": "Discover",
     "addReport": "Add Report",
     "api": "API",
-    "about": "About"
+    "about": "About",
+    "myProfile": "My Profile"
   },
   "auth": {
     "signInTitle": "Welcome back",
@@ -60,8 +61,12 @@
     "target": "Target",
     "status": "Status",
     "reports": "Reports",
+    "rating": "Rating",
+    "votes": "Votes",
+    "comments": "Comments",
     "risk": "Risk",
-    "noResults": "No results found"
+    "noResults": "No results found",
+    "loading": "Loading..."
   },
   "status": {
     "safe": "Safe",
@@ -75,6 +80,7 @@
     "addedToday": "Added Today"
   },
   "time": {
+    "justNow": "just now",
     "minAgo_one": "{{count}} min ago",
     "minAgo_other": "{{count}} min ago",
     "hourAgo_one": "{{count}} hour ago",
@@ -82,19 +88,54 @@
     "dayAgo_one": "{{count}} day ago",
     "dayAgo_other": "{{count}} days ago"
   },
-  "reports": {
-    "desc": {
-      "fakeShop": "Fake product sales, blocks customers after taking payment",
-      "trustedSeller": "Trusted seller, fast shipping and good communication",
-      "bankFraud": "Bank fraud, impersonates a customer service agent",
-      "mixedReviews": "Issues with some products, mixed reviews",
-      "phishing": "Phishing email, sends fake campaign links",
-      "investmentSignals": "Suspicious investment signals, some users lost money",
-      "fakeEcommerce": "Fake e-commerce site, takes payment but never ships products",
-      "trustedFashion": "Trusted fashion store, authentic products",
-      "realEstateScam": "Suspected real-estate scam, fake listing number",
-      "cryptoScam": "Fake crypto investment promises, withdrawals are blocked"
-    }
+  "entry": {
+    "add": "Add Entry",
+    "addTitle": "Add a new entry",
+    "addDesc": "Share your experience. Format will be checked before posting.",
+    "category": "Category",
+    "target": "Target (username, phone, email or website)",
+    "status": "Verdict",
+    "rating": "Trust score (1-10)",
+    "description": "Description",
+    "descPlaceholder": "Describe your experience in detail (min 10 characters)...",
+    "publish": "Publish",
+    "submitting": "Publishing...",
+    "formatOk": "Format looks valid",
+    "formatBad": "Invalid format for this category",
+    "openProfile": "Open profile",
+    "invalidInput": "Invalid input",
+    "checkFields": "Please check the fields and try again.",
+    "failed": "Failed",
+    "created": "Entry published",
+    "placeholder": {
+      "instagram": "username (e.g. nikelab)",
+      "tiktok": "username (e.g. tiktok)",
+      "twitter": "handle (e.g. elonmusk)",
+      "phone": "+1 555 123 4567",
+      "email": "name@example.com",
+      "website": "example.com"
+    },
+    "by": "by",
+    "verifiedTarget": "Verified target",
+    "verifiedTitle": "Verified",
+    "verifiedDesc": "You can now respond as the target of this entry.",
+    "claimAsMe": "This is me — claim",
+    "comments": "Comments",
+    "commentPlaceholder": "Share your view...",
+    "postComment": "Post comment",
+    "replyAsTarget": "Reply as target",
+    "targetResponse": "Target response",
+    "noComments": "No comments yet. Be the first to share.",
+    "noEntries": "No entries yet.",
+    "signInToComment": "to leave a comment.",
+    "backToList": "Back to list"
+  },
+  "profile": {
+    "viewProfile": "View profile",
+    "entries": "entries",
+    "comments": "comments",
+    "joined": "Joined",
+    "notFound": "User not found"
   },
   "notFound": {
     "message": "Oops! Page not found",

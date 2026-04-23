@@ -14,6 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          entry_id: string
+          id: string
+          is_target_response: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          entry_id: string
+          id?: string
+          is_target_response?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          entry_id?: string
+          id?: string
+          is_target_response?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entries: {
+        Row: {
+          category: Database["public"]["Enums"]["entry_category"]
+          created_at: string
+          description: string
+          id: string
+          rating: number
+          status: Database["public"]["Enums"]["entry_status"]
+          target: string
+          target_normalized: string
+          updated_at: string
+          user_id: string
+          verified_target: boolean
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["entry_category"]
+          created_at?: string
+          description: string
+          id?: string
+          rating: number
+          status: Database["public"]["Enums"]["entry_status"]
+          target: string
+          target_normalized: string
+          updated_at?: string
+          user_id: string
+          verified_target?: boolean
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["entry_category"]
+          created_at?: string
+          description?: string
+          id?: string
+          rating?: number
+          status?: Database["public"]["Enums"]["entry_status"]
+          target?: string
+          target_normalized?: string
+          updated_at?: string
+          user_id?: string
+          verified_target?: boolean
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -44,15 +124,96 @@ export type Database = {
         }
         Relationships: []
       }
+      target_verifications: {
+        Row: {
+          created_at: string
+          entry_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entry_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "target_verifications_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      votes: {
+        Row: {
+          comment_id: string | null
+          created_at: string
+          entry_id: string | null
+          id: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          comment_id?: string | null
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          comment_id?: string | null
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "votes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_entry_target: {
+        Args: { _entry_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      entry_category:
+        | "instagram"
+        | "tiktok"
+        | "twitter"
+        | "phone"
+        | "email"
+        | "website"
+      entry_status: "safe" | "suspicious" | "danger"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -179,6 +340,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      entry_category: [
+        "instagram",
+        "tiktok",
+        "twitter",
+        "phone",
+        "email",
+        "website",
+      ],
+      entry_status: ["safe", "suspicious", "danger"],
+    },
   },
 } as const
