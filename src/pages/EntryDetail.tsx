@@ -51,7 +51,7 @@ const EntryDetail = () => {
         .select("*")
         .eq("entry_id", id!)
         .order("created_at", { ascending: true });
-      const rows = (data ?? []) as CommentRow[];
+      const rows = (data ?? []) as unknown as CommentRow[];
       if (rows.length === 0) return rows;
       const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
       const ids = rows.map((r) => r.id);
