@@ -260,31 +260,44 @@ const EntryDetail = () => {
           )}
 
           {/* Comment list */}
-          <div className="space-y-3">
+          <div className="space-y-10">
             {(commentsQ.data ?? []).map((c) => (
-              <div
+              <article
                 key={c.id}
-                className={`border rounded-md p-3 ${c.is_target_response ? "border-primary/40 bg-primary/5" : "border-border bg-card/50"}`}
+                className={`relative rounded-xl px-6 py-7 transition-colors ${
+                  c.is_target_response
+                    ? "border border-primary/40 bg-primary/5 shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]"
+                    : "border border-border/60 bg-card/40 hover:bg-card/60"
+                }`}
               >
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <div className="flex items-center gap-2 text-xs font-mono">
+                {c.is_target_response && (
+                  <span className="absolute -top-2.5 left-5 inline-flex items-center gap-1 rounded-full border border-primary/40 bg-background px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-primary">
+                    <BadgeCheck className="h-3 w-3" /> {t("entry.targetResponse")}
+                  </span>
+                )}
+
+                {/* Experience body — its own paragraph, breathing room */}
+                <p className="text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap">
+                  {c.content}
+                </p>
+
+                {/* Footer: votes left, author bottom-right */}
+                <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between gap-3">
+                  <VoteButtons commentId={c.id} initialScore={c.vote_score} />
+                  <div className="text-xs font-mono text-muted-foreground">
                     {c.profiles?.username ? (
-                      <UserHoverCard username={c.profiles.username}>
-                        <span className="text-foreground">@{c.profiles.username}</span>
-                      </UserHoverCard>
+                      <>
+                        {t("entry.by")}{" "}
+                        <UserHoverCard username={c.profiles.username}>
+                          <span className="text-foreground/80 hover:text-primary">@{c.profiles.username}</span>
+                        </UserHoverCard>
+                      </>
                     ) : (
-                      <span className="text-muted-foreground">@unknown</span>
-                    )}
-                    {c.is_target_response && (
-                      <span className="inline-flex items-center gap-1 text-xs text-primary">
-                        <BadgeCheck className="h-3 w-3" /> {t("entry.targetResponse")}
-                      </span>
+                      <span>@unknown</span>
                     )}
                   </div>
-                  <VoteButtons commentId={c.id} initialScore={c.vote_score} />
                 </div>
-                <p className="text-sm whitespace-pre-wrap">{c.content}</p>
-              </div>
+              </article>
             ))}
             {commentsQ.data?.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-6">{t("entry.noComments")}</p>
