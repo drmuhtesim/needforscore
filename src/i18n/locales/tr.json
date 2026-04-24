@@ -145,5 +145,32 @@
     "label": "Dil",
     "tr": "Türkçe",
     "en": "İngilizce"
+  },
+  "theme": {
+    "toggle": "Temayı değiştir",
+    "switchToLight": "Açık temaya geç",
+    "switchToDark": "Koyu temaya geç"
+  },
+  "actions": {
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "moderate": "Moderasyon",
+    "removeByMod": "Moderatör olarak kaldır",
+    "confirmDelete": "Silmek istediğine emin misin?",
+    "confirmDeleteDesc": "Bu işlem deneyimi gizler. Geri almak için yöneticiyle iletişime geçmen gerekir.",
+    "deletedSuccess": "Silindi",
+    "updatedSuccess": "Güncellendi",
+    "moderatedSuccess": "Moderatör tarafından kaldırıldı"
+  },
+  "moderation": {
+    "removed": "Bu içerik moderatör tarafından kaldırıldı.",
+    "removedByOwner": "Bu içerik yazarı tarafından silindi."
+  },
+  "badges": {
+    "gen1": "1. Nesil",
+    "gen2": "2. Nesil",
+    "gen3": "3. Nesil"
   }
 }
