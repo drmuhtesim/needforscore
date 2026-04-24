@@ -4,9 +4,11 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star } from "lucide-react";
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
+import GenerationBadge from "@/components/GenerationBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { formatTargetDisplay } from "@/lib/platforms";
+import { generationFromOrder } from "@/lib/badges";
 import type { CategoryType } from "@/components/CategorySidebar";
 
 const statusMeta = {
@@ -25,13 +27,13 @@ const UserProfile = () => {
     queryFn: async () => {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("user_id, username, display_name, avatar_url, created_at")
+        .select("user_id, username, display_name, avatar_url, created_at, signup_order")
         .eq("username", username!)
         .maybeSingle();
       if (!profile) return null;
       const [{ data: entries }, { count: commentCount }] = await Promise.all([
-        supabase.from("entries").select("*").eq("user_id", profile.user_id).order("created_at", { ascending: false }).limit(50),
-        supabase.from("comments").select("id", { count: "exact", head: true }).eq("user_id", profile.user_id),
+        supabase.from("entries").select("*").eq("user_id", profile.user_id).is("deleted_at", null).order("created_at", { ascending: false }).limit(50),
+        supabase.from("comments").select("id", { count: "exact", head: true }).eq("user_id", profile.user_id).is("deleted_at", null),
       ]);
       return { profile, entries: entries ?? [], commentCount: commentCount ?? 0 };
     },
@@ -70,7 +72,10 @@ const UserProfile = () => {
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-mono text-foreground">@{profile.username}</h1>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl font-mono text-foreground">@{profile.username}</h1>
+              <GenerationBadge generation={generationFromOrder((profile as any).signup_order)} size="md" />
+            </div>
             {profile.display_name && <p className="text-sm text-muted-foreground">{profile.display_name}</p>}
             <div className="flex items-center gap-4 mt-3 text-xs font-mono text-muted-foreground">
               <span><span className="text-foreground">{entries.length}</span> {t("profile.entries")}</span>
