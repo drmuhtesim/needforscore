@@ -89,8 +89,8 @@
     "dayAgo_other": "{{count}} gün önce"
   },
   "entry": {
-    "add": "Entry Ekle",
-    "addTitle": "Yeni entry ekle",
+    "add": "Deneyim Ekle",
+    "addTitle": "Deneyimini paylaş",
     "addDesc": "Deneyimini paylaş. Yayınlamadan önce format kontrol edilecek.",
     "category": "Kategori",
     "target": "Hedef (kullanıcı adı, telefon, e-posta veya site)",

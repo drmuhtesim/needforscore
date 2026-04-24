@@ -37,7 +37,7 @@ const EntryRow = ({ entry, index }: Props) => {
 
   return (
     <tr
-      className="border-b border-border/50 hover:bg-secondary/50 transition-colors animate-slide-up"
+      className="border-b border-border/50 hover:bg-secondary/50 transition-colors animate-slide-up [&>td]:py-8"
       style={{ animationDelay: `${index * 20}ms` }}
     >
       <td className="py-3 px-4">

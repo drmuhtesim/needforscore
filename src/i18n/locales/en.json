@@ -89,8 +89,8 @@
     "dayAgo_other": "{{count}} days ago"
   },
   "entry": {
-    "add": "Add Entry",
-    "addTitle": "Add a new entry",
+    "add": "Add Experience",
+    "addTitle": "Share an experience",
     "addDesc": "Share your experience. Format will be checked before posting.",
     "category": "Category",
     "target": "Target (username, phone, email or website)",
