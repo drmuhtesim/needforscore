@@ -5,7 +5,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @layer base {
-  :root {
+  :root,
+  .dark {
     --background: 220 20% 6%;
     --foreground: 210 20% 90%;
 
@@ -54,6 +55,52 @@
 
     --font-heading: 'Space Grotesk', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 220 25% 12%;
+
+    --card: 220 20% 98%;
+    --card-foreground: 220 25% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 12%;
+
+    --primary: 145 70% 36%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 220 25% 18%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 42%;
+
+    --accent: 280 60% 48%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 92% 45%;
+    --warning-foreground: 0 0% 100%;
+
+    --safe: 145 70% 36%;
+    --danger: 0 72% 50%;
+    --suspicious: 32 95% 44%;
+
+    --border: 220 14% 88%;
+    --input: 220 14% 90%;
+    --ring: 145 70% 36%;
+
+    --sidebar-background: 220 20% 98%;
+    --sidebar-foreground: 220 25% 18%;
+    --sidebar-primary: 145 70% 36%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 25% 18%;
+    --sidebar-border: 220 14% 88%;
+    --sidebar-ring: 145 70% 36%;
   }
 }
 
