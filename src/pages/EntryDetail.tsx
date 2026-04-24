@@ -160,6 +160,7 @@ const EntryDetail = () => {
           <div className="flex items-start gap-4">
             <PlatformIcon category={entry.category} className="h-6 w-6" withBg />
             <div className="flex-1 min-w-0">
+              {/* Title row */}
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="font-mono text-xl text-foreground break-all">
                   {formatTargetDisplay(entry.target, entry.category)}
@@ -176,6 +177,8 @@ const EntryDetail = () => {
                   </a>
                 )}
               </div>
+
+              {/* Status + rating */}
               <div className="flex flex-wrap items-center gap-3 mt-2">
                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.color}`}>
                   <StatusIcon className="h-3.5 w-3.5" /> {t(`status.${entry.status}`)}
@@ -183,21 +186,36 @@ const EntryDetail = () => {
                 <span className="inline-flex items-center gap-1 text-xs font-mono text-suspicious">
                   <Star className="h-3.5 w-3.5 fill-current" /> {entry.rating}/10
                 </span>
-                {entry.profiles?.username && (
-                  <span className="text-xs text-muted-foreground font-mono">
-                    {t("entry.by")} <UserHoverCard username={entry.profiles.username}><span>@{entry.profiles.username}</span></UserHoverCard>
-                  </span>
-                )}
               </div>
-              <p className="mt-4 text-sm text-foreground/90 whitespace-pre-wrap">{entry.description}</p>
-              <div className="mt-4 flex items-center gap-4">
-                <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} size="md" />
-                {canClaim && (
-                  <Button size="sm" variant="outline" onClick={claimAsTarget} disabled={verifying}>
-                    <BadgeCheck className="h-4 w-4 mr-1" />
-                    {verifying ? "..." : t("entry.claimAsMe")}
-                  </Button>
-                )}
+
+              {/* Experience / description as its own paragraph block */}
+              <div className="mt-6 pt-5 border-t border-border/60">
+                <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap">
+                  {entry.description}
+                </p>
+              </div>
+
+              {/* Bottom: author on the left, actions on the right */}
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-xs text-muted-foreground font-mono">
+                  {entry.profiles?.username ? (
+                    <>
+                      {t("entry.by")}{" "}
+                      <UserHoverCard username={entry.profiles.username}>
+                        <span className="text-foreground/80 hover:text-primary">@{entry.profiles.username}</span>
+                      </UserHoverCard>
+                    </>
+                  ) : null}
+                </div>
+                <div className="flex items-center gap-4">
+                  <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} size="md" />
+                  {canClaim && (
+                    <Button size="sm" variant="outline" onClick={claimAsTarget} disabled={verifying}>
+                      <BadgeCheck className="h-4 w-4 mr-1" />
+                      {verifying ? "..." : t("entry.claimAsMe")}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
