@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, BadgeCheck, ExternalLink, ShieldAlert, ShieldCheck, ShieldQuestion, Star } from "lucide-react";
@@ -7,13 +7,19 @@ import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import UserHoverCard from "@/components/UserHoverCard";
 import VoteButtons from "@/components/VoteButtons";
+import ContentActionsMenu from "@/components/ContentActionsMenu";
+import EditEntryDialog from "@/components/EditEntryDialog";
+import EditCommentDialog from "@/components/EditCommentDialog";
+import GenerationBadge from "@/components/GenerationBadge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useEntry } from "@/hooks/useEntries";
+import { useUserRoles } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { buildProfileUrl, cleanTarget, formatTargetDisplay } from "@/lib/platforms";
+import { generationFromOrder } from "@/lib/badges";
 
 const statusMeta = {
   safe: { Icon: ShieldCheck, color: "text-safe", bg: "bg-safe/10" },
@@ -27,20 +33,26 @@ interface CommentRow {
   content: string;
   is_target_response: boolean;
   created_at: string;
-  profiles?: { username: string; display_name: string | null; avatar_url: string | null } | null;
+  deleted_at: string | null;
+  deleted_by: string | null;
+  profiles?: { username: string; display_name: string | null; avatar_url: string | null; signup_order?: number | null } | null;
   vote_score: number;
 }
 
 const EntryDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { user, profile } = useAuth();
+  const { isModerator } = useUserRoles();
   const qc = useQueryClient();
   const { data: entry, isLoading } = useEntry(id);
   const [comment, setComment] = useState("");
   const [posting, setPosting] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [iVerified, setIVerified] = useState(false);
+  const [editEntryOpen, setEditEntryOpen] = useState(false);
+  const [editingComment, setEditingComment] = useState<CommentRow | null>(null);
 
   const commentsQ = useQuery({
     queryKey: ["comments", id],
@@ -56,7 +68,7 @@ const EntryDetail = () => {
       const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
       const ids = rows.map((r) => r.id);
       const [{ data: profiles }, { data: votes }] = await Promise.all([
-        supabase.from("profiles").select("user_id, username, display_name, avatar_url").in("user_id", userIds),
+        supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").in("user_id", userIds),
         supabase.from("votes").select("comment_id, value").in("comment_id", ids),
       ]);
       const pm = new Map((profiles ?? []).map((p) => [p.user_id, p]));
@@ -110,6 +122,9 @@ const EntryDetail = () => {
     (entry.category === "instagram" || entry.category === "tiktok" || entry.category === "twitter") &&
     targetUsername === myUsername;
 
+  const isEntryOwner = !!user && entry.user_id === user.id;
+  const entryDeleted = !!entry.deleted_at;
+
   const claimAsTarget = async () => {
     if (!user || !id) return;
     setVerifying(true);
@@ -147,6 +162,35 @@ const EntryDetail = () => {
     qc.invalidateQueries({ queryKey: ["comments", id] });
   };
 
+  const deleteEntry = async (asMod: boolean) => {
+    if (!user || !id) return;
+    const { error } = await supabase
+      .from("entries")
+      .update({ deleted_at: new Date().toISOString(), deleted_by: user.id })
+      .eq("id", id);
+    if (error) {
+      toast({ title: t("entry.failed"), description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: asMod ? t("actions.moderatedSuccess") : t("actions.deletedSuccess") });
+    qc.invalidateQueries({ queryKey: ["entries"] });
+    navigate("/", { replace: true });
+  };
+
+  const deleteComment = async (commentId: string, asMod: boolean) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("comments")
+      .update({ deleted_at: new Date().toISOString(), deleted_by: user.id })
+      .eq("id", commentId);
+    if (error) {
+      toast({ title: t("entry.failed"), description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: asMod ? t("actions.moderatedSuccess") : t("actions.deletedSuccess") });
+    qc.invalidateQueries({ queryKey: ["comments", id] });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -156,7 +200,12 @@ const EntryDetail = () => {
         </Link>
 
         {/* Entry card */}
-        <div className="border border-border rounded-lg p-5 bg-card">
+        <div className={`relative border rounded-lg p-5 bg-card ${entryDeleted ? "border-danger/40 bg-danger/5" : "border-border"}`}>
+          {entryDeleted && (
+            <div className="mb-4 text-xs font-mono text-danger uppercase tracking-wider">
+              {entry.deleted_by === entry.user_id ? t("moderation.removedByOwner") : t("moderation.removed")}
+            </div>
+          )}
           <div className="flex items-start gap-4">
             <PlatformIcon category={entry.category} className="h-6 w-6" withBg />
             <div className="flex-1 min-w-0">
@@ -197,23 +246,34 @@ const EntryDetail = () => {
 
               {/* Bottom: author on the left, actions on the right */}
               <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-                <div className="text-xs text-muted-foreground font-mono">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
                   {entry.profiles?.username ? (
                     <>
-                      {t("entry.by")}{" "}
+                      <span>{t("entry.by")}</span>
                       <UserHoverCard username={entry.profiles.username}>
                         <span className="text-foreground/80 hover:text-primary">@{entry.profiles.username}</span>
                       </UserHoverCard>
+                      <GenerationBadge generation={generationFromOrder(entry.profiles.signup_order)} />
                     </>
                   ) : null}
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} size="md" />
                   {canClaim && (
                     <Button size="sm" variant="outline" onClick={claimAsTarget} disabled={verifying}>
                       <BadgeCheck className="h-4 w-4 mr-1" />
                       {verifying ? "..." : t("entry.claimAsMe")}
                     </Button>
+                  )}
+                  {!entryDeleted && (
+                    <ContentActionsMenu
+                      canEdit={isEntryOwner}
+                      canDelete={isEntryOwner}
+                      canModerate={!isEntryOwner && isModerator}
+                      onEdit={() => setEditEntryOpen(true)}
+                      onDelete={() => deleteEntry(false)}
+                      onModerate={() => deleteEntry(true)}
+                    />
                   )}
                 </div>
               </div>
@@ -224,11 +284,11 @@ const EntryDetail = () => {
         {/* Comments */}
         <div className="mt-6">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-            {t("entry.comments")} ({commentsQ.data?.length ?? 0})
+            {t("entry.comments")} ({commentsQ.data?.filter((c) => !c.deleted_at).length ?? 0})
           </h2>
 
           {/* Comment form */}
-          {user ? (
+          {user && !entryDeleted ? (
             <div className="space-y-2 mb-5">
               <Textarea
                 value={comment}
@@ -252,59 +312,101 @@ const EntryDetail = () => {
                 </div>
               </div>
             </div>
-          ) : (
+          ) : !user ? (
             <div className="border border-border rounded-md p-4 mb-5 text-sm text-muted-foreground">
               <Link to="/auth?mode=signin" className="text-primary hover:underline">{t("header.signIn")}</Link>{" "}
               {t("entry.signInToComment")}
             </div>
-          )}
+          ) : null}
 
           {/* Comment list */}
           <div className="space-y-10">
-            {(commentsQ.data ?? []).map((c) => (
-              <article
-                key={c.id}
-                className={`relative rounded-xl px-6 py-7 transition-colors ${
-                  c.is_target_response
-                    ? "border border-primary/40 bg-primary/5 shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]"
-                    : "border border-border/60 bg-card/40 hover:bg-card/60"
-                }`}
-              >
-                {c.is_target_response && (
-                  <span className="absolute -top-2.5 left-5 inline-flex items-center gap-1 rounded-full border border-primary/40 bg-background px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-primary">
-                    <BadgeCheck className="h-3 w-3" /> {t("entry.targetResponse")}
-                  </span>
-                )}
+            {(commentsQ.data ?? []).map((c) => {
+              const isOwner = !!user && c.user_id === user.id;
+              const cDeleted = !!c.deleted_at;
+              return (
+                <article
+                  key={c.id}
+                  className={`relative rounded-xl px-6 py-7 transition-colors ${
+                    cDeleted
+                      ? "border border-danger/30 bg-danger/5"
+                      : c.is_target_response
+                        ? "border border-primary/40 bg-primary/5 shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]"
+                        : "border border-border/60 bg-card/40 hover:bg-card/60"
+                  }`}
+                >
+                  {!cDeleted && c.is_target_response && (
+                    <span className="absolute -top-2.5 left-5 inline-flex items-center gap-1 rounded-full border border-primary/40 bg-background px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-primary">
+                      <BadgeCheck className="h-3 w-3" /> {t("entry.targetResponse")}
+                    </span>
+                  )}
 
-                {/* Experience body — its own paragraph, breathing room */}
-                <p className="text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap">
-                  {c.content}
-                </p>
+                  {/* Body */}
+                  {cDeleted ? (
+                    <p className="text-sm italic text-danger/80">
+                      {c.deleted_by === c.user_id ? t("moderation.removedByOwner") : t("moderation.removed")}
+                    </p>
+                  ) : (
+                    <p className="text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap">
+                      {c.content}
+                    </p>
+                  )}
 
-                {/* Footer: votes left, author bottom-right */}
-                <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between gap-3">
-                  <VoteButtons commentId={c.id} initialScore={c.vote_score} />
-                  <div className="text-xs font-mono text-muted-foreground">
-                    {c.profiles?.username ? (
-                      <>
-                        {t("entry.by")}{" "}
-                        <UserHoverCard username={c.profiles.username}>
-                          <span className="text-foreground/80 hover:text-primary">@{c.profiles.username}</span>
-                        </UserHoverCard>
-                      </>
-                    ) : (
-                      <span>@unknown</span>
-                    )}
+                  {/* Footer: votes left, author bottom-right, actions */}
+                  <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between gap-3">
+                    <VoteButtons commentId={c.id} initialScore={c.vote_score} />
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
+                        {c.profiles?.username ? (
+                          <>
+                            <span>{t("entry.by")}</span>
+                            <UserHoverCard username={c.profiles.username}>
+                              <span className="text-foreground/80 hover:text-primary">@{c.profiles.username}</span>
+                            </UserHoverCard>
+                            <GenerationBadge generation={generationFromOrder(c.profiles.signup_order)} />
+                          </>
+                        ) : (
+                          <span>@unknown</span>
+                        )}
+                      </div>
+                      {!cDeleted && (
+                        <ContentActionsMenu
+                          canEdit={isOwner}
+                          canDelete={isOwner}
+                          canModerate={!isOwner && isModerator}
+                          onEdit={() => setEditingComment(c)}
+                          onDelete={() => deleteComment(c.id, false)}
+                          onModerate={() => deleteComment(c.id, true)}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
             {commentsQ.data?.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-6">{t("entry.noComments")}</p>
             )}
           </div>
         </div>
       </div>
+
+      {/* Dialogs */}
+      <EditEntryDialog
+        open={editEntryOpen}
+        onOpenChange={setEditEntryOpen}
+        entryId={entry.id}
+        initial={{ description: entry.description, rating: entry.rating, status: entry.status }}
+      />
+      {editingComment && (
+        <EditCommentDialog
+          open={!!editingComment}
+          onOpenChange={(v) => !v && setEditingComment(null)}
+          commentId={editingComment.id}
+          entryId={entry.id}
+          initialContent={editingComment.content}
+        />
+      )}
     </div>
   );
 };

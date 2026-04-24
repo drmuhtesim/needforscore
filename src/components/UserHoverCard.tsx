@@ -4,6 +4,8 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
+import GenerationBadge from "./GenerationBadge";
+import { generationFromOrder } from "@/lib/badges";
 
 interface Props {
   username: string;
@@ -15,6 +17,7 @@ interface MiniProfile {
   display_name: string | null;
   avatar_url: string | null;
   entry_count: number;
+  signup_order: number | null;
 }
 
 const cache = new Map<string, MiniProfile | null>();
@@ -32,7 +35,7 @@ const UserHoverCard = ({ username, children }: Props) => {
     (async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("user_id, username, display_name, avatar_url")
+        .select("user_id, username, display_name, avatar_url, signup_order")
         .eq("username", username)
         .maybeSingle();
       if (!data) {
@@ -43,12 +46,14 @@ const UserHoverCard = ({ username, children }: Props) => {
       const { count } = await supabase
         .from("entries")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", data.user_id);
+        .eq("user_id", data.user_id)
+        .is("deleted_at", null);
       const mini: MiniProfile = {
         username: data.username,
         display_name: data.display_name,
         avatar_url: data.avatar_url,
         entry_count: count ?? 0,
+        signup_order: (data as any).signup_order ?? null,
       };
       cache.set(username, mini);
       if (!cancelled) setProfile(mini);
@@ -79,7 +84,10 @@ const UserHoverCard = ({ username, children }: Props) => {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="font-mono text-sm text-foreground truncate">@{profile.username}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-mono text-sm text-foreground truncate">@{profile.username}</p>
+                <GenerationBadge generation={generationFromOrder(profile.signup_order)} />
+              </div>
               {profile.display_name && (
                 <p className="text-xs text-muted-foreground truncate">{profile.display_name}</p>
               )}

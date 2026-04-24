@@ -13,7 +13,9 @@ export interface EntryRow {
   rating: number;
   verified_target: boolean;
   created_at: string;
-  profiles?: { username: string; display_name: string | null; avatar_url: string | null } | null;
+  deleted_at?: string | null;
+  deleted_by?: string | null;
+  profiles?: { username: string; display_name: string | null; avatar_url: string | null; signup_order?: number | null } | null;
   vote_score?: number;
   comment_count?: number;
 }
@@ -25,6 +27,7 @@ export const useEntries = (category: CategoryType, search: string) => {
       let q = supabase
         .from("entries")
         .select("*")
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(100);
 
@@ -42,9 +45,9 @@ export const useEntries = (category: CategoryType, search: string) => {
       const ids = entries.map((e) => e.id);
 
       const [{ data: profiles }, { data: votes }, { data: comments }] = await Promise.all([
-        supabase.from("profiles").select("user_id, username, display_name, avatar_url").in("user_id", userIds),
+        supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").in("user_id", userIds),
         supabase.from("votes").select("entry_id, value").in("entry_id", ids),
-        supabase.from("comments").select("entry_id").in("entry_id", ids),
+        supabase.from("comments").select("entry_id").in("entry_id", ids).is("deleted_at", null),
       ]);
 
       const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
@@ -78,7 +81,7 @@ export const useEntry = (id: string | undefined) => {
       if (error) throw error;
       if (!data) return null;
       const [{ data: profile }, { data: votes }] = await Promise.all([
-        supabase.from("profiles").select("user_id, username, display_name, avatar_url").eq("user_id", data.user_id).maybeSingle(),
+        supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").eq("user_id", data.user_id).maybeSingle(),
         supabase.from("votes").select("value").eq("entry_id", id),
       ]);
       const score = (votes ?? []).reduce((acc, v) => acc + v.value, 0);

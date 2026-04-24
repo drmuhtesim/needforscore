@@ -145,5 +145,32 @@
     "label": "Language",
     "tr": "Turkish",
     "en": "English"
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme"
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "moderate": "Moderate",
+    "removeByMod": "Remove as moderator",
+    "confirmDelete": "Are you sure you want to delete?",
+    "confirmDeleteDesc": "This will hide the experience. Contact an admin to restore.",
+    "deletedSuccess": "Deleted",
+    "updatedSuccess": "Updated",
+    "moderatedSuccess": "Removed by moderator"
+  },
+  "moderation": {
+    "removed": "This content was removed by a moderator.",
+    "removedByOwner": "This content was deleted by its author."
+  },
+  "badges": {
+    "gen1": "Gen 1",
+    "gen2": "Gen 2",
+    "gen3": "Gen 3"
   }
 }

@@ -4,7 +4,9 @@ import { ShieldAlert, ShieldCheck, ShieldQuestion, MessageSquare, BadgeCheck, St
 import PlatformIcon from "./PlatformIcon";
 import UserHoverCard from "./UserHoverCard";
 import VoteButtons from "./VoteButtons";
+import GenerationBadge from "./GenerationBadge";
 import { formatTargetDisplay } from "@/lib/platforms";
+import { generationFromOrder } from "@/lib/badges";
 import type { EntryRow as EntryT } from "@/hooks/useEntries";
 
 interface Props {
@@ -55,11 +57,12 @@ const EntryRow = ({ entry, index }: Props) => {
             </div>
             <p className="text-xs text-muted-foreground mt-0.5 max-w-md truncate">{entry.description}</p>
             {username && (
-              <div className="text-xs text-muted-foreground/70 mt-1 font-mono" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center flex-wrap gap-1.5 text-xs text-muted-foreground/70 mt-1 font-mono" onClick={(e) => e.stopPropagation()}>
                 <UserHoverCard username={username}>
                   <span>@{username}</span>
                 </UserHoverCard>
-                <span className="mx-1.5">·</span>
+                <GenerationBadge generation={generationFromOrder(entry.profiles?.signup_order)} />
+                <span>·</span>
                 <span>{timeAgo(entry.created_at, t)}</span>
               </div>
             )}

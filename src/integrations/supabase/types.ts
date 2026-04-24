@@ -18,6 +18,8 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           entry_id: string
           id: string
           is_target_response: boolean
@@ -27,6 +29,8 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           entry_id: string
           id?: string
           is_target_response?: boolean
@@ -36,6 +40,8 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           entry_id?: string
           id?: string
           is_target_response?: boolean
@@ -56,6 +62,8 @@ export type Database = {
         Row: {
           category: Database["public"]["Enums"]["entry_category"]
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
           description: string
           id: string
           rating: number
@@ -69,6 +77,8 @@ export type Database = {
         Insert: {
           category: Database["public"]["Enums"]["entry_category"]
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           description: string
           id?: string
           rating: number
@@ -82,6 +92,8 @@ export type Database = {
         Update: {
           category?: Database["public"]["Enums"]["entry_category"]
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
           description?: string
           id?: string
           rating?: number
@@ -100,6 +112,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          signup_order: number
           updated_at: string
           user_id: string
           username: string
@@ -109,6 +122,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          signup_order?: number
           updated_at?: string
           user_id: string
           username: string
@@ -118,6 +132,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          signup_order?: number
           updated_at?: string
           user_id?: string
           username?: string
@@ -152,6 +167,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
       }
       votes: {
         Row: {
@@ -200,12 +236,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_entry_target: {
         Args: { _entry_id: string; _user_id: string }
         Returns: boolean
       }
+      is_mod_or_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       entry_category:
         | "instagram"
         | "tiktok"
@@ -341,6 +386,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       entry_category: [
         "instagram",
         "tiktok",

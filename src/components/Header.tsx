@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import AddEntryDialog from "./AddEntryDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -37,6 +38,7 @@ const Header = () => {
         <div className="flex items-center gap-2">
           <AddEntryDialog />
           <LanguageSwitcher />
+          <ThemeToggle />
 
           {user ? (
             <DropdownMenu>
