@@ -49,7 +49,7 @@ interface CommentRow {
   vote_score: number;
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 25;
 
 const platformLabel: Record<string, string> = {
   instagram: "Instagram",
@@ -231,6 +231,15 @@ const EntryDetail = () => {
 
         {/* Entry card — başlık */}
         <div className={`relative border rounded-xl p-6 bg-card ${entryDeleted ? "border-danger/40 bg-danger/5" : "border-border"}`}>
+          {/* Sağ üstte sadece deneyim sayısı (rakam) */}
+          {!entryDeleted && (
+            <span
+              className="absolute top-3 right-4 text-xs font-mono text-muted-foreground"
+              title={t("entry.comments") as string}
+            >
+              {activeComments.length}
+            </span>
+          )}
           {entryDeleted && (
             <div className="mb-4 text-xs font-mono text-danger uppercase tracking-wider">
               {t("moderation.removed")}
@@ -319,10 +328,10 @@ const EntryDetail = () => {
         </div>
 
         {/* Experiences section */}
-        <div className="mt-10">
-          <div className="flex items-center justify-between mb-4">
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              {t("entry.comments")} ({activeComments.length})
+              {t("entry.comments")}
             </h2>
           </div>
 
@@ -341,7 +350,7 @@ const EntryDetail = () => {
           ) : null}
 
           {/* Comment list */}
-          <div className="space-y-10">
+          <div className="space-y-3">
             {pagedComments.map((c) => {
               const isOwner = !!user && c.user_id === user.id;
               const cDeleted = !!c.deleted_at;
@@ -349,7 +358,7 @@ const EntryDetail = () => {
               return (
                 <article
                   key={c.id}
-                  className={`relative rounded-xl px-6 py-7 transition-colors ${
+                  className={`relative rounded-lg px-4 py-3 transition-colors ${
                     cDeleted
                       ? "border border-danger/30 bg-danger/5"
                       : c.is_target_response
@@ -385,7 +394,7 @@ const EntryDetail = () => {
                   )}
 
                   {/* Footer: votes left, author bottom-right, actions */}
-                  <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between gap-3">
+                  <div className="mt-3 pt-2 border-t border-border/40 flex items-center justify-between gap-3">
                     <VoteButtons commentId={c.id} initialScore={c.vote_score} />
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
