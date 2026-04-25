@@ -1,4 +1,4 @@
-import { Instagram, Twitter, Music2, Phone, Mail, Globe, Globe2 } from "lucide-react";
+import { Instagram, Twitter, Music2, Phone, Mail, Globe, Globe2, Eye } from "lucide-react";
 import type { CategoryType } from "./CategorySidebar";
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
 
 const meta: Record<CategoryType, { Icon: any; color: string; bg: string }> = {
   all: { Icon: Globe2, color: "text-muted-foreground", bg: "bg-muted/40" },
+  score: { Icon: Eye, color: "text-[hsl(285_85%_65%)]", bg: "bg-[hsl(285_85%_65%/0.14)]" },
   instagram: { Icon: Instagram, color: "text-[hsl(330_85%_60%)]", bg: "bg-[hsl(330_85%_60%/0.12)]" },
   tiktok: { Icon: Music2, color: "text-[hsl(180_85%_55%)]", bg: "bg-[hsl(180_85%_55%/0.12)]" },
   twitter: { Icon: Twitter, color: "text-[hsl(210_15%_85%)]", bg: "bg-[hsl(210_15%_85%/0.1)]" },

@@ -1,6 +1,7 @@
 import type { CategoryType } from "@/components/CategorySidebar";
 
 export const platformRegex: Record<Exclude<CategoryType, "all">, RegExp> = {
+  score: /^[a-z0-9_.]{3,30}$/i,
   instagram: /^[A-Za-z0-9._]{1,30}$/,
   tiktok: /^[A-Za-z0-9._]{2,24}$/,
   twitter: /^[A-Za-z0-9_]{1,15}$/,
@@ -30,6 +31,8 @@ export const validateTarget = (raw: string, category: Exclude<CategoryType, "all
 export const buildProfileUrl = (raw: string, category: Exclude<CategoryType, "all">): string | null => {
   const handle = cleanTarget(raw);
   switch (category) {
+    case "score":
+      return `/u/${handle.toLowerCase()}`;
     case "instagram":
       return `https://instagram.com/${handle}`;
     case "tiktok":
@@ -49,7 +52,7 @@ export const buildProfileUrl = (raw: string, category: Exclude<CategoryType, "al
 
 export const formatTargetDisplay = (raw: string, category: Exclude<CategoryType, "all">): string => {
   const cleaned = cleanTarget(raw);
-  if (category === "instagram" || category === "tiktok" || category === "twitter") {
+  if (category === "score" || category === "instagram" || category === "tiktok" || category === "twitter") {
     return `@${cleaned}`;
   }
   return raw;

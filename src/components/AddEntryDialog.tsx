@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
-import { ExternalLink, Plus, ShieldAlert, ShieldCheck, ShieldQuestion } from "lucide-react";
+import { ExternalLink, Plus } from "lucide-react";
 import { z } from "zod";
 import {
   Dialog,
@@ -24,10 +24,8 @@ import type { CategoryType } from "./CategorySidebar";
 import { buildProfileUrl, cleanTarget, normalizeTarget, validateTarget } from "@/lib/platforms";
 
 type Cat = Exclude<CategoryType, "all">;
-type Status = "safe" | "suspicious" | "danger";
 
-const categories: Cat[] = ["instagram", "tiktok", "twitter", "phone", "email", "website"];
-const statuses: Status[] = ["safe", "suspicious", "danger"];
+const categories: Cat[] = ["score", "instagram", "tiktok", "twitter", "phone", "email", "website"];
 
 interface AddEntryDialogProps {
   trigger?: React.ReactNode;
@@ -39,9 +37,8 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [category, setCategory] = useState<Cat>("instagram");
+  const [category, setCategory] = useState<Cat>("score");
   const [target, setTarget] = useState("");
-  const [status, setStatus] = useState<Status>("suspicious");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -58,12 +55,15 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const profileUrl = formatValid ? buildProfileUrl(target, category) : null;
 
   const reset = () => {
-    setCategory("instagram");
+    setCategory("score");
     setTarget("");
-    setStatus("suspicious");
     setRating(5);
     setDescription("");
   };
+
+  // Derive entry status from rating: <=3 danger, <=6 suspicious, else safe.
+  const deriveStatus = (r: number): "safe" | "suspicious" | "danger" =>
+    r <= 3 ? "danger" : r <= 6 ? "suspicious" : "safe";
 
   const submit = async () => {
     if (!user) return;
@@ -85,7 +85,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
         target: cleanTarget(target),
         target_normalized: normalizeTarget(target, category),
         category,
-        status,
+        status: deriveStatus(rating),
         description: description.trim(),
         rating,
       })
@@ -110,17 +110,14 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     if (data?.id) navigate(`/e/${data.id}`);
   };
 
-  const statusMeta = {
-    safe: { Icon: ShieldCheck, color: "text-safe", bg: "bg-safe/10 border-safe/40" },
-    suspicious: { Icon: ShieldQuestion, color: "text-suspicious", bg: "bg-suspicious/10 border-suspicious/40" },
-    danger: { Icon: ShieldAlert, color: "text-danger", bg: "bg-danger/10 border-danger/40" },
-  } as const;
-
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
         {trigger ?? (
-          <Button size="sm" className="gap-1.5">
+          <Button
+            size="sm"
+            className="gap-1.5 bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90"
+          >
             <Plus className="h-4 w-4" />
             {t("entry.add")}
           </Button>
@@ -133,23 +130,32 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Category */}
+          {/* Compact platform picker: just icons */}
           <div className="space-y-2">
-            <Label>{t("entry.category")}</Label>
-            <div className="grid grid-cols-3 gap-2">
-              {categories.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setCategory(c)}
-                  className={`flex items-center gap-2 px-2.5 py-2 rounded-md border text-xs transition-colors ${
-                    category === c ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground hover:bg-secondary"
-                  }`}
-                >
-                  <PlatformIcon category={c} className="h-3.5 w-3.5" />
-                  {t(`categories.${c}`)}
-                </button>
-              ))}
+            <div className="flex items-center justify-between">
+              <Label>{t("entry.category")}</Label>
+              <span className="text-xs font-mono text-muted-foreground">{t(`categories.${category}`)}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((c) => {
+                const active = category === c;
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setCategory(c)}
+                    aria-label={t(`categories.${c}`)}
+                    title={t(`categories.${c}`) as string}
+                    className={`h-10 w-10 inline-flex items-center justify-center rounded-md border transition-all ${
+                      active
+                        ? "border-primary bg-primary/10 ring-2 ring-primary/40"
+                        : "border-border hover:bg-secondary"
+                    }`}
+                  >
+                    <PlatformIcon category={c} className="h-4 w-4" />
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -168,7 +174,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
                 {formatValid ? (
                   <div className="flex items-center justify-between text-safe">
                     <span>✓ {t("entry.formatOk")}</span>
-                    {profileUrl && (
+                    {profileUrl && category !== "score" && (
                       <a
                         href={profileUrl}
                         target="_blank"
@@ -184,30 +190,6 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
                 )}
               </div>
             )}
-          </div>
-
-          {/* Status */}
-          <div className="space-y-2">
-            <Label>{t("entry.status")}</Label>
-            <div className="grid grid-cols-3 gap-2">
-              {statuses.map((s) => {
-                const m = statusMeta[s];
-                const active = status === s;
-                return (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setStatus(s)}
-                    className={`flex items-center justify-center gap-1.5 px-2 py-2 rounded-md border text-xs font-medium transition-all ${
-                      active ? `${m.bg} ${m.color}` : "border-border text-muted-foreground hover:bg-secondary"
-                    }`}
-                  >
-                    <m.Icon className="h-3.5 w-3.5" />
-                    {t(`status.${s}`)}
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           {/* Rating */}
@@ -227,7 +209,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
             />
           </div>
 
-          {/* Description */}
+          {/* Description — büyük alan */}
           <div className="space-y-2">
             <Label htmlFor="desc">{t("entry.description")}</Label>
             <Textarea
@@ -235,13 +217,18 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t("entry.descPlaceholder")}
-              rows={4}
+              rows={8}
               maxLength={2000}
+              className="min-h-[180px] resize-y"
             />
             <p className="text-xs text-muted-foreground text-right font-mono">{description.length}/2000</p>
           </div>
 
-          <Button onClick={submit} disabled={submitting || !formatValid || description.trim().length < 10} className="w-full">
+          <Button
+            onClick={submit}
+            disabled={submitting || !formatValid || description.trim().length < 10}
+            className="w-full bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90"
+          >
             {submitting ? t("entry.submitting") : t("entry.publish")}
           </Button>
         </div>

@@ -2,14 +2,14 @@ import { Globe2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PlatformIcon from "./PlatformIcon";
 
-export type CategoryType = "all" | "instagram" | "tiktok" | "twitter" | "phone" | "email" | "website";
+export type CategoryType = "all" | "score" | "instagram" | "tiktok" | "twitter" | "phone" | "email" | "website";
 
 interface CategorySidebarProps {
   active: CategoryType;
   onChange: (cat: CategoryType) => void;
 }
 
-const categories: CategoryType[] = ["all", "instagram", "tiktok", "twitter", "phone", "email", "website"];
+const categories: CategoryType[] = ["all", "score", "instagram", "tiktok", "twitter", "phone", "email", "website"];
 
 const CategorySidebar = ({ active, onChange }: CategorySidebarProps) => {
   const { t } = useTranslation();
