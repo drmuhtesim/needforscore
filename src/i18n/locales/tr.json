@@ -64,7 +64,6 @@
   },
   "table": {
     "target": "Hedef",
-    "status": "Durum",
     "reports": "Raporlar",
     "rating": "Puan",
     "votes": "Oylar",
@@ -72,11 +71,6 @@
     "risk": "Risk",
     "noResults": "Sonuç bulunamadı",
     "loading": "Yükleniyor..."
-  },
-  "status": {
-    "safe": "Güvenli",
-    "danger": "Tehlikeli",
-    "suspicious": "Şüpheli"
   },
   "stats": {
     "totalEntries": "Toplam Entry",

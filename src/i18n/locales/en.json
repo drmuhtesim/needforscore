@@ -68,7 +68,6 @@
   },
   "table": {
     "target": "Target",
-    "status": "Status",
     "reports": "Reports",
     "rating": "Rating",
     "votes": "Votes",
@@ -76,11 +75,6 @@
     "risk": "Risk",
     "noResults": "No results found",
     "loading": "Loading..."
-  },
-  "status": {
-    "safe": "Safe",
-    "danger": "Dangerous",
-    "suspicious": "Suspicious"
   },
   "stats": {
     "totalEntries": "Total Entries",
