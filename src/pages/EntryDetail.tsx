@@ -137,6 +137,17 @@ const EntryDetail = () => {
     })();
   }, [user, id]);
 
+  // Build media-by-comment map BEFORE any early return so hooks order is stable
+  const mediaByComment = useMemo(() => {
+    const m = new Map<string, MediaRow[]>();
+    (mediaQ.data ?? []).forEach((row) => {
+      const arr = m.get(row.comment_id) ?? [];
+      arr.push(row);
+      m.set(row.comment_id, arr);
+    });
+    return m;
+  }, [mediaQ.data]);
+
   if (isLoading) return (
     <div className="min-h-screen bg-background"><Header /><div className="p-8 text-muted-foreground text-sm">{t("table.loading")}</div></div>
   );
