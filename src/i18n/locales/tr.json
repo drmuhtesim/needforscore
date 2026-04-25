@@ -49,6 +49,7 @@
   "categories": {
     "title": "Kategoriler",
     "all": "Tümü",
+    "score": "Score kullanıcı",
     "instagram": "Instagram",
     "tiktok": "TikTok",
     "twitter": "X (Twitter)",
@@ -115,6 +116,7 @@
     "duplicateDesc": "Aynı sosyal medya kullanıcı adıyla birden fazla başlık açılamaz. Mevcut başlığa deneyim ekleyebilirsin.",
     "avgRatingTitle": "Yorum yapan kullanıcıların verdiği skorların ortalaması",
     "placeholder": {
+      "score": "score kullanıcı adı (örn. ahmet)",
       "instagram": "kullanıcı adı (örn. nikelab)",
       "tiktok": "kullanıcı adı (örn. tiktok)",
       "twitter": "kullanıcı adı (örn. elonmusk)",

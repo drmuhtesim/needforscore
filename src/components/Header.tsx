@@ -29,10 +29,10 @@ const Header = () => {
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
-        <Link to="/" className="flex items-center gap-2" aria-label="Score">
-          <img src={scoreLogo} alt="Score logo" className="h-8 w-8 rounded-md object-cover" />
-          <span className="text-lg font-bold tracking-tight">
-            Sc<span className="text-primary">ore</span>
+        <Link to="/" className="flex items-center gap-2" aria-label="needforscore.com">
+          <img src={scoreLogo} alt="needforscore.com logo" className="h-8 w-8 rounded-lg object-cover shadow-sm" />
+          <span className="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] bg-clip-text text-transparent">
+            needforscore.com
           </span>
         </Link>
 
@@ -79,13 +79,13 @@ const Header = () => {
             <>
               <Link
                 to="/auth?mode=signup"
-                className="hidden md:inline-flex px-4 py-2 border border-border text-foreground text-sm font-semibold rounded-md hover:bg-secondary transition-colors"
+                className="hidden md:inline-flex px-4 py-2 border border-[hsl(285_85%_60%/0.5)] text-[hsl(285_85%_70%)] text-sm font-semibold rounded-md hover:bg-[hsl(285_85%_60%/0.1)] transition-colors"
               >
                 {t("header.signUp")}
               </Link>
               <Link
                 to="/auth?mode=signin"
-                className="hidden md:inline-flex px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors"
+                className="hidden md:inline-flex px-4 py-2 bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white text-sm font-semibold rounded-md hover:opacity-90 transition-opacity shadow-sm"
               >
                 {t("header.signIn")}
               </Link>
@@ -114,10 +114,10 @@ const Header = () => {
             </>
           ) : (
             <>
-              <Link to="/auth?mode=signup" className="block w-full text-center px-4 py-2 border border-border text-foreground text-sm font-semibold rounded-md">
+              <Link to="/auth?mode=signup" className="block w-full text-center px-4 py-2 border border-[hsl(285_85%_60%/0.5)] text-[hsl(285_85%_70%)] text-sm font-semibold rounded-md">
                 {t("header.signUp")}
               </Link>
-              <Link to="/auth?mode=signin" className="block w-full text-center px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md">
+              <Link to="/auth?mode=signin" className="block w-full text-center px-4 py-2 bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white text-sm font-semibold rounded-md">
                 {t("header.signIn")}
               </Link>
             </>

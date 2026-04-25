@@ -365,6 +365,7 @@ export type Database = {
         | "phone"
         | "email"
         | "website"
+        | "score"
       entry_status: "safe" | "suspicious" | "danger"
       media_status: "pending" | "approved" | "rejected"
     }
@@ -502,6 +503,7 @@ export const Constants = {
         "phone",
         "email",
         "website",
+        "score",
       ],
       entry_status: ["safe", "suspicious", "danger"],
       media_status: ["pending", "approved", "rejected"],

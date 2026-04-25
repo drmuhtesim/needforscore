@@ -53,6 +53,7 @@
   "categories": {
     "title": "Categories",
     "all": "All",
+    "score": "Score user",
     "instagram": "Instagram",
     "tiktok": "TikTok",
     "twitter": "X (Twitter)",
@@ -119,6 +120,7 @@
     "duplicateDesc": "You can't open multiple entries for the same social media handle. Add your experience to the existing entry instead.",
     "avgRatingTitle": "Average of scores given by commenters",
     "placeholder": {
+      "score": "score username (e.g. ahmet)",
       "instagram": "username (e.g. nikelab)",
       "tiktok": "username (e.g. tiktok)",
       "twitter": "handle (e.g. elonmusk)",
