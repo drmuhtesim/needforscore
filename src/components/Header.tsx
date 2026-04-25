@@ -29,10 +29,10 @@ const Header = () => {
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
-        <Link to="/" className="flex items-center gap-2" aria-label="Score">
-          <img src={scoreLogo} alt="Score logo" className="h-8 w-8 rounded-md object-cover" />
-          <span className="text-lg font-bold tracking-tight">
-            Sc<span className="text-primary">ore</span>
+        <Link to="/" className="flex items-center gap-2" aria-label="needforscore.com">
+          <img src={scoreLogo} alt="needforscore.com logo" className="h-8 w-8 rounded-lg object-cover shadow-sm" />
+          <span className="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] bg-clip-text text-transparent">
+            needforscore.com
           </span>
         </Link>
 
