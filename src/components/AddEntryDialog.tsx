@@ -119,10 +119,12 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-1.5">
-          <Plus className="h-4 w-4" />
-          {t("entry.add")}
-        </Button>
+        {trigger ?? (
+          <Button size="sm" className="gap-1.5">
+            <Plus className="h-4 w-4" />
+            {t("entry.add")}
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
