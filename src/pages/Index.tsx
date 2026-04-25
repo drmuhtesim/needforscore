@@ -19,22 +19,12 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      {/* Ticker Bar */}
-      <div className="border-b border-border bg-card/30 overflow-hidden">
-        <div className="flex items-center gap-6 px-4 py-2 text-xs animate-marquee whitespace-nowrap">
-          <span className="text-danger">⚠️ {t("ticker.bankFraud")}</span>
-          <span className="text-muted-foreground">•</span>
-          <span className="text-safe">✅ {t("ticker.safeApproved")}</span>
-          <span className="text-muted-foreground">•</span>
-          <span className="text-danger">🚨 {t("ticker.phishing")}</span>
-          <span className="text-muted-foreground">•</span>
-          <span className="text-suspicious">⚡ {t("ticker.suspicious")}</span>
-        </div>
-      </div>
-
-      {/* Hero Search */}
-      <div className="px-4 py-10 lg:py-14 border-b border-border">
-        <div className="max-w-3xl mx-auto text-center space-y-5">
+      {/* Hero — motto + search */}
+      <div className="px-4 py-12 lg:py-16 border-b border-border">
+        <div className="max-w-3xl mx-auto text-center space-y-6">
+          <h1 className="font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl text-foreground">
+            Check the score. <span className="text-primary">Trust the story.</span>
+          </h1>
           <SearchBar onSearch={setSearchQuery} />
         </div>
       </div>
