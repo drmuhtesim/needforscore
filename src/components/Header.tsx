@@ -38,6 +38,15 @@ const Header = () => {
 
         <div className="flex items-center gap-2">
           <AddEntryDialog />
+          {user && (
+            <Link
+              to="/messages"
+              aria-label={t("messages.title") as string}
+              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <MessageSquare className="h-4 w-4" />
+            </Link>
+          )}
           <LanguageSwitcher />
           <ThemeToggle />
 
