@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import CategorySidebar, { type CategoryType } from "@/components/CategorySidebar";
 import ReportTable from "@/components/ReportTable";
+import MobileBottomBar from "@/components/MobileBottomBar";
 import { TrendingUp, Clock } from "lucide-react";
 
 const Index = () => {
