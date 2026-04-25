@@ -147,8 +147,6 @@ const EntryDetail = () => {
     <div className="min-h-screen bg-background"><Header /><div className="p-8 text-muted-foreground text-sm">{t("table.noResults")}</div></div>
   );
 
-  const status = statusMeta[entry.status];
-  const StatusIcon = status.Icon;
   const profileUrl = buildProfileUrl(entry.target, entry.category);
   const targetUsername = cleanTarget(entry.target).toLowerCase();
   const myUsername = profile?.username?.toLowerCase();
@@ -270,11 +268,8 @@ const EntryDetail = () => {
                 </div>
               </div>
 
-              {/* Status + rating */}
+              {/* Rating only */}
               <div className="flex flex-wrap items-center gap-3 mt-3">
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.color}`}>
-                  <StatusIcon className="h-3.5 w-3.5" /> {t(`status.${entry.status}`)}
-                </span>
                 <span className="inline-flex items-center gap-1 text-xs font-mono text-suspicious" title={t("entry.avgRatingTitle")}>
                   <Star className="h-3.5 w-3.5 fill-current" />
                   {entry.avg_rating != null ? `${entry.avg_rating.toFixed(1)}/10` : "—"}
@@ -430,7 +425,7 @@ const EntryDetail = () => {
         open={editEntryOpen}
         onOpenChange={setEditEntryOpen}
         entryId={entry.id}
-        initial={{ description: entry.description, rating: entry.rating, status: entry.status }}
+        initial={{ description: entry.description, rating: entry.rating }}
       />
       {editingComment && (
         <EditCommentDialog
