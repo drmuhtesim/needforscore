@@ -20,6 +20,8 @@ const statusMeta = {
 const UserProfile = () => {
   const { username } = useParams();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile", username],
@@ -83,6 +85,17 @@ const UserProfile = () => {
               <span>{t("profile.joined")} {new Date(profile.created_at).toLocaleDateString()}</span>
             </div>
           </div>
+          {user && user.id !== profile.user_id && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => navigate(`/messages?to=${profile.username}`)}
+              className="gap-1.5"
+            >
+              <MessageSquare className="h-4 w-4" />
+              {t("messages.sendTo")}
+            </Button>
+          )}
         </div>
 
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mt-6 mb-3">
