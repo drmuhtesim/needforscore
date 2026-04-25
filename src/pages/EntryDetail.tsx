@@ -1,8 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, BadgeCheck, ExternalLink, ShieldAlert, ShieldCheck, ShieldQuestion, Star } from "lucide-react";
+import {
+  ArrowLeft,
+  BadgeCheck,
+  ExternalLink,
+  ShieldAlert,
+  ShieldCheck,
+  ShieldQuestion,
+  Star,
+} from "lucide-react";
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import UserHoverCard from "@/components/UserHoverCard";
@@ -11,8 +19,10 @@ import ContentActionsMenu from "@/components/ContentActionsMenu";
 import EditEntryDialog from "@/components/EditEntryDialog";
 import EditCommentDialog from "@/components/EditCommentDialog";
 import GenerationBadge from "@/components/GenerationBadge";
+import CommentForm from "@/components/CommentForm";
+import CommentMediaGallery, { type MediaRow } from "@/components/comment-media/CommentMediaGallery";
+import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useEntry } from "@/hooks/useEntries";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,6 +49,17 @@ interface CommentRow {
   vote_score: number;
 }
 
+const PAGE_SIZE = 10;
+
+const platformLabel: Record<string, string> = {
+  instagram: "Instagram",
+  tiktok: "TikTok",
+  twitter: "X (Twitter)",
+  phone: "Telefon",
+  email: "E-posta",
+  website: "Web sitesi",
+};
+
 const EntryDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,12 +68,11 @@ const EntryDetail = () => {
   const { isModerator } = useUserRoles();
   const qc = useQueryClient();
   const { data: entry, isLoading } = useEntry(id);
-  const [comment, setComment] = useState("");
-  const [posting, setPosting] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [iVerified, setIVerified] = useState(false);
   const [editEntryOpen, setEditEntryOpen] = useState(false);
   const [editingComment, setEditingComment] = useState<CommentRow | null>(null);
+  const [page, setPage] = useState(1);
 
   const commentsQ = useQuery({
     queryKey: ["comments", id],
@@ -82,6 +102,21 @@ const EntryDetail = () => {
         profiles: (pm.get(r.user_id) as any) ?? null,
         vote_score: vm.get(r.id) ?? 0,
       }));
+    },
+  });
+
+  // Fetch all media for visible comments at once
+  const mediaQ = useQuery({
+    queryKey: ["comment-media", id, commentsQ.data?.map((c) => c.id).join("|")],
+    enabled: !!id && (commentsQ.data?.length ?? 0) > 0,
+    queryFn: async (): Promise<MediaRow[]> => {
+      const ids = (commentsQ.data ?? []).map((c) => c.id);
+      if (ids.length === 0) return [];
+      const { data } = await supabase
+        .from("comment_media")
+        .select("id, comment_id, user_id, storage_path, status")
+        .in("comment_id", ids);
+      return (data ?? []) as MediaRow[];
     },
   });
 
@@ -139,30 +174,7 @@ const EntryDetail = () => {
     qc.invalidateQueries({ queryKey: ["entry", id] });
   };
 
-  const submitComment = async (asTarget: boolean) => {
-    if (!user || !id) return;
-    const text = comment.trim();
-    if (text.length < 1 || text.length > 2000) {
-      toast({ title: t("entry.invalidInput"), variant: "destructive" });
-      return;
-    }
-    setPosting(true);
-    const { error } = await supabase.from("comments").insert({
-      entry_id: id,
-      user_id: user.id,
-      content: text,
-      is_target_response: asTarget,
-    });
-    setPosting(false);
-    if (error) {
-      toast({ title: t("entry.failed"), description: error.message, variant: "destructive" });
-      return;
-    }
-    setComment("");
-    qc.invalidateQueries({ queryKey: ["comments", id] });
-  };
-
-  const deleteEntry = async (asMod: boolean) => {
+  const moderateEntry = async () => {
     if (!user || !id) return;
     const { error } = await supabase
       .from("entries")
@@ -172,7 +184,7 @@ const EntryDetail = () => {
       toast({ title: t("entry.failed"), description: error.message, variant: "destructive" });
       return;
     }
-    toast({ title: asMod ? t("actions.moderatedSuccess") : t("actions.deletedSuccess") });
+    toast({ title: t("actions.moderatedSuccess") });
     qc.invalidateQueries({ queryKey: ["entries"] });
     navigate("/", { replace: true });
   };
@@ -191,6 +203,22 @@ const EntryDetail = () => {
     qc.invalidateQueries({ queryKey: ["comments", id] });
   };
 
+  const allComments = commentsQ.data ?? [];
+  const activeComments = allComments.filter((c) => !c.deleted_at);
+  const myActiveCount = user ? activeComments.filter((c) => c.user_id === user.id).length : 0;
+  const remaining = Math.max(0, 2 - myActiveCount);
+  const pageCount = Math.max(1, Math.ceil(allComments.length / PAGE_SIZE));
+  const pagedComments = allComments.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const mediaByComment = useMemo(() => {
+    const m = new Map<string, MediaRow[]>();
+    (mediaQ.data ?? []).forEach((row) => {
+      const arr = m.get(row.comment_id) ?? [];
+      arr.push(row);
+      m.set(row.comment_id, arr);
+    });
+    return m;
+  }, [mediaQ.data]);
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -199,19 +227,19 @@ const EntryDetail = () => {
           <ArrowLeft className="h-4 w-4" /> {t("entry.backToList")}
         </Link>
 
-        {/* Entry card */}
-        <div className={`relative border rounded-lg p-5 bg-card ${entryDeleted ? "border-danger/40 bg-danger/5" : "border-border"}`}>
+        {/* Entry card — başlık */}
+        <div className={`relative border rounded-xl p-6 bg-card ${entryDeleted ? "border-danger/40 bg-danger/5" : "border-border"}`}>
           {entryDeleted && (
             <div className="mb-4 text-xs font-mono text-danger uppercase tracking-wider">
-              {entry.deleted_by === entry.user_id ? t("moderation.removedByOwner") : t("moderation.removed")}
+              {t("moderation.removed")}
             </div>
           )}
           <div className="flex items-start gap-4">
-            <PlatformIcon category={entry.category} className="h-6 w-6" withBg />
+            <PlatformIcon category={entry.category} className="h-7 w-7" withBg />
             <div className="flex-1 min-w-0">
               {/* Title row */}
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-mono text-xl text-foreground break-all">
+                <h1 className="font-mono text-2xl text-foreground break-all">
                   {formatTargetDisplay(entry.target, entry.category)}
                 </h1>
                 {entry.verified_target && (
@@ -219,16 +247,29 @@ const EntryDetail = () => {
                     <BadgeCheck className="h-3.5 w-3.5" /> {t("entry.verifiedTarget")}
                   </span>
                 )}
-                {profileUrl && (
-                  <a href={profileUrl} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary">
-                    {t("entry.openProfile")} <ExternalLink className="h-3 w-3" />
-                  </a>
-                )}
+              </div>
+
+              {/* Profile meta block under the title — platform + link */}
+              <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground/70">
+                    {platformLabel[entry.category] ?? entry.category}
+                  </span>
+                  {profileUrl && (
+                    <a
+                      href={profileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                    >
+                      {t("entry.openProfile")} <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
+                </div>
               </div>
 
               {/* Status + rating */}
-              <div className="flex flex-wrap items-center gap-3 mt-2">
+              <div className="flex flex-wrap items-center gap-3 mt-3">
                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.color}`}>
                   <StatusIcon className="h-3.5 w-3.5" /> {t(`status.${entry.status}`)}
                 </span>
@@ -237,14 +278,8 @@ const EntryDetail = () => {
                 </span>
               </div>
 
-              {/* Experience / description as its own paragraph block */}
-              <div className="mt-6 pt-5 border-t border-border/60">
-                <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap">
-                  {entry.description}
-                </p>
-              </div>
-
-              {/* Bottom: author on the left, actions on the right */}
+              {/* Bottom: opener author left, actions right.
+                  Note: opener can edit but CANNOT delete the entry. Only moderators can. */}
               <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
                   {entry.profiles?.username ? (
@@ -268,11 +303,10 @@ const EntryDetail = () => {
                   {!entryDeleted && (
                     <ContentActionsMenu
                       canEdit={isEntryOwner}
-                      canDelete={isEntryOwner}
-                      canModerate={!isEntryOwner && isModerator}
+                      canDelete={false}
+                      canModerate={isModerator}
                       onEdit={() => setEditEntryOpen(true)}
-                      onDelete={() => deleteEntry(false)}
-                      onModerate={() => deleteEntry(true)}
+                      onModerate={moderateEntry}
                     />
                   )}
                 </div>
@@ -281,37 +315,21 @@ const EntryDetail = () => {
           </div>
         </div>
 
-        {/* Comments */}
-        <div className="mt-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-            {t("entry.comments")} ({commentsQ.data?.filter((c) => !c.deleted_at).length ?? 0})
-          </h2>
+        {/* Experiences section */}
+        <div className="mt-10">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("entry.comments")} ({activeComments.length})
+            </h2>
+          </div>
 
-          {/* Comment form */}
+          {/* Comment / experience form */}
           {user && !entryDeleted ? (
-            <div className="space-y-2 mb-5">
-              <Textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder={t("entry.commentPlaceholder")}
-                rows={3}
-                maxLength={2000}
-              />
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-xs text-muted-foreground font-mono">{comment.length}/2000</p>
-                <div className="flex items-center gap-2">
-                  {iVerified && (
-                    <Button size="sm" variant="outline" onClick={() => submitComment(true)} disabled={posting || !comment.trim()}>
-                      <BadgeCheck className="h-3.5 w-3.5 mr-1 text-primary" />
-                      {t("entry.replyAsTarget")}
-                    </Button>
-                  )}
-                  <Button size="sm" onClick={() => submitComment(false)} disabled={posting || !comment.trim()}>
-                    {posting ? "..." : t("entry.postComment")}
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <CommentForm
+              entryId={entry.id}
+              canReplyAsTarget={iVerified}
+              remaining={remaining}
+            />
           ) : !user ? (
             <div className="border border-border rounded-md p-4 mb-5 text-sm text-muted-foreground">
               <Link to="/auth?mode=signin" className="text-primary hover:underline">{t("header.signIn")}</Link>{" "}
@@ -321,9 +339,10 @@ const EntryDetail = () => {
 
           {/* Comment list */}
           <div className="space-y-10">
-            {(commentsQ.data ?? []).map((c) => {
+            {pagedComments.map((c) => {
               const isOwner = !!user && c.user_id === user.id;
               const cDeleted = !!c.deleted_at;
+              const media = mediaByComment.get(c.id) ?? [];
               return (
                 <article
                   key={c.id}
@@ -350,6 +369,16 @@ const EntryDetail = () => {
                     <p className="text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap">
                       {c.content}
                     </p>
+                  )}
+
+                  {/* Media gallery */}
+                  {!cDeleted && (
+                    <CommentMediaGallery
+                      media={media}
+                      isOwner={isOwner}
+                      isModerator={isModerator}
+                      commentId={c.id}
+                    />
                   )}
 
                   {/* Footer: votes left, author bottom-right, actions */}
@@ -384,10 +413,12 @@ const EntryDetail = () => {
                 </article>
               );
             })}
-            {commentsQ.data?.length === 0 && (
+            {allComments.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-6">{t("entry.noComments")}</p>
             )}
           </div>
+
+          <Pagination page={page} pageCount={pageCount} onChange={setPage} />
         </div>
       </div>
 
