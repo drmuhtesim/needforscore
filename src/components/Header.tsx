@@ -37,7 +37,19 @@ const Header = () => {
         </Link>
 
         <div className="flex items-center gap-2">
-          <AddEntryDialog />
+          {/* Desktop: Add experience button. Mobile uses bottom bar to avoid overlap with brand. */}
+          <div className="hidden md:inline-flex">
+            <AddEntryDialog />
+          </div>
+          {/* Mobile: Sign up shortcut when logged out (replaces add-experience overlap) */}
+          {!user && (
+            <Link
+              to="/auth?mode=signup"
+              className="md:hidden inline-flex px-3 py-1.5 text-xs font-semibold rounded-md border border-[hsl(285_85%_60%/0.5)] text-[hsl(285_85%_70%)]"
+            >
+              {t("header.signUp")}
+            </Link>
+          )}
           {user && (
             <Link
               to="/messages"

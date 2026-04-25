@@ -11,7 +11,7 @@ interface ReportTableProps {
   searchQuery: string;
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 25;
 
 const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
   const { t } = useTranslation();
