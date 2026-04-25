@@ -64,7 +64,6 @@
   },
   "table": {
     "target": "Hedef",
-    "status": "Durum",
     "reports": "Raporlar",
     "rating": "Puan",
     "votes": "Oylar",
@@ -72,11 +71,6 @@
     "risk": "Risk",
     "noResults": "Sonuç bulunamadı",
     "loading": "Yükleniyor..."
-  },
-  "status": {
-    "safe": "Güvenli",
-    "danger": "Tehlikeli",
-    "suspicious": "Şüpheli"
   },
   "stats": {
     "totalEntries": "Toplam Entry",
@@ -99,7 +93,6 @@
     "addDesc": "Deneyimini paylaş. Yayınlamadan önce format kontrol edilecek.",
     "category": "Kategori",
     "target": "Hedef (kullanıcı adı, telefon, e-posta veya site)",
-    "status": "Karar",
     "rating": "Güven puanı (1-10)",
     "description": "Açıklama",
     "descPlaceholder": "Deneyimini detaylı anlat (en az 10 karakter)...",

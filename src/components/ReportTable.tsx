@@ -35,7 +35,6 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
         <thead>
           <tr className="border-b border-border text-xs text-muted-foreground uppercase tracking-wider">
             <th className="text-left py-3 px-4 font-semibold">{t("table.target")}</th>
-            <th className="text-left py-3 px-4 font-semibold">{t("table.status")}</th>
             <th className="text-center py-3 px-4 font-semibold hidden sm:table-cell">{t("table.rating")}</th>
             <th className="text-center py-3 px-4 font-semibold hidden md:table-cell">{t("table.votes")}</th>
             <th className="text-center py-3 px-4 font-semibold hidden md:table-cell">{t("table.comments")}</th>

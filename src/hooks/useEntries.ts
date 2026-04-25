@@ -9,7 +9,6 @@ export interface EntryRow {
   target: string;
   target_normalized: string;
   category: Exclude<CategoryType, "all">;
-  status: "safe" | "suspicious" | "danger";
   description: string;
   rating: number;
   verified_target: boolean;
