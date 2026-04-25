@@ -275,8 +275,9 @@ const EntryDetail = () => {
                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.color}`}>
                   <StatusIcon className="h-3.5 w-3.5" /> {t(`status.${entry.status}`)}
                 </span>
-                <span className="inline-flex items-center gap-1 text-xs font-mono text-suspicious">
-                  <Star className="h-3.5 w-3.5 fill-current" /> {entry.rating}/10
+                <span className="inline-flex items-center gap-1 text-xs font-mono text-suspicious" title={t("entry.avgRatingTitle")}>
+                  <Star className="h-3.5 w-3.5 fill-current" />
+                  {entry.avg_rating != null ? `${entry.avg_rating.toFixed(1)}/10` : "—"}
                 </span>
               </div>
 

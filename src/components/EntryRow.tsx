@@ -78,7 +78,7 @@ const EntryRow = ({ entry, index }: Props) => {
       <td className="py-3 px-4 text-center hidden sm:table-cell">
         <span className="inline-flex items-center gap-1 text-xs font-mono text-suspicious">
           <Star className="h-3.5 w-3.5 fill-current" />
-          {entry.rating}/10
+          {entry.avg_rating != null ? `${entry.avg_rating.toFixed(1)}/10` : "—"}
         </span>
       </td>
       <td className="py-3 px-4 text-center hidden md:table-cell">
