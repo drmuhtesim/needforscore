@@ -61,10 +61,6 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     setDescription("");
   };
 
-  // Derive entry status from rating: <=3 danger, <=6 suspicious, else safe.
-  const deriveStatus = (r: number): "safe" | "suspicious" | "danger" =>
-    r <= 3 ? "danger" : r <= 6 ? "suspicious" : "safe";
-
   const submit = async () => {
     if (!user) return;
     const schema = z.object({
