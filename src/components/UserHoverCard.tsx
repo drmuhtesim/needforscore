@@ -15,6 +15,7 @@ interface Props {
 }
 
 interface MiniProfile {
+  user_id: string;
   username: string;
   display_name: string | null;
   avatar_url: string | null;
@@ -26,6 +27,8 @@ const cache = new Map<string, MiniProfile | null>();
 
 const UserHoverCard = ({ username, children }: Props) => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<MiniProfile | null | undefined>(cache.get(username));
 
   useEffect(() => {
@@ -51,6 +54,7 @@ const UserHoverCard = ({ username, children }: Props) => {
         .eq("user_id", data.user_id)
         .is("deleted_at", null);
       const mini: MiniProfile = {
+        user_id: data.user_id,
         username: data.username,
         display_name: data.display_name,
         avatar_url: data.avatar_url,
