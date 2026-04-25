@@ -16,7 +16,8 @@ const CategorySidebar = ({ active, onChange }: CategorySidebarProps) => {
 
   return (
     <aside className="w-56 flex-shrink-0 border-r border-border bg-card/50 hidden lg:block">
-      <div className="p-4">
+      {/* sticky: header (h-14 = 3.5rem) altında sabit, kendi içinde gerekirse scroll yapar */}
+      <div className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto p-4">
         <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
           {t("categories.title")}
         </h3>

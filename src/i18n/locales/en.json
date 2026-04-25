@@ -7,7 +7,14 @@
     "addReport": "Add Experience",
     "api": "API",
     "about": "About",
-    "myProfile": "My Profile"
+    "myProfile": "My Profile",
+    "mobileNav": "Bottom nav"
+  },
+  "nav": {
+    "home": "Home",
+    "messages": "Messages",
+    "notifications": "Alerts",
+    "profile": "Profile"
   },
   "auth": {
     "signInTitle": "Welcome back",
