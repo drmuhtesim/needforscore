@@ -135,7 +135,7 @@ export type Database = {
           description: string
           id: string
           rating: number
-          status: Database["public"]["Enums"]["entry_status"]
+          status: Database["public"]["Enums"]["entry_status"] | null
           target: string
           target_normalized: string
           updated_at: string
@@ -150,7 +150,7 @@ export type Database = {
           description: string
           id?: string
           rating: number
-          status: Database["public"]["Enums"]["entry_status"]
+          status?: Database["public"]["Enums"]["entry_status"] | null
           target: string
           target_normalized: string
           updated_at?: string
@@ -165,7 +165,7 @@ export type Database = {
           description?: string
           id?: string
           rating?: number
-          status?: Database["public"]["Enums"]["entry_status"]
+          status?: Database["public"]["Enums"]["entry_status"] | null
           target?: string
           target_normalized?: string
           updated_at?: string
