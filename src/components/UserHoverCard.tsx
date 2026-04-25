@@ -1,11 +1,13 @@
 import { useEffect, useState, ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/AuthContext";
 import GenerationBadge from "./GenerationBadge";
 import { generationFromOrder } from "@/lib/badges";
+import { MessageSquare } from "lucide-react";
 
 interface Props {
   username: string;
