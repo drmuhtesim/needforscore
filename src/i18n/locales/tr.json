@@ -201,5 +201,18 @@
     "gen1": "1. Nesil",
     "gen2": "2. Nesil",
     "gen3": "3. Nesil"
+  },
+  "messages": {
+    "title": "Mesajlar",
+    "empty": "Henüz mesajın yok",
+    "placeholder": "Bir mesaj yaz...",
+    "send": "Gönder",
+    "sendTo": "Mesaj gönder",
+    "selectConversation": "Bir sohbet seç",
+    "you": "Sen",
+    "loginRequired": "Mesaj göndermek için giriş yap",
+    "cannotMessageSelf": "Kendine mesaj gönderemezsin",
+    "newMessage": "Yeni mesaj",
+    "noMessages": "Henüz mesaj yok. İlk mesajı sen yaz."
   }
 }

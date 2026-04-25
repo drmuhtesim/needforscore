@@ -1,4 +1,4 @@
-import { Shield, Menu, X, LogOut, User as UserIcon } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import AddEntryDialog from "./AddEntryDialog";
 import { useAuth } from "@/contexts/AuthContext";
+import scoreLogo from "@/assets/score-logo.jpeg";
 import {
   DropdownMenu,
   DropdownMenuContent,
