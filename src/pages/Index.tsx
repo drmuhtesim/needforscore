@@ -19,10 +19,10 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      {/* Hero — motto + search */}
-      <div className="py-12 border-b border-border px-[8px] lg:py-[16px]">
-        <div className="max-w-3xl mx-auto text-center space-y-6">
-          <h1 className="font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl text-foreground">
+      {/* Hero — motto + search (kompakt) */}
+      <div className="border-b border-border px-3 py-4 lg:py-5">
+        <div className="max-w-3xl mx-auto text-center space-y-3">
+          <h1 className="font-semibold tracking-tight text-base sm:text-lg text-muted-foreground">
             {t("ticker.motto")}
           </h1>
           <SearchBar onSearch={setSearchQuery} />
