@@ -17,7 +17,7 @@ const Index = () => {
   const timeFilters = Array.isArray(tfRaw) ? (tfRaw as string[]) : ["5m", "1h", "6h", "24h", "7d", "30d"];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-14 lg:pb-0">
       <Header />
 
       {/* Hero — motto + search (kompakt) */}
@@ -67,6 +67,7 @@ const Index = () => {
           <ReportTable category={category} searchQuery={searchQuery} />
         </main>
       </div>
+      <MobileBottomBar />
     </div>
   );
 };

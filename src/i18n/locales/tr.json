@@ -7,7 +7,14 @@
     "addReport": "Deneyim Ekle",
     "api": "API",
     "about": "Hakkında",
-    "myProfile": "Profilim"
+    "myProfile": "Profilim",
+    "mobileNav": "Alt menü"
+  },
+  "nav": {
+    "home": "Ana sayfa",
+    "messages": "Mesajlar",
+    "notifications": "Bildirim",
+    "profile": "Profil"
   },
   "auth": {
     "signInTitle": "Tekrar hoş geldin",
