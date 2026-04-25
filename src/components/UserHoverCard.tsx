@@ -100,12 +100,27 @@ const UserHoverCard = ({ username, children }: Props) => {
               <p className="text-xs text-muted-foreground mt-1">
                 <span className="font-mono text-foreground">{profile.entry_count}</span> {t("profile.entries")}
               </p>
-              <Link
-                to={`/u/${profile.username}`}
-                className="inline-block mt-2 text-xs text-primary hover:underline"
-              >
-                {t("profile.viewProfile")} →
-              </Link>
+              <div className="mt-2 flex items-center gap-3">
+                <Link
+                  to={`/u/${profile.username}`}
+                  className="text-xs text-primary hover:underline"
+                >
+                  {t("profile.viewProfile")} →
+                </Link>
+                {user && user.id !== profile.user_id && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/messages?to=${profile.username}`);
+                    }}
+                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <MessageSquare className="h-3 w-3" />
+                    {t("messages.sendTo")}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
