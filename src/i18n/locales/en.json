@@ -108,6 +108,9 @@
     "checkFields": "Please check the fields and try again.",
     "failed": "Failed",
     "created": "Entry published",
+    "duplicateTitle": "An entry already exists for this user",
+    "duplicateDesc": "You can't open multiple entries for the same social media handle. Add your experience to the existing entry instead.",
+    "avgRatingTitle": "Average of scores given by commenters",
     "placeholder": {
       "instagram": "username (e.g. nikelab)",
       "tiktok": "username (e.g. tiktok)",

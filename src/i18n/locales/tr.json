@@ -104,6 +104,9 @@
     "checkFields": "Lütfen alanları kontrol edip tekrar dene.",
     "failed": "Başarısız",
     "created": "Entry yayınlandı",
+    "duplicateTitle": "Bu kullanıcı için zaten bir başlık var",
+    "duplicateDesc": "Aynı sosyal medya kullanıcı adıyla birden fazla başlık açılamaz. Mevcut başlığa deneyim ekleyebilirsin.",
+    "avgRatingTitle": "Yorum yapan kullanıcıların verdiği skorların ortalaması",
     "placeholder": {
       "instagram": "kullanıcı adı (örn. nikelab)",
       "tiktok": "kullanıcı adı (örn. tiktok)",

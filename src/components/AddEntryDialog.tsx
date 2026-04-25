@@ -89,7 +89,14 @@ const AddEntryDialog = () => {
       .single();
     setSubmitting(false);
     if (error) {
-      toast({ title: t("entry.failed"), description: error.message, variant: "destructive" });
+      const isDuplicate =
+        (error as any)?.code === "23505" ||
+        /duplicate key|unique constraint|entries_target_normalized_unique_active/i.test(error.message ?? "");
+      toast({
+        title: isDuplicate ? t("entry.duplicateTitle") : t("entry.failed"),
+        description: isDuplicate ? t("entry.duplicateDesc") : error.message,
+        variant: "destructive",
+      });
       return;
     }
     toast({ title: t("entry.created") });
