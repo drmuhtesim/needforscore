@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      comment_media: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          moderator_id: string | null
+          moderator_note: string | null
+          status: Database["public"]["Enums"]["media_status"]
+          storage_path: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          moderator_id?: string | null
+          moderator_note?: string | null
+          status?: Database["public"]["Enums"]["media_status"]
+          storage_path: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          moderator_id?: string | null
+          moderator_note?: string | null
+          status?: Database["public"]["Enums"]["media_status"]
+          storage_path?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comment_media_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           content: string
@@ -259,6 +303,7 @@ export type Database = {
         | "email"
         | "website"
       entry_status: "safe" | "suspicious" | "danger"
+      media_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -396,6 +441,7 @@ export const Constants = {
         "website",
       ],
       entry_status: ["safe", "suspicious", "danger"],
+      media_status: ["pending", "approved", "rejected"],
     },
   },
 } as const
