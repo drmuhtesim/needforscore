@@ -20,7 +20,7 @@ const Index = () => {
       <Header />
 
       {/* Hero — motto + search */}
-      <div className="px-4 py-12 lg:py-16 border-b border-border">
+      <div className="py-12 border-b border-border px-[8px] lg:py-[16px]">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           <h1 className="font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl text-foreground">
             {t("ticker.motto")}
