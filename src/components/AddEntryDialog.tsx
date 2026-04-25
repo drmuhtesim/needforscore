@@ -85,7 +85,6 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
         target: cleanTarget(target),
         target_normalized: normalizeTarget(target, category),
         category,
-        status: deriveStatus(rating),
         description: description.trim(),
         rating,
       })
