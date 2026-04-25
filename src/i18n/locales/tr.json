@@ -33,10 +33,7 @@
     "backHome": "Anasayfaya dön"
   },
   "ticker": {
-    "bankFraud": "05XX 123 45 67 - Banka dolandırıcılığı",
-    "safeApproved": "@guvenilir_satis - Güvenli onay",
-    "phishing": "info@kampanya-ozel.com - 567 rapor",
-    "suspicious": "@xtrader_signals - Şüpheli"
+    "motto": "Köprüden önceki son çıkış"
   },
   "search": {
     "placeholder": "Instagram, TikTok, telefon, e-posta veya web sitesi ara...",

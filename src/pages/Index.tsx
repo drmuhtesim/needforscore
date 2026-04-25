@@ -23,7 +23,7 @@ const Index = () => {
       <div className="px-4 py-12 lg:py-16 border-b border-border">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           <h1 className="font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl text-foreground">
-            Check the score. <span className="text-primary">Trust the story.</span>
+            {t("ticker.motto")}
           </h1>
           <SearchBar onSearch={setSearchQuery} />
         </div>
