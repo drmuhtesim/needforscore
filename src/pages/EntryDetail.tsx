@@ -220,15 +220,6 @@ const EntryDetail = () => {
   const remaining = Math.max(0, 2 - myActiveCount);
   const pageCount = Math.max(1, Math.ceil(allComments.length / PAGE_SIZE));
   const pagedComments = allComments.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-  const mediaByComment = useMemo(() => {
-    const m = new Map<string, MediaRow[]>();
-    (mediaQ.data ?? []).forEach((row) => {
-      const arr = m.get(row.comment_id) ?? [];
-      arr.push(row);
-      m.set(row.comment_id, arr);
-    });
-    return m;
-  }, [mediaQ.data]);
 
   return (
     <div className="min-h-screen bg-background">
