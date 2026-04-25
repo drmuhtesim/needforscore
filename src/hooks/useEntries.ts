@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { CategoryType } from "@/components/CategorySidebar";
+import { averageRating } from "@/lib/commentRating";
 
 export interface EntryRow {
   id: string;
@@ -18,6 +19,8 @@ export interface EntryRow {
   profiles?: { username: string; display_name: string | null; avatar_url: string | null; signup_order?: number | null } | null;
   vote_score?: number;
   comment_count?: number;
+  /** Yorumların içeriğindeki skorlardan hesaplanan aritmetik ortalama; yorum yoksa null. */
+  avg_rating?: number | null;
 }
 
 export const useEntries = (category: CategoryType, search: string) => {
@@ -47,7 +50,7 @@ export const useEntries = (category: CategoryType, search: string) => {
       const [{ data: profiles }, { data: votes }, { data: comments }] = await Promise.all([
         supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").in("user_id", userIds),
         supabase.from("votes").select("entry_id, value").in("entry_id", ids),
-        supabase.from("comments").select("entry_id").in("entry_id", ids).is("deleted_at", null),
+        supabase.from("comments").select("entry_id, content").in("entry_id", ids).is("deleted_at", null),
       ]);
 
       const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
@@ -57,8 +60,12 @@ export const useEntries = (category: CategoryType, search: string) => {
         voteMap.set(v.entry_id, (voteMap.get(v.entry_id) ?? 0) + v.value);
       });
       const commentMap = new Map<string, number>();
+      const commentContentMap = new Map<string, string[]>();
       (comments ?? []).forEach((c) => {
         commentMap.set(c.entry_id, (commentMap.get(c.entry_id) ?? 0) + 1);
+        const arr = commentContentMap.get(c.entry_id) ?? [];
+        arr.push(c.content);
+        commentContentMap.set(c.entry_id, arr);
       });
 
       return entries.map((e) => ({
@@ -66,6 +73,7 @@ export const useEntries = (category: CategoryType, search: string) => {
         profiles: (profileMap.get(e.user_id) as any) ?? null,
         vote_score: voteMap.get(e.id) ?? 0,
         comment_count: commentMap.get(e.id) ?? 0,
+        avg_rating: averageRating(commentContentMap.get(e.id) ?? []),
       }));
     },
   });
@@ -80,12 +88,14 @@ export const useEntry = (id: string | undefined) => {
       const { data, error } = await supabase.from("entries").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!data) return null;
-      const [{ data: profile }, { data: votes }] = await Promise.all([
+      const [{ data: profile }, { data: votes }, { data: comments }] = await Promise.all([
         supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").eq("user_id", data.user_id).maybeSingle(),
         supabase.from("votes").select("value").eq("entry_id", id),
+        supabase.from("comments").select("content").eq("entry_id", id).is("deleted_at", null),
       ]);
       const score = (votes ?? []).reduce((acc, v) => acc + v.value, 0);
-      return { ...(data as EntryRow), profiles: profile as any, vote_score: score };
+      const avg = averageRating((comments ?? []).map((c) => c.content));
+      return { ...(data as EntryRow), profiles: profile as any, vote_score: score, avg_rating: avg };
     },
   });
 };
