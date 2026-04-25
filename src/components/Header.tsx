@@ -32,7 +32,6 @@ const Header = () => {
         <Link to="/" className="flex items-center gap-2" aria-label="needforscore.com">
           <img src={scoreLogo} alt="needforscore.com logo" className="h-8 w-8 rounded-lg object-cover shadow-sm" />
           <span className="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] bg-clip-text text-transparent">
-            needforscore.com
           </span>
         </Link>
 
