@@ -97,7 +97,6 @@
     "addDesc": "Share your experience. Format will be checked before posting.",
     "category": "Category",
     "target": "Target (username, phone, email or website)",
-    "status": "Verdict",
     "rating": "Trust score (1-10)",
     "description": "Description",
     "descPlaceholder": "Describe your experience in detail (min 10 characters)...",
