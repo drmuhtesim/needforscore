@@ -29,7 +29,11 @@ type Status = "safe" | "suspicious" | "danger";
 const categories: Cat[] = ["instagram", "tiktok", "twitter", "phone", "email", "website"];
 const statuses: Status[] = ["safe", "suspicious", "danger"];
 
-const AddEntryDialog = () => {
+interface AddEntryDialogProps {
+  trigger?: React.ReactNode;
+}
+
+const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -115,10 +119,12 @@ const AddEntryDialog = () => {
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-1.5">
-          <Plus className="h-4 w-4" />
-          {t("entry.add")}
-        </Button>
+        {trigger ?? (
+          <Button size="sm" className="gap-1.5">
+            <Plus className="h-4 w-4" />
+            {t("entry.add")}
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>

@@ -1,14 +1,16 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star } from "lucide-react";
+import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star, MessageSquare } from "lucide-react";
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import GenerationBadge from "@/components/GenerationBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { formatTargetDisplay } from "@/lib/platforms";
 import { generationFromOrder } from "@/lib/badges";
+import { useAuth } from "@/contexts/AuthContext";
 import type { CategoryType } from "@/components/CategorySidebar";
 
 const statusMeta = {
@@ -20,6 +22,8 @@ const statusMeta = {
 const UserProfile = () => {
   const { username } = useParams();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile", username],
@@ -83,6 +87,17 @@ const UserProfile = () => {
               <span>{t("profile.joined")} {new Date(profile.created_at).toLocaleDateString()}</span>
             </div>
           </div>
+          {user && user.id !== profile.user_id && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => navigate(`/messages?to=${profile.username}`)}
+              className="gap-1.5"
+            >
+              <MessageSquare className="h-4 w-4" />
+              {t("messages.sendTo")}
+            </Button>
+          )}
         </div>
 
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mt-6 mb-3">

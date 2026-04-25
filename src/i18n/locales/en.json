@@ -205,5 +205,18 @@
     "gen1": "Gen 1",
     "gen2": "Gen 2",
     "gen3": "Gen 3"
+  },
+  "messages": {
+    "title": "Messages",
+    "empty": "You have no messages yet",
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "sendTo": "Send message",
+    "selectConversation": "Select a conversation",
+    "you": "You",
+    "loginRequired": "Sign in to send messages",
+    "cannotMessageSelf": "You can't message yourself",
+    "newMessage": "New message",
+    "noMessages": "No messages yet. Send the first one."
   }
 }

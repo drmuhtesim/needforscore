@@ -2,13 +2,13 @@ import { Home, Plus, User as UserIcon, LogIn, Bell, MessageSquare } from "lucide
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
+import AddEntryDialog from "./AddEntryDialog";
+import { toast } from "sonner";
 
 /**
  * Mobil cihazlarda sayfanın en altında sabit duran navigasyon barı.
- * Masaüstünde gizlenir (lg:hidden).
- *
- * Mesajlar/bildirimler için henüz arka uç akışı yok; ikonlar yer tutucu olarak
- * gösteriliyor ve giriş yapmamış kullanıcıyı /auth'a yönlendiriyor.
+ * Masaüstünde gizlenir (lg:hidden). Tüm tuşlar tıklanabilir; arka uç
+ * gerektiren akışlar (mesajlar/bildirimler) henüz yok ise toast gösterir.
  */
 const MobileBottomBar = () => {
   const { t } = useTranslation();
@@ -19,12 +19,15 @@ const MobileBottomBar = () => {
   const requireAuth = (next: string) => {
     if (!user) {
       navigate("/auth?mode=signin");
-      return;
+      return false;
     }
     navigate(next);
+    return true;
   };
 
   const isActive = (p: string) => pathname === p;
+  const itemBase =
+    "h-full w-full flex flex-col items-center justify-center gap-0.5 text-[10px] active:bg-secondary/60 transition-colors";
 
   return (
     <nav
@@ -35,9 +38,7 @@ const MobileBottomBar = () => {
         <li>
           <Link
             to="/"
-            className={`h-full w-full flex flex-col items-center justify-center gap-0.5 text-[10px] ${
-              isActive("/") ? "text-primary" : "text-muted-foreground"
-            }`}
+            className={`${itemBase} ${isActive("/") ? "text-primary" : "text-muted-foreground"}`}
           >
             <Home className="h-5 w-5" />
             {t("nav.home")}
@@ -45,29 +46,42 @@ const MobileBottomBar = () => {
         </li>
         <li>
           <button
-            onClick={() => requireAuth("/")}
-            className="h-full w-full flex flex-col items-center justify-center gap-0.5 text-[10px] text-muted-foreground"
+            type="button"
+            onClick={() => requireAuth("/messages")}
+            className={`${itemBase} ${pathname.startsWith("/messages") ? "text-primary" : "text-muted-foreground"}`}
             aria-label={t("nav.messages") as string}
           >
             <MessageSquare className="h-5 w-5" />
             {t("nav.messages")}
           </button>
         </li>
-        <li>
-          <button
-            onClick={() => requireAuth("/")}
-            className="h-full w-full flex items-center justify-center"
-            aria-label={t("entry.add") as string}
-          >
-            <span className="flex items-center justify-center h-10 w-10 rounded-full bg-primary text-primary-foreground shadow-md -mt-3">
-              <Plus className="h-5 w-5" />
-            </span>
-          </button>
+        <li className="flex items-center justify-center">
+          {/* AddEntryDialog kendi auth yönlendirmesini yapar */}
+          <AddEntryDialog
+            trigger={
+              <button
+                type="button"
+                aria-label={t("entry.add") as string}
+                className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-md -mt-3 active:scale-95 transition-transform"
+              >
+                <Plus className="h-5 w-5" />
+              </button>
+            }
+          />
         </li>
         <li>
           <button
-            onClick={() => requireAuth("/")}
-            className="h-full w-full flex flex-col items-center justify-center gap-0.5 text-[10px] text-muted-foreground"
+            type="button"
+            onClick={() => {
+              if (!user) {
+                navigate("/auth?mode=signin");
+                return;
+              }
+              toast.info(t("nav.notifications") as string, {
+                description: t("messages.empty") as string,
+              });
+            }}
+            className={`${itemBase} text-muted-foreground`}
             aria-label={t("nav.notifications") as string}
           >
             <Bell className="h-5 w-5" />
@@ -78,7 +92,7 @@ const MobileBottomBar = () => {
           {user && profile?.username ? (
             <Link
               to={`/u/${profile.username}`}
-              className={`h-full w-full flex flex-col items-center justify-center gap-0.5 text-[10px] ${
+              className={`${itemBase} ${
                 pathname.startsWith("/u/") ? "text-primary" : "text-muted-foreground"
               }`}
             >
@@ -86,10 +100,7 @@ const MobileBottomBar = () => {
               {t("nav.profile")}
             </Link>
           ) : (
-            <Link
-              to="/auth?mode=signin"
-              className="h-full w-full flex flex-col items-center justify-center gap-0.5 text-[10px] text-muted-foreground"
-            >
+            <Link to="/auth?mode=signin" className={`${itemBase} text-muted-foreground`}>
               <LogIn className="h-5 w-5" />
               {t("header.signIn")}
             </Link>

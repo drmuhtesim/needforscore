@@ -1,4 +1,4 @@
-import { Shield, Menu, X, LogOut, User as UserIcon } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -6,6 +6,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import AddEntryDialog from "./AddEntryDialog";
 import { useAuth } from "@/contexts/AuthContext";
+import scoreLogo from "@/assets/score-logo.jpeg";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +30,7 @@ const Header = () => {
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
         <Link to="/" className="flex items-center gap-2" aria-label="Score">
-          <Shield className="h-6 w-6 text-primary" />
+          <img src={scoreLogo} alt="Score logo" className="h-8 w-8 rounded-md object-cover" />
           <span className="text-lg font-bold tracking-tight">
             Sc<span className="text-primary">ore</span>
           </span>
@@ -37,6 +38,15 @@ const Header = () => {
 
         <div className="flex items-center gap-2">
           <AddEntryDialog />
+          {user && (
+            <Link
+              to="/messages"
+              aria-label={t("messages.title") as string}
+              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <MessageSquare className="h-4 w-4" />
+            </Link>
+          )}
           <LanguageSwitcher />
           <ThemeToggle />
 
