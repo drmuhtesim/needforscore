@@ -28,10 +28,10 @@ const Header = () => {
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2" aria-label="Score">
           <Shield className="h-6 w-6 text-primary" />
           <span className="text-lg font-bold tracking-tight">
-            Safe<span className="text-primary">Net</span>
+            Sc<span className="text-primary">ore</span>
           </span>
         </Link>
 
