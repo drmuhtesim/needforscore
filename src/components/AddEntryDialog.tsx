@@ -29,7 +29,11 @@ type Status = "safe" | "suspicious" | "danger";
 const categories: Cat[] = ["instagram", "tiktok", "twitter", "phone", "email", "website"];
 const statuses: Status[] = ["safe", "suspicious", "danger"];
 
-const AddEntryDialog = () => {
+interface AddEntryDialogProps {
+  trigger?: React.ReactNode;
+}
+
+const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
