@@ -1,14 +1,16 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star } from "lucide-react";
+import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star, MessageSquare } from "lucide-react";
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import GenerationBadge from "@/components/GenerationBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { formatTargetDisplay } from "@/lib/platforms";
 import { generationFromOrder } from "@/lib/badges";
+import { useAuth } from "@/contexts/AuthContext";
 import type { CategoryType } from "@/components/CategorySidebar";
 
 const statusMeta = {
