@@ -6,9 +6,6 @@ import {
   ArrowLeft,
   BadgeCheck,
   ExternalLink,
-  ShieldAlert,
-  ShieldCheck,
-  ShieldQuestion,
   Star,
 } from "lucide-react";
 import Header from "@/components/Header";
@@ -30,12 +27,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { buildProfileUrl, cleanTarget, formatTargetDisplay } from "@/lib/platforms";
 import { generationFromOrder } from "@/lib/badges";
-
-const statusMeta = {
-  safe: { Icon: ShieldCheck, color: "text-safe", bg: "bg-safe/10" },
-  suspicious: { Icon: ShieldQuestion, color: "text-suspicious", bg: "bg-suspicious/10" },
-  danger: { Icon: ShieldAlert, color: "text-danger", bg: "bg-danger/10" },
-} as const;
 
 interface CommentRow {
   id: string;

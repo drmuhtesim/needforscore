@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ShieldAlert, ShieldCheck, ShieldQuestion, MessageSquare, BadgeCheck, Star } from "lucide-react";
+import { MessageSquare, BadgeCheck, Star } from "lucide-react";
 import PlatformIcon from "./PlatformIcon";
 import UserHoverCard from "./UserHoverCard";
 import VoteButtons from "./VoteButtons";
@@ -13,12 +13,6 @@ interface Props {
   entry: EntryT;
   index: number;
 }
-
-const statusConfig = {
-  safe: { Icon: ShieldCheck, color: "text-safe", bg: "bg-safe/10" },
-  danger: { Icon: ShieldAlert, color: "text-danger", bg: "bg-danger/10" },
-  suspicious: { Icon: ShieldQuestion, color: "text-suspicious", bg: "bg-suspicious/10" },
-} as const;
 
 const timeAgo = (iso: string, t: any): string => {
   const diff = Math.max(0, Date.now() - new Date(iso).getTime());
@@ -33,8 +27,6 @@ const timeAgo = (iso: string, t: any): string => {
 
 const EntryRow = ({ entry, index }: Props) => {
   const { t } = useTranslation();
-  const status = statusConfig[entry.status];
-  const StatusIcon = status.Icon;
   const username = entry.profiles?.username;
 
   return (
@@ -68,12 +60,6 @@ const EntryRow = ({ entry, index }: Props) => {
             )}
           </div>
         </Link>
-      </td>
-      <td className="py-3 px-4">
-        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.color}`}>
-          <StatusIcon className="h-3.5 w-3.5" />
-          {t(`status.${entry.status}`)}
-        </span>
       </td>
       <td className="py-3 px-4 text-center hidden sm:table-cell">
         <span className="inline-flex items-center gap-1 text-xs font-mono text-suspicious">
