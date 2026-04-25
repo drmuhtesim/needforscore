@@ -1,17 +1,33 @@
+import { useMemo, useState, useEffect } from "react";
 import { Shield } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { CategoryType } from "./CategorySidebar";
 import { useEntries } from "@/hooks/useEntries";
 import EntryRow from "./EntryRow";
+import Pagination from "./Pagination";
 
 interface ReportTableProps {
   category: CategoryType;
   searchQuery: string;
 }
 
+const PAGE_SIZE = 10;
+
 const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
   const { t } = useTranslation();
   const { data: entries = [], isLoading } = useEntries(category, searchQuery);
+  const [page, setPage] = useState(1);
+
+  // Reset to page 1 whenever the underlying list changes shape
+  useEffect(() => {
+    setPage(1);
+  }, [category, searchQuery, entries.length]);
+
+  const pageCount = Math.max(1, Math.ceil(entries.length / PAGE_SIZE));
+  const paged = useMemo(
+    () => entries.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [entries, page]
+  );
 
   return (
     <div className="overflow-x-auto">
@@ -26,8 +42,8 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {entries.map((e, i) => (
-            <EntryRow key={e.id} entry={e} index={i} />
+          {paged.map((e, i) => (
+            <EntryRow key={e.id} entry={e} index={(page - 1) * PAGE_SIZE + i} />
           ))}
         </tbody>
       </table>
@@ -42,6 +58,7 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
           {t("table.loading")}
         </div>
       )}
+      <Pagination page={page} pageCount={pageCount} onChange={setPage} />
     </div>
   );
 };
