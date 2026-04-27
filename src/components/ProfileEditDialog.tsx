@@ -90,7 +90,7 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
       toast({ title: t("profile.edit.ageInvalid"), variant: "destructive" });
       return;
     }
-    const payload: Record<string, any> = {
+    const payload = {
       display_name: displayName.trim() || null,
       city: city.trim() || null,
       occupation: occupation.trim() || null,
@@ -100,7 +100,7 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
     };
     const { error } = await supabase
       .from("profiles")
-      .update(payload)
+      .update(payload as any)
       .eq("user_id", initial.user_id);
     setSaving(false);
     if (error) {
