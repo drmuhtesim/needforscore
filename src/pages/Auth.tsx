@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { Shield, Mail, Lock, User as UserIcon, ArrowLeft } from "lucide-react";
+import { Mail, Lock, User as UserIcon, ArrowLeft } from "lucide-react";
+import scoreLogo from "@/assets/score-logo.jpeg";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useToast } from "@/hooks/use-toast";
@@ -116,12 +117,12 @@ const Auth = () => {
             <ArrowLeft className="h-4 w-4" />
             <span>{t("auth.backHome")}</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-primary" />
-            <span className="font-bold tracking-tight">
-              Safe<span className="text-primary">Net</span>
+          <Link to="/" className="flex items-center gap-2" aria-label="Score">
+            <img src={scoreLogo} alt="Score logo" className="h-7 w-7 rounded-lg object-cover shadow-sm" />
+            <span className="text-base font-extrabold tracking-tight bg-gradient-to-r from-[hsl(195_85%_60%)] via-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] bg-clip-text text-transparent">
+              Score
             </span>
-          </div>
+          </Link>
         </div>
       </div>
 
