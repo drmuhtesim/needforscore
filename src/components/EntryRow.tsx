@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { MessageSquare, BadgeCheck, Star } from "lucide-react";
 import PlatformIcon from "./PlatformIcon";
 import VoteButtons from "./VoteButtons";
-import UserScore from "./UserScore";
 import { formatTargetDisplay } from "@/lib/platforms";
 import type { EntryRow as EntryT } from "@/hooks/useEntries";
 
@@ -12,20 +11,8 @@ interface Props {
   index: number;
 }
 
-const timeAgo = (iso: string, t: any): string => {
-  const diff = Math.max(0, Date.now() - new Date(iso).getTime());
-  const min = Math.floor(diff / 60000);
-  if (min < 1) return t("time.justNow");
-  if (min < 60) return t("time.minAgo", { count: min });
-  const hr = Math.floor(min / 60);
-  if (hr < 24) return t("time.hourAgo", { count: hr });
-  const day = Math.floor(hr / 24);
-  return t("time.dayAgo", { count: day });
-};
-
 const EntryRow = ({ entry, index }: Props) => {
   const { t } = useTranslation();
-  const username = entry.profiles?.username;
 
   return (
     <tr
@@ -46,14 +33,10 @@ const EntryRow = ({ entry, index }: Props) => {
               )}
             </div>
             <p className="text-xs text-muted-foreground mt-0.5 max-w-md line-clamp-2">{entry.description}</p>
-            {username && (
-              <div className="flex items-center flex-wrap gap-1.5 text-xs text-muted-foreground/70 mt-1 font-mono">
-                <span>@{username}</span>
-                <UserScore userId={entry.user_id} />
-                <span>·</span>
-                <span>{timeAgo(entry.created_at, t)}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-1 mt-1 sm:hidden text-xs font-mono text-suspicious">
+              <Star className="h-3 w-3 fill-current" />
+              <span>{entry.avg_rating != null ? `${entry.avg_rating.toFixed(1)}/10` : "—"}</span>
+            </div>
           </div>
         </Link>
       </td>
