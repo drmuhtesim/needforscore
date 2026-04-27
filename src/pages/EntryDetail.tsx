@@ -424,7 +424,7 @@ const EntryDetail = () => {
                         </p>
                       ) : (
                         <p className="mt-0.5 text-[15px] leading-snug text-foreground/95 whitespace-pre-wrap break-words">
-                          {c.content}
+                          {cleanCommentContent(c.content)}
                         </p>
                       )}
 
