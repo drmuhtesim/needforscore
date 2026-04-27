@@ -115,7 +115,7 @@ const UserProfile = () => {
         </h2>
         <div className="space-y-2">
           {entries.map((e: any) => {
-            const s = statusMeta[e.status as keyof typeof statusMeta];
+            const s = statusMeta[e.status as keyof typeof statusMeta] ?? statusMeta.suspicious;
             const StatusIcon = s.Icon;
             return (
               <Link
