@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import CategorySidebar, { type CategoryType } from "@/components/CategorySidebar";
+import MobileCategoryBar from "@/components/MobileCategoryBar";
 import ReportTable from "@/components/ReportTable";
 import MobileBottomBar from "@/components/MobileBottomBar";
 import { TrendingUp, Clock } from "lucide-react";
@@ -36,6 +37,9 @@ const Index = () => {
         <CategorySidebar active={category} onChange={setCategory} />
 
         <main className="flex-1 min-w-0">
+          {/* Mobile horizontal category bar */}
+          <MobileCategoryBar active={category} onChange={setCategory} />
+
           {/* Filters Bar */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
