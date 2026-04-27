@@ -16,6 +16,7 @@ import ContentActionsMenu from "@/components/ContentActionsMenu";
 import EditEntryDialog from "@/components/EditEntryDialog";
 import EditCommentDialog from "@/components/EditCommentDialog";
 import UserScore from "@/components/UserScore";
+import UserScoreBadge from "@/components/UserScoreBadge";
 import CommentForm from "@/components/CommentForm";
 import CommentMediaGallery, { type MediaRow } from "@/components/comment-media/CommentMediaGallery";
 import Pagination from "@/components/Pagination";
