@@ -19,17 +19,17 @@ const meta: Record<Exclude<CategoryType, "score">, { Icon: any; color: string; b
   website: { Icon: Globe, color: "text-[hsl(35_90%_60%)]", bg: "bg-[hsl(35_90%_60%/0.12)]" },
 };
 
-const PlatformIcon = ({ category, className = "h-4 w-4", withBg = false }: Props) => {
+const PlatformIcon = ({ category, className = "h-5 w-5", withBg = false }: Props) => {
   // Score uses the brand logo image instead of a Lucide icon
   if (category === "score") {
     if (withBg) {
       return (
         <span className="inline-flex items-center justify-center rounded-md p-0.5 bg-[hsl(285_85%_60%/0.12)]">
-          <img src={scoreIcon} alt="Score" className={`${className} rounded-sm object-cover`} />
+          <img src={scoreIcon} alt="Score" className={`${className} rounded-md object-cover`} />
         </span>
       );
     }
-    return <img src={scoreIcon} alt="Score" className={`${className} rounded-sm object-cover`} />;
+    return <img src={scoreIcon} alt="Score" className={`${className} rounded-md object-cover`} />;
   }
 
   const { Icon, color, bg } = meta[category];
