@@ -74,12 +74,53 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
       return;
     }
     setSubmitting(true);
+
+    const normalized = normalizeTarget(target, category);
+
+    // For Score category: verify the username actually exists in profiles
+    if (category === "score") {
+      const { data: existing } = await supabase
+        .from("profiles")
+        .select("user_id")
+        .eq("username", normalized)
+        .maybeSingle();
+      if (!existing) {
+        setSubmitting(false);
+        toast({
+          title: t("entry.scoreUserMissingTitle"),
+          description: t("entry.scoreUserMissingDesc"),
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    // Duplicate guard (UI side) — fast feedback before INSERT
+    const { data: existingEntry } = await supabase
+      .from("entries")
+      .select("id")
+      .eq("category", category)
+      .eq("target_normalized", normalized)
+      .is("deleted_at", null)
+      .maybeSingle();
+    if (existingEntry) {
+      setSubmitting(false);
+      toast({
+        title: t("entry.duplicateTitle"),
+        description: t("entry.duplicateDesc"),
+        variant: "destructive",
+      });
+      setOpen(false);
+      navigate(`/e/${existingEntry.id}`);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("entries")
       .insert({
         user_id: user.id,
         target: cleanTarget(target),
-        target_normalized: normalizeTarget(target, category),
+        target_normalized: normalized,
         category,
         description: description.trim(),
         rating,
@@ -90,7 +131,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     if (error) {
       const isDuplicate =
         (error as any)?.code === "23505" ||
-        /duplicate key|unique constraint|entries_target_normalized_unique_active/i.test(error.message ?? "");
+        /duplicate key|unique constraint/i.test(error.message ?? "");
       toast({
         title: isDuplicate ? t("entry.duplicateTitle") : t("entry.failed"),
         description: isDuplicate ? t("entry.duplicateDesc") : error.message,
