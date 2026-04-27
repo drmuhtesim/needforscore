@@ -391,8 +391,17 @@ const EntryDetail = () => {
                             <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" aria-label={t("entry.targetResponse") as string} />
                           )}
                           <span className="text-muted-foreground truncate">@{username}</span>
-                          <span className="text-muted-foreground">·</span>
-                          <span className="text-muted-foreground text-xs">{timeAgo}</span>
+                          {!cDeleted && (() => {
+                            const r = extractRatingFromComment(c.content);
+                            if (r == null) return <><span className="text-muted-foreground">·</span><span className="text-muted-foreground text-xs">{timeAgo}</span></>;
+                            return (
+                              <span className="inline-flex items-center gap-0.5 font-mono text-xs text-suspicious">
+                                <Star className="h-3 w-3 fill-current" />
+                                {r}/10
+                              </span>
+                            );
+                          })()}
+                          {cDeleted && <><span className="text-muted-foreground">·</span><span className="text-muted-foreground text-xs">{timeAgo}</span></>}
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {!cDeleted && (() => {
