@@ -18,15 +18,11 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, "index.html"),
-        sw: path.resolve(__dirname, "public/sw.js"),
       },
       output: {
-        entryFileNames: (chunkInfo) => {
-          if (chunkInfo.name === "sw") {
-            return "sw.js";
-          }
-          return "assets/[name]-[hash].js";
-        },
+        entryFileNames: "assets/[name]-[hash].js",
+        chunkFileNames: "assets/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash][extname]",
       },
     },
   },
