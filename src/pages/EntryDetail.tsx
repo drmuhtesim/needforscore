@@ -17,7 +17,7 @@ import EditEntryDialog from "@/components/EditEntryDialog";
 import EditCommentDialog from "@/components/EditCommentDialog";
 import UserScore from "@/components/UserScore";
 import CommentForm from "@/components/CommentForm";
-import { extractRatingFromComment } from "@/lib/commentRating";
+import { extractRatingFromComment, cleanCommentContent } from "@/lib/commentRating";
 import CommentMediaGallery, { type MediaRow } from "@/components/comment-media/CommentMediaGallery";
 import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
