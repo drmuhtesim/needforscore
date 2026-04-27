@@ -37,6 +37,9 @@ const Index = () => {
         <CategorySidebar active={category} onChange={setCategory} />
 
         <main className="flex-1 min-w-0">
+          {/* Mobile horizontal category bar */}
+          <MobileCategoryBar active={category} onChange={setCategory} />
+
           {/* Filters Bar */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <div className="flex items-center gap-2">
