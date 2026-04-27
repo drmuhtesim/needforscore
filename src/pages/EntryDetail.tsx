@@ -335,77 +335,104 @@ const EntryDetail = () => {
             </div>
           ) : null}
 
-          {/* Comment list */}
-          <div className="space-y-3">
+          {/* Comment list — Twitter/X style cards */}
+          <div className="divide-y divide-border/60 border-y border-border/60">
             {pagedComments.map((c) => {
               const isOwner = !!user && c.user_id === user.id;
               const cDeleted = !!c.deleted_at;
               const media = mediaByComment.get(c.id) ?? [];
+              const username = c.profiles?.username ?? "unknown";
+              const displayName = c.profiles?.display_name || username;
+              const avatarLetter = (displayName || username).charAt(0).toUpperCase();
+              const timeAgo = new Date(c.created_at).toLocaleDateString();
               return (
                 <article
                   key={c.id}
-                  className={`relative rounded-lg px-4 py-3 transition-colors ${
+                  className={`relative px-3 sm:px-4 py-3 transition-colors ${
                     cDeleted
-                      ? "border border-danger/30 bg-danger/5"
+                      ? "bg-danger/5"
                       : c.is_target_response
-                        ? "border border-primary/40 bg-primary/5 shadow-[0_0_0_1px_hsl(var(--primary)/0.15)]"
-                        : "border border-border/60 bg-card/40 hover:bg-card/60"
+                        ? "bg-primary/5"
+                        : "hover:bg-card/40"
                   }`}
                 >
-                  {!cDeleted && c.is_target_response && (
-                    <span className="absolute -top-2.5 left-5 inline-flex items-center gap-1 rounded-full border border-primary/40 bg-background px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-primary">
-                      <BadgeCheck className="h-3 w-3" /> {t("entry.targetResponse")}
-                    </span>
-                  )}
-
-                  {/* Body */}
-                  {cDeleted ? (
-                    <p className="text-sm italic text-danger/80">
-                      {c.deleted_by === c.user_id ? t("moderation.removedByOwner") : t("moderation.removed")}
-                    </p>
-                  ) : (
-                    <p className="text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap">
-                      {c.content}
-                    </p>
-                  )}
-
-                  {/* Media gallery */}
-                  {!cDeleted && (
-                    <CommentMediaGallery
-                      media={media}
-                      isOwner={isOwner}
-                      isModerator={isModerator}
-                      commentId={c.id}
-                    />
-                  )}
-
-                  {/* Footer: votes left, author bottom-right, actions */}
-                  <div className="mt-3 pt-2 border-t border-border/40 flex items-center justify-between gap-3">
-                    <VoteButtons commentId={c.id} initialScore={c.vote_score} />
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-                        {c.profiles?.username ? (
-                          <>
-                            <span>{t("entry.by")}</span>
-                            <UserHoverCard username={c.profiles.username}>
-                              <span className="text-foreground/80 hover:text-primary">@{c.profiles.username}</span>
-                            </UserHoverCard>
-                            <GenerationBadge generation={generationFromOrder(c.profiles.signup_order)} />
-                          </>
+                  <div className="flex gap-3">
+                    {/* Avatar */}
+                    <UserHoverCard username={username}>
+                      <Link
+                        to={`/u/${username}`}
+                        className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-border flex items-center justify-center text-sm font-semibold text-foreground/80 hover:opacity-90"
+                      >
+                        {c.profiles?.avatar_url ? (
+                          <img
+                            src={c.profiles.avatar_url}
+                            alt={username}
+                            className="h-full w-full rounded-full object-cover"
+                          />
                         ) : (
-                          <span>@unknown</span>
+                          avatarLetter
+                        )}
+                      </Link>
+                    </UserHoverCard>
+
+                    <div className="flex-1 min-w-0">
+                      {/* Header row: name • @handle • verified • time + actions */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0 min-w-0 text-sm">
+                          <UserHoverCard username={username}>
+                            <Link
+                              to={`/u/${username}`}
+                              className="font-semibold text-foreground hover:underline truncate"
+                            >
+                              {displayName}
+                            </Link>
+                          </UserHoverCard>
+                          {!cDeleted && c.is_target_response && (
+                            <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" aria-label={t("entry.targetResponse") as string} />
+                          )}
+                          <span className="text-muted-foreground truncate">@{username}</span>
+                          <span className="text-muted-foreground">·</span>
+                          <span className="text-muted-foreground text-xs">{timeAgo}</span>
+                        </div>
+                        {!cDeleted && (
+                          <ContentActionsMenu
+                            canEdit={isOwner}
+                            canDelete={isOwner}
+                            canModerate={!isOwner && isModerator}
+                            onEdit={() => setEditingComment(c)}
+                            onDelete={() => deleteComment(c.id, false)}
+                            onModerate={() => deleteComment(c.id, true)}
+                          />
                         )}
                       </div>
-                      {!cDeleted && (
-                        <ContentActionsMenu
-                          canEdit={isOwner}
-                          canDelete={isOwner}
-                          canModerate={!isOwner && isModerator}
-                          onEdit={() => setEditingComment(c)}
-                          onDelete={() => deleteComment(c.id, false)}
-                          onModerate={() => deleteComment(c.id, true)}
-                        />
+
+                      {/* Body */}
+                      {cDeleted ? (
+                        <p className="mt-1 text-sm italic text-danger/80">
+                          {c.deleted_by === c.user_id ? t("moderation.removedByOwner") : t("moderation.removed")}
+                        </p>
+                      ) : (
+                        <p className="mt-0.5 text-[15px] leading-snug text-foreground/95 whitespace-pre-wrap break-words">
+                          {c.content}
+                        </p>
                       )}
+
+                      {/* Media */}
+                      {!cDeleted && (
+                        <div className="mt-2">
+                          <CommentMediaGallery
+                            media={media}
+                            isOwner={isOwner}
+                            isModerator={isModerator}
+                            commentId={c.id}
+                          />
+                        </div>
+                      )}
+
+                      {/* Footer: votes only */}
+                      <div className="mt-2 flex items-center">
+                        <VoteButtons commentId={c.id} initialScore={c.vote_score} />
+                      </div>
                     </div>
                   </div>
                 </article>
