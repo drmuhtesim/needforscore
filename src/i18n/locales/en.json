@@ -25,6 +25,8 @@
     "password": "Password",
     "username": "Username",
     "usernameHint": "3-30 chars, lowercase letters/numbers/_ or .",
+    "usernameSaved": "Username saved",
+    "usernameTakenTitle": "Username unavailable",
     "passwordHint": "At least 8 characters",
     "continueWithGoogle": "Continue with Google",
     "or": "or",

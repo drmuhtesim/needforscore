@@ -25,6 +25,8 @@
     "password": "Şifre",
     "username": "Kullanıcı adı",
     "usernameHint": "3-30 karakter, küçük harf/rakam/_ veya .",
+    "usernameSaved": "Kullanıcı adı kaydedildi",
+    "usernameTakenTitle": "Kullanıcı adı kullanılamıyor",
     "passwordHint": "En az 8 karakter",
     "continueWithGoogle": "Google ile devam et",
     "or": "veya",
