@@ -256,10 +256,14 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age: number | null
           avatar_url: string | null
+          bio: string | null
+          city: string | null
           created_at: string
           display_name: string | null
           id: string
+          occupation: string | null
           signup_order: number
           updated_at: string
           user_id: string
@@ -267,10 +271,14 @@ export type Database = {
           username_chosen: boolean
         }
         Insert: {
+          age?: number | null
           avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          occupation?: string | null
           signup_order?: number
           updated_at?: string
           user_id: string
@@ -278,10 +286,14 @@ export type Database = {
           username_chosen?: boolean
         }
         Update: {
+          age?: number | null
           avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          occupation?: string | null
           signup_order?: number
           updated_at?: string
           user_id?: string
