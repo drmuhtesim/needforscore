@@ -82,16 +82,45 @@ const UserProfile = () => {
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-xl font-mono text-foreground">@{profile.username}</h1>
-              <GenerationBadge generation={generationFromOrder((profile as any).signup_order)} size="md" />
+              <UserScore userId={profile.user_id} size="md" />
             </div>
             {profile.display_name && <p className="text-sm text-muted-foreground">{profile.display_name}</p>}
+
+            {/* Extra profile fields */}
+            {((profile as any).city || (profile as any).occupation || (profile as any).age != null) && (
+              <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted-foreground">
+                {(profile as any).city && (
+                  <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{(profile as any).city}</span>
+                )}
+                {(profile as any).occupation && (
+                  <span className="inline-flex items-center gap-1"><Briefcase className="h-3 w-3" />{(profile as any).occupation}</span>
+                )}
+                {(profile as any).age != null && (
+                  <span className="inline-flex items-center gap-1"><Cake className="h-3 w-3" />{(profile as any).age}</span>
+                )}
+              </div>
+            )}
+            {(profile as any).bio && (
+              <p className="text-sm text-foreground/90 mt-2 whitespace-pre-wrap break-words">{(profile as any).bio}</p>
+            )}
+
             <div className="flex items-center gap-4 mt-3 text-xs font-mono text-muted-foreground">
               <span><span className="text-foreground">{entries.length}</span> {t("profile.entries")}</span>
               <span><span className="text-foreground">{commentCount}</span> {t("profile.comments")}</span>
               <span>{t("profile.joined")} {new Date(profile.created_at).toLocaleDateString()}</span>
             </div>
           </div>
-          {user && user.id !== profile.user_id && (
+          {user && user.id === profile.user_id ? (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setEditOpen(true)}
+              className="gap-1.5"
+            >
+              <Pencil className="h-4 w-4" />
+              {t("profile.edit.button")}
+            </Button>
+          ) : user && user.id !== profile.user_id ? (
             <Button
               size="sm"
               variant="outline"
@@ -101,8 +130,25 @@ const UserProfile = () => {
               <MessageSquare className="h-4 w-4" />
               {t("messages.sendTo")}
             </Button>
-          )}
+          ) : null}
         </div>
+
+        {user && user.id === profile.user_id && (
+          <ProfileEditDialog
+            open={editOpen}
+            onOpenChange={setEditOpen}
+            initial={{
+              user_id: profile.user_id,
+              username: profile.username,
+              display_name: profile.display_name,
+              avatar_url: profile.avatar_url,
+              city: (profile as any).city ?? null,
+              occupation: (profile as any).occupation ?? null,
+              age: (profile as any).age ?? null,
+              bio: (profile as any).bio ?? null,
+            }}
+          />
+        )}
 
         {user && user.id === profile.user_id && (
           <div className="mt-4">
