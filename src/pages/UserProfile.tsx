@@ -1,17 +1,18 @@
+import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star, MessageSquare } from "lucide-react";
+import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star, MessageSquare, Pencil, MapPin, Briefcase, Cake } from "lucide-react";
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
-import GenerationBadge from "@/components/GenerationBadge";
+import UserScore from "@/components/UserScore";
 import LinkedAccountsPanel from "@/components/LinkedAccountsPanel";
+import ProfileEditDialog from "@/components/ProfileEditDialog";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { formatTargetDisplay } from "@/lib/platforms";
-import { generationFromOrder } from "@/lib/badges";
 import { useAuth } from "@/contexts/AuthContext";
 import type { CategoryType } from "@/components/CategorySidebar";
 
@@ -26,6 +27,7 @@ const UserProfile = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [editOpen, setEditOpen] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["userProfile", username],
@@ -33,7 +35,7 @@ const UserProfile = () => {
     queryFn: async () => {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("user_id, username, display_name, avatar_url, created_at, signup_order")
+        .select("user_id, username, display_name, avatar_url, created_at, signup_order, city, occupation, age, bio")
         .eq("username", username!)
         .maybeSingle();
       if (!profile) return null;
