@@ -185,7 +185,22 @@
     "verifying": "Verifying…",
     "verifySuccess": "Account successfully verified.",
     "verifyFailed": "Verification failed.",
-    "removeConfirm": "Are you sure you want to remove this link?"
+    "removeConfirm": "Are you sure you want to remove this link?",
+    "edit": {
+      "button": "Edit profile",
+      "title": "Edit profile",
+      "desc": "Update your profile info. Avatar is optional.",
+      "displayName": "Display name",
+      "city": "City",
+      "occupation": "Occupation",
+      "age": "Age",
+      "bio": "About",
+      "bioPlaceholder": "Tell something about yourself...",
+      "changeAvatar": "Change avatar",
+      "avatarHint": "JPG/PNG/WEBP — under 5MB",
+      "avatarTooBig": "File must be under 5MB",
+      "ageInvalid": "Age must be between 13 and 120"
+    }
   },
   "notFound": {
     "message": "Oops! Page not found",

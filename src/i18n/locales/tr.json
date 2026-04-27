@@ -181,7 +181,22 @@
     "verifying": "Doğrulanıyor…",
     "verifySuccess": "Hesap başarıyla doğrulandı.",
     "verifyFailed": "Doğrulama başarısız.",
-    "removeConfirm": "Bu bağlantıyı kaldırmak istediğine emin misin?"
+    "removeConfirm": "Bu bağlantıyı kaldırmak istediğine emin misin?",
+    "edit": {
+      "button": "Profili düzenle",
+      "title": "Profili düzenle",
+      "desc": "Profil bilgilerini güncelle. Avatar isteğe bağlıdır.",
+      "displayName": "Görünen ad",
+      "city": "Şehir",
+      "occupation": "Meslek",
+      "age": "Yaş",
+      "bio": "Hakkında",
+      "bioPlaceholder": "Kendinden kısaca bahset...",
+      "changeAvatar": "Avatarı değiştir",
+      "avatarHint": "JPG/PNG/WEBP — 5MB altı",
+      "avatarTooBig": "Dosya en fazla 5MB olmalı",
+      "ageInvalid": "Yaş 13 ile 120 arasında olmalı"
+    }
   },
   "notFound": {
     "message": "Oops! Sayfa bulunamadı",
