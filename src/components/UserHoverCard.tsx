@@ -5,8 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
-import GenerationBadge from "./GenerationBadge";
-import { generationFromOrder } from "@/lib/badges";
+import UserScore from "./UserScore";
 import { MessageSquare } from "lucide-react";
 
 interface Props {
@@ -92,7 +91,7 @@ const UserHoverCard = ({ username, children }: Props) => {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-mono text-sm text-foreground truncate">@{profile.username}</p>
-                <GenerationBadge generation={generationFromOrder(profile.signup_order)} />
+                <UserScore userId={profile.user_id} />
               </div>
               {profile.display_name && (
                 <p className="text-xs text-muted-foreground truncate">{profile.display_name}</p>
