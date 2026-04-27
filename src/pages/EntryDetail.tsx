@@ -15,7 +15,7 @@ import VoteButtons from "@/components/VoteButtons";
 import ContentActionsMenu from "@/components/ContentActionsMenu";
 import EditEntryDialog from "@/components/EditEntryDialog";
 import EditCommentDialog from "@/components/EditCommentDialog";
-import GenerationBadge from "@/components/GenerationBadge";
+import UserScore from "@/components/UserScore";
 import CommentForm from "@/components/CommentForm";
 import CommentMediaGallery, { type MediaRow } from "@/components/comment-media/CommentMediaGallery";
 import Pagination from "@/components/Pagination";
