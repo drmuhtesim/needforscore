@@ -174,6 +174,51 @@ export type Database = {
         }
         Relationships: []
       }
+      linked_accounts: {
+        Row: {
+          attempt_count: number
+          created_at: string
+          handle: string
+          handle_normalized: string
+          id: string
+          last_attempt_at: string | null
+          platform: Database["public"]["Enums"]["social_platform"]
+          updated_at: string
+          user_id: string
+          verification_code: string
+          verified: boolean
+          verified_at: string | null
+        }
+        Insert: {
+          attempt_count?: number
+          created_at?: string
+          handle: string
+          handle_normalized: string
+          id?: string
+          last_attempt_at?: string | null
+          platform: Database["public"]["Enums"]["social_platform"]
+          updated_at?: string
+          user_id: string
+          verification_code: string
+          verified?: boolean
+          verified_at?: string | null
+        }
+        Update: {
+          attempt_count?: number
+          created_at?: string
+          handle?: string
+          handle_normalized?: string
+          id?: string
+          last_attempt_at?: string | null
+          platform?: Database["public"]["Enums"]["social_platform"]
+          updated_at?: string
+          user_id?: string
+          verification_code?: string
+          verified?: boolean
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -358,6 +403,10 @@ export type Database = {
         Returns: boolean
       }
       is_mod_or_admin: { Args: { _user_id: string }; Returns: boolean }
+      user_owns_entry_target: {
+        Args: { _entry_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
@@ -371,6 +420,7 @@ export type Database = {
         | "score"
       entry_status: "safe" | "suspicious" | "danger"
       media_status: "pending" | "approved" | "rejected"
+      social_platform: "instagram" | "x" | "tiktok"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -510,6 +560,7 @@ export const Constants = {
       ],
       entry_status: ["safe", "suspicious", "danger"],
       media_status: ["pending", "approved", "rejected"],
+      social_platform: ["instagram", "x", "tiktok"],
     },
   },
 } as const
