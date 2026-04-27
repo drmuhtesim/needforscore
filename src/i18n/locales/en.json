@@ -215,5 +215,14 @@
     "cannotMessageSelf": "You can't message yourself",
     "newMessage": "New message",
     "noMessages": "No messages yet. Send the first one."
+  },
+  "onboarding": {
+    "welcome": "Welcome",
+    "chooseUsernameTitle": "Choose your username",
+    "chooseUsernameDesc": "Pick a unique username that will represent you on Score. You won't be able to change it later.",
+    "checking": "Checking...",
+    "available": "Username is available",
+    "taken": "Username is taken",
+    "continue": "Continue"
   }
 }

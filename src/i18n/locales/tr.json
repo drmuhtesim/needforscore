@@ -211,5 +211,14 @@
     "cannotMessageSelf": "Kendine mesaj gönderemezsin",
     "newMessage": "Yeni mesaj",
     "noMessages": "Henüz mesaj yok. İlk mesajı sen yaz."
+  },
+  "onboarding": {
+    "welcome": "Hoş geldin",
+    "chooseUsernameTitle": "Kullanıcı adını seç",
+    "chooseUsernameDesc": "Score'da seni temsil edecek benzersiz bir kullanıcı adı belirle. Daha sonra değiştiremezsin.",
+    "checking": "Kontrol ediliyor...",
+    "available": "Bu kullanıcı adı uygun",
+    "taken": "Bu kullanıcı adı alınmış",
+    "continue": "Devam et"
   }
 }
