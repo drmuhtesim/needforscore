@@ -1,7 +1,7 @@
-// Yorumların içeriğine eklenen "— ...: X/10" satırından skoru çekip
+// Yorumların içeriğine eklenen "X/10" satırından skoru çekip
 // bir başlığın ortalama puanını hesaplar.
-// CommentForm, yorumun sonuna `\n\n— ${t("entry.yourScore")}: ${rating}/10`
-// satırını ekliyor; dil bağımsız olarak satırın sonundaki `N/10` desenini yakalıyoruz.
+// CommentForm, yorumun sonuna `\n\n${rating}/10` satırını ekliyor;
+// dil bağımsız olarak satırın sonundaki `N/10` desenini yakalıyoruz.
 const RATING_RE = /(\d{1,2})\s*\/\s*10\s*$/m;
 
 export const extractRatingFromComment = (content: string): number | null => {
