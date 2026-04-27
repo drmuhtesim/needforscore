@@ -107,6 +107,8 @@
     "created": "Entry yayınlandı",
     "duplicateTitle": "Bu kullanıcı için zaten bir başlık var",
     "duplicateDesc": "Aynı sosyal medya kullanıcı adıyla birden fazla başlık açılamaz. Mevcut başlığa deneyim ekleyebilirsin.",
+    "scoreUserMissingTitle": "Score'da böyle bir kullanıcı yok",
+    "scoreUserMissingDesc": "Score kategorisinde başlık açabilmek için hedef kullanıcının Score'a kayıtlı olması gerekir.",
     "avgRatingTitle": "Yorum yapan kullanıcıların verdiği skorların ortalaması",
     "placeholder": {
       "score": "score kullanıcı adı (örn. ahmet)",
