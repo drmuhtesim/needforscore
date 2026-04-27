@@ -33,14 +33,10 @@ const EntryRow = ({ entry, index }: Props) => {
               )}
             </div>
             <p className="text-xs text-muted-foreground mt-0.5 max-w-md line-clamp-2">{entry.description}</p>
-            {username && (
-              <div className="flex items-center flex-wrap gap-1.5 text-xs text-muted-foreground/70 mt-1 font-mono">
-                <span>@{username}</span>
-                <UserScore userId={entry.user_id} />
-                <span>·</span>
-                <span>{timeAgo(entry.created_at, t)}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-1 mt-1 sm:hidden text-xs font-mono text-suspicious">
+              <Star className="h-3 w-3 fill-current" />
+              <span>{entry.avg_rating != null ? `${entry.avg_rating.toFixed(1)}/10` : "—"}</span>
+            </div>
           </div>
         </Link>
       </td>
