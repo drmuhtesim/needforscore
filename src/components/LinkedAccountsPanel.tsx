@@ -60,7 +60,7 @@ const LinkedAccountsPanel = () => {
         .select("*")
         .eq("user_id", user!.id);
       if (error) throw error;
-      return data as Array<{
+      return (data ?? []) as unknown as Array<{
         id: string;
         platform: Platform;
         handle: string;
