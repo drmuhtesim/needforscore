@@ -391,17 +391,8 @@ const EntryDetail = () => {
                             <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" aria-label={t("entry.targetResponse") as string} />
                           )}
                           <span className="text-muted-foreground truncate">@{username}</span>
-                          {!cDeleted && (() => {
-                            const r = extractRatingFromComment(c.content);
-                            if (r == null) return <><span className="text-muted-foreground">·</span><span className="text-muted-foreground text-xs">{timeAgo}</span></>;
-                            return (
-                              <span className="inline-flex items-center gap-0.5 font-mono text-xs text-suspicious">
-                                <Star className="h-3 w-3 fill-current" />
-                                {r}/10
-                              </span>
-                            );
-                          })()}
-                          {cDeleted && <><span className="text-muted-foreground">·</span><span className="text-muted-foreground text-xs">{timeAgo}</span></>}
+                          <span className="text-muted-foreground">·</span>
+                          <span className="text-muted-foreground text-xs">{timeAgo}</span>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {!cDeleted && (
@@ -416,6 +407,20 @@ const EntryDetail = () => {
                           )}
                         </div>
                       </div>
+
+                      {/* Rating badge - separate line above comment body */}
+                      {!cDeleted && (() => {
+                        const r = extractRatingFromComment(c.content);
+                        if (r == null) return null;
+                        return (
+                          <div className="mt-1.5 mb-0.5">
+                            <span className="inline-flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded-md border border-suspicious/30 text-suspicious bg-suspicious/5">
+                              <Star className="h-3 w-3 fill-current" />
+                              {r}/10
+                            </span>
+                          </div>
+                        );
+                      })()}
 
                       {/* Body */}
                       {cDeleted ? (
