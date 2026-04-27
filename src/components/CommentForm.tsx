@@ -50,7 +50,7 @@ const CommentForm = ({ entryId, canReplyAsTarget, remaining }: Props) => {
     setPosting(true);
     // 1) insert comment with rating embedded into content footer (rating is on entry root; for replies we embed)
     // We do not have a rating column on comments; encode it as a leading line. Voting uses VoteButtons separately.
-    const text = `${content.trim()}\n\n— ${t("entry.yourScore")}: ${rating}/10`;
+    const text = `${content.trim()}\n\n${rating}/10`;
     const { data: inserted, error } = await supabase
       .from("comments")
       .insert({ entry_id: entryId, user_id: user.id, content: text, is_target_response: asTarget })

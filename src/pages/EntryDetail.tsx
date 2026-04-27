@@ -17,7 +17,7 @@ import EditEntryDialog from "@/components/EditEntryDialog";
 import EditCommentDialog from "@/components/EditCommentDialog";
 import UserScore from "@/components/UserScore";
 import CommentForm from "@/components/CommentForm";
-import { extractRatingFromComment } from "@/lib/commentRating";
+import { extractRatingFromComment, cleanCommentContent } from "@/lib/commentRating";
 import CommentMediaGallery, { type MediaRow } from "@/components/comment-media/CommentMediaGallery";
 import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
@@ -391,23 +391,19 @@ const EntryDetail = () => {
                             <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" aria-label={t("entry.targetResponse") as string} />
                           )}
                           <span className="text-muted-foreground truncate">@{username}</span>
-                          <span className="text-muted-foreground">·</span>
-                          <span className="text-muted-foreground text-xs">{timeAgo}</span>
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
                           {!cDeleted && (() => {
                             const r = extractRatingFromComment(c.content);
-                            if (r == null) return null;
+                            if (r == null) return <><span className="text-muted-foreground">·</span><span className="text-muted-foreground text-xs">{timeAgo}</span></>;
                             return (
-                              <span
-                                className="inline-flex items-center gap-0.5 font-mono text-xs text-suspicious"
-                                title={t("entry.yourScore") as string}
-                              >
-                                <Star className="h-3.5 w-3.5 fill-current" />
+                              <span className="inline-flex items-center gap-0.5 font-mono text-xs text-suspicious">
+                                <Star className="h-3 w-3 fill-current" />
                                 {r}/10
                               </span>
                             );
                           })()}
+                          {cDeleted && <><span className="text-muted-foreground">·</span><span className="text-muted-foreground text-xs">{timeAgo}</span></>}
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
                           {!cDeleted && (
                             <ContentActionsMenu
                               canEdit={isOwner}
@@ -428,7 +424,7 @@ const EntryDetail = () => {
                         </p>
                       ) : (
                         <p className="mt-0.5 text-[15px] leading-snug text-foreground/95 whitespace-pre-wrap break-words">
-                          {c.content}
+                          {cleanCommentContent(c.content)}
                         </p>
                       )}
 
