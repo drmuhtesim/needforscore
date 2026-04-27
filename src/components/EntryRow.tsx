@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MessageSquare, BadgeCheck, Star } from "lucide-react";
 import PlatformIcon from "./PlatformIcon";
-import UserHoverCard from "./UserHoverCard";
 import VoteButtons from "./VoteButtons";
 import UserScore from "./UserScore";
 import { formatTargetDisplay } from "@/lib/platforms";
@@ -46,12 +45,10 @@ const EntryRow = ({ entry, index }: Props) => {
                 <BadgeCheck className="h-3.5 w-3.5 text-primary" aria-label={t("entry.verifiedTarget")} />
               )}
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5 max-w-md truncate">{entry.description}</p>
+            <p className="text-xs text-muted-foreground mt-0.5 max-w-md line-clamp-2">{entry.description}</p>
             {username && (
-              <div className="flex items-center flex-wrap gap-1.5 text-xs text-muted-foreground/70 mt-1 font-mono" onClick={(e) => e.stopPropagation()}>
-                <UserHoverCard username={username}>
-                  <span>@{username}</span>
-                </UserHoverCard>
+              <div className="flex items-center flex-wrap gap-1.5 text-xs text-muted-foreground/70 mt-1 font-mono">
+                <span>@{username}</span>
                 <UserScore userId={entry.user_id} />
                 <span>·</span>
                 <span>{timeAgo(entry.created_at, t)}</span>
