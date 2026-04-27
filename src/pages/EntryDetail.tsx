@@ -404,19 +404,6 @@ const EntryDetail = () => {
                           {cDeleted && <><span className="text-muted-foreground">·</span><span className="text-muted-foreground text-xs">{timeAgo}</span></>}
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          {!cDeleted && (() => {
-                            const r = extractRatingFromComment(c.content);
-                            if (r == null) return null;
-                            return (
-                              <span
-                                className="inline-flex items-center gap-0.5 font-mono text-xs text-suspicious"
-                                title={t("entry.yourScore") as string}
-                              >
-                                <Star className="h-3.5 w-3.5 fill-current" />
-                                {r}/10
-                              </span>
-                            );
-                          })()}
                           {!cDeleted && (
                             <ContentActionsMenu
                               canEdit={isOwner}
