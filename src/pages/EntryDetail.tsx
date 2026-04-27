@@ -16,6 +16,7 @@ import ContentActionsMenu from "@/components/ContentActionsMenu";
 import EditEntryDialog from "@/components/EditEntryDialog";
 import EditCommentDialog from "@/components/EditCommentDialog";
 import UserScore from "@/components/UserScore";
+import UserScoreBadge from "@/components/UserScoreBadge";
 import CommentForm from "@/components/CommentForm";
 import CommentMediaGallery, { type MediaRow } from "@/components/comment-media/CommentMediaGallery";
 import Pagination from "@/components/Pagination";
@@ -390,7 +391,6 @@ const EntryDetail = () => {
                             <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" aria-label={t("entry.targetResponse") as string} />
                           )}
                           <span className="text-muted-foreground truncate">@{username}</span>
-                          <UserScore userId={c.user_id} />
                           <span className="text-muted-foreground">·</span>
                           <span className="text-muted-foreground text-xs">{timeAgo}</span>
                         </div>
@@ -429,9 +429,10 @@ const EntryDetail = () => {
                         </div>
                       )}
 
-                      {/* Footer: votes only */}
-                      <div className="mt-2 flex items-center">
+                      {/* Footer: votes + score badge */}
+                      <div className="mt-2 flex items-center justify-between gap-2">
                         <VoteButtons commentId={c.id} initialScore={c.vote_score} />
+                        <UserScoreBadge userId={c.user_id} />
                       </div>
                     </div>
                   </div>
