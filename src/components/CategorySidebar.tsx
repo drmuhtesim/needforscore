@@ -32,7 +32,7 @@ const CategorySidebar = ({ active, onChange }: CategorySidebarProps) => {
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary"
               }`}
             >
-              {cat === "all" ? <Globe2 className="h-4 w-4" /> : <PlatformIcon category={cat} />}
+              {cat === "all" ? <Globe2 className="h-5 w-5" /> : <PlatformIcon category={cat} />}
               <span className="flex-1 text-left">{t(`categories.${cat}`)}</span>
             </button>
           ))}
