@@ -15,6 +15,20 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Ensure sw.js is copied to dist as-is (not processed by Vite)
     assetsInlineLimit: 0,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "index.html"),
+        sw: path.resolve(__dirname, "public/sw.js"),
+      },
+      output: {
+        entryFileNames: (chunkInfo) => {
+          if (chunkInfo.name === "sw") {
+            return "sw.js";
+          }
+          return "assets/[name]-[hash].js";
+        },
+      },
+    },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
