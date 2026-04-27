@@ -376,7 +376,7 @@ const EntryDetail = () => {
                     </UserHoverCard>
 
                     <div className="flex-1 min-w-0">
-                      {/* Header row: name • @handle • verified • time + actions */}
+                      {/* Header row: name • @handle • verified • time + rating + actions */}
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0 min-w-0 text-sm">
                           <UserHoverCard username={username}>
@@ -394,16 +394,31 @@ const EntryDetail = () => {
                           <span className="text-muted-foreground">·</span>
                           <span className="text-muted-foreground text-xs">{timeAgo}</span>
                         </div>
-                        {!cDeleted && (
-                          <ContentActionsMenu
-                            canEdit={isOwner}
-                            canDelete={isOwner}
-                            canModerate={!isOwner && isModerator}
-                            onEdit={() => setEditingComment(c)}
-                            onDelete={() => deleteComment(c.id, false)}
-                            onModerate={() => deleteComment(c.id, true)}
-                          />
-                        )}
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {!cDeleted && (() => {
+                            const r = extractRatingFromComment(c.content);
+                            if (r == null) return null;
+                            return (
+                              <span
+                                className="inline-flex items-center gap-0.5 font-mono text-xs text-suspicious"
+                                title={t("entry.yourScore") as string}
+                              >
+                                <Star className="h-3.5 w-3.5 fill-current" />
+                                {r}/10
+                              </span>
+                            );
+                          })()}
+                          {!cDeleted && (
+                            <ContentActionsMenu
+                              canEdit={isOwner}
+                              canDelete={isOwner}
+                              canModerate={!isOwner && isModerator}
+                              onEdit={() => setEditingComment(c)}
+                              onDelete={() => deleteComment(c.id, false)}
+                              onModerate={() => deleteComment(c.id, true)}
+                            />
+                          )}
+                        </div>
                       </div>
 
                       {/* Body */}
@@ -429,10 +444,9 @@ const EntryDetail = () => {
                         </div>
                       )}
 
-                      {/* Footer: votes + score badge */}
-                      <div className="mt-2 flex items-center justify-between gap-2">
+                      {/* Footer: votes */}
+                      <div className="mt-2 flex items-center gap-2">
                         <VoteButtons commentId={c.id} initialScore={c.vote_score} />
-                        <UserScoreBadge userId={c.user_id} />
                       </div>
                     </div>
                   </div>
