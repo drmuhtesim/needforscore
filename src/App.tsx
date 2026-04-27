@@ -12,6 +12,7 @@ import UserProfile from "./pages/UserProfile.tsx";
 import Messages from "./pages/Messages.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import UsernameOnboarding from "./pages/UsernameOnboarding.tsx";
+import ErrorBoundary from "./components/ErrorBoundary.tsx";
 
 const queryClient = new QueryClient();
 
@@ -42,16 +43,18 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <OnboardingGate />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/onboarding/username" element={<UsernameOnboarding />} />
-            <Route path="/e/:id" element={<EntryDetail />} />
-            <Route path="/u/:username" element={<UserProfile />} />
-            <Route path="/messages" element={<Messages />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <ErrorBoundary label="App">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/onboarding/username" element={<UsernameOnboarding />} />
+              <Route path="/e/:id" element={<EntryDetail />} />
+              <Route path="/u/:username" element={<UserProfile />} />
+              <Route path="/messages" element={<Messages />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ErrorBoundary>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
