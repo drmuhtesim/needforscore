@@ -5,6 +5,9 @@ import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star, MessageSquar
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import GenerationBadge from "@/components/GenerationBadge";
+import LinkedAccountsPanel from "@/components/LinkedAccountsPanel";
+import PlatformIcon from "@/components/PlatformIcon";
+import GenerationBadge from "@/components/GenerationBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
