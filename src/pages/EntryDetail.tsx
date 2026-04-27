@@ -15,7 +15,7 @@ import VoteButtons from "@/components/VoteButtons";
 import ContentActionsMenu from "@/components/ContentActionsMenu";
 import EditEntryDialog from "@/components/EditEntryDialog";
 import EditCommentDialog from "@/components/EditCommentDialog";
-import GenerationBadge from "@/components/GenerationBadge";
+import UserScore from "@/components/UserScore";
 import CommentForm from "@/components/CommentForm";
 import CommentMediaGallery, { type MediaRow } from "@/components/comment-media/CommentMediaGallery";
 import Pagination from "@/components/Pagination";
@@ -26,7 +26,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { buildProfileUrl, cleanTarget, formatTargetDisplay } from "@/lib/platforms";
-import { generationFromOrder } from "@/lib/badges";
 
 interface CommentRow {
   id: string;
@@ -286,7 +285,7 @@ const EntryDetail = () => {
                       <UserHoverCard username={entry.profiles.username}>
                         <span className="text-foreground/80 hover:text-primary">@{entry.profiles.username}</span>
                       </UserHoverCard>
-                      <GenerationBadge generation={generationFromOrder(entry.profiles.signup_order)} />
+                      <UserScore userId={entry.user_id} />
                     </>
                   ) : null}
                 </div>
@@ -391,6 +390,7 @@ const EntryDetail = () => {
                             <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" aria-label={t("entry.targetResponse") as string} />
                           )}
                           <span className="text-muted-foreground truncate">@{username}</span>
+                          <UserScore userId={c.user_id} />
                           <span className="text-muted-foreground">·</span>
                           <span className="text-muted-foreground text-xs">{timeAgo}</span>
                         </div>

@@ -127,8 +127,8 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
       })
       .select("id")
       .single();
-    setSubmitting(false);
     if (error) {
+      setSubmitting(false);
       const isDuplicate =
         (error as any)?.code === "23505" ||
         /duplicate key|unique constraint/i.test(error.message ?? "");
@@ -139,6 +139,20 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
       });
       return;
     }
+
+    // Also post the description as the entry-opener's first comment so it
+    // appears in the experiences feed (no longer hidden from the list).
+    if (data?.id) {
+      const firstComment = `${description.trim()}\n\n— ${t("entry.yourScore")}: ${rating}/10`;
+      await supabase.from("comments").insert({
+        entry_id: data.id,
+        user_id: user.id,
+        content: firstComment,
+        is_target_response: false,
+      });
+    }
+
+    setSubmitting(false);
     toast({ title: t("entry.created") });
     qc.invalidateQueries({ queryKey: ["entries"] });
     setOpen(false);

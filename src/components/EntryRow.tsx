@@ -4,9 +4,8 @@ import { MessageSquare, BadgeCheck, Star } from "lucide-react";
 import PlatformIcon from "./PlatformIcon";
 import UserHoverCard from "./UserHoverCard";
 import VoteButtons from "./VoteButtons";
-import GenerationBadge from "./GenerationBadge";
+import UserScore from "./UserScore";
 import { formatTargetDisplay } from "@/lib/platforms";
-import { generationFromOrder } from "@/lib/badges";
 import type { EntryRow as EntryT } from "@/hooks/useEntries";
 
 interface Props {
@@ -53,7 +52,7 @@ const EntryRow = ({ entry, index }: Props) => {
                 <UserHoverCard username={username}>
                   <span>@{username}</span>
                 </UserHoverCard>
-                <GenerationBadge generation={generationFromOrder(entry.profiles?.signup_order)} />
+                <UserScore userId={entry.user_id} />
                 <span>·</span>
                 <span>{timeAgo(entry.created_at, t)}</span>
               </div>
