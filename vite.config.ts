@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => ({
     // Ensure sw.js is copied to dist as-is (not processed by Vite)
     assetsInlineLimit: 0,
     rollupOptions: {
+      external: ["@tanstack/query-core"],
       input: {
         main: path.resolve(__dirname, "index.html"),
       },
