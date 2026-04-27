@@ -12,21 +12,6 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
-  build: {
-    // Ensure sw.js is copied to dist as-is (not processed by Vite)
-    assetsInlineLimit: 0,
-    rollupOptions: {
-      external: ["@tanstack/query-core"],
-      input: {
-        main: path.resolve(__dirname, "index.html"),
-      },
-      output: {
-        entryFileNames: "assets/[name]-[hash].js",
-        chunkFileNames: "assets/[name]-[hash].js",
-        assetFileNames: "assets/[name]-[hash][extname]",
-      },
-    },
-  },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
