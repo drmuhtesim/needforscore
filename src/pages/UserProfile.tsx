@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import GenerationBadge from "@/components/GenerationBadge";
 import LinkedAccountsPanel from "@/components/LinkedAccountsPanel";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,7 +104,9 @@ const UserProfile = () => {
 
         {user && user.id === profile.user_id && (
           <div className="mt-4">
-            <LinkedAccountsPanel />
+            <ErrorBoundary label="LinkedAccountsPanel">
+              <LinkedAccountsPanel />
+            </ErrorBoundary>
           </div>
         )}
 
