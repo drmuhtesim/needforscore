@@ -5,6 +5,7 @@ import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star, MessageSquar
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import GenerationBadge from "@/components/GenerationBadge";
+import LinkedAccountsPanel from "@/components/LinkedAccountsPanel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -99,6 +100,12 @@ const UserProfile = () => {
             </Button>
           )}
         </div>
+
+        {user && user.id === profile.user_id && (
+          <div className="mt-4">
+            <LinkedAccountsPanel />
+          </div>
+        )}
 
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mt-6 mb-3">
           {t("profile.entries")}
