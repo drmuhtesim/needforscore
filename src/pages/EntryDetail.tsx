@@ -234,12 +234,12 @@ const EntryDetail = () => {
               {t("moderation.removed")}
             </div>
           )}
-          <div className="flex items-start gap-4">
-            <PlatformIcon category={entry.category} className="h-7 w-7" withBg />
+          <div className="flex items-start gap-3">
+            <PlatformIcon category={entry.category} className="h-5 w-5" withBg />
             <div className="flex-1 min-w-0">
               {/* Title row */}
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-mono text-2xl text-foreground break-all">
+                <h1 className="font-mono text-lg sm:text-xl text-foreground break-all">
                   {formatTargetDisplay(entry.target, entry.category)}
                 </h1>
                 {entry.verified_target && (
