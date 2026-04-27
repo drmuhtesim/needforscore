@@ -25,6 +25,8 @@
     "password": "Şifre",
     "username": "Kullanıcı adı",
     "usernameHint": "3-30 karakter, küçük harf/rakam/_ veya .",
+    "usernameSaved": "Kullanıcı adı kaydedildi",
+    "usernameTakenTitle": "Kullanıcı adı kullanılamıyor",
     "passwordHint": "En az 8 karakter",
     "continueWithGoogle": "Google ile devam et",
     "or": "veya",
@@ -107,6 +109,8 @@
     "created": "Entry yayınlandı",
     "duplicateTitle": "Bu kullanıcı için zaten bir başlık var",
     "duplicateDesc": "Aynı sosyal medya kullanıcı adıyla birden fazla başlık açılamaz. Mevcut başlığa deneyim ekleyebilirsin.",
+    "scoreUserMissingTitle": "Score'da böyle bir kullanıcı yok",
+    "scoreUserMissingDesc": "Score kategorisinde başlık açabilmek için hedef kullanıcının Score'a kayıtlı olması gerekir.",
     "avgRatingTitle": "Yorum yapan kullanıcıların verdiği skorların ortalaması",
     "placeholder": {
       "score": "score kullanıcı adı (örn. ahmet)",
@@ -209,5 +213,14 @@
     "cannotMessageSelf": "Kendine mesaj gönderemezsin",
     "newMessage": "Yeni mesaj",
     "noMessages": "Henüz mesaj yok. İlk mesajı sen yaz."
+  },
+  "onboarding": {
+    "welcome": "Hoş geldin",
+    "chooseUsernameTitle": "Kullanıcı adını seç",
+    "chooseUsernameDesc": "Score'da seni temsil edecek benzersiz bir kullanıcı adı belirle. Daha sonra değiştiremezsin.",
+    "checking": "Kontrol ediliyor...",
+    "available": "Bu kullanıcı adı uygun",
+    "taken": "Bu kullanıcı adı alınmış",
+    "continue": "Devam et"
   }
 }

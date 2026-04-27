@@ -25,6 +25,8 @@
     "password": "Password",
     "username": "Username",
     "usernameHint": "3-30 chars, lowercase letters/numbers/_ or .",
+    "usernameSaved": "Username saved",
+    "usernameTakenTitle": "Username unavailable",
     "passwordHint": "At least 8 characters",
     "continueWithGoogle": "Continue with Google",
     "or": "or",
@@ -111,6 +113,8 @@
     "created": "Entry published",
     "duplicateTitle": "An entry already exists for this user",
     "duplicateDesc": "You can't open multiple entries for the same social media handle. Add your experience to the existing entry instead.",
+    "scoreUserMissingTitle": "No such user on Score",
+    "scoreUserMissingDesc": "To open an entry under the Score category, the target user must be a registered Score account.",
     "avgRatingTitle": "Average of scores given by commenters",
     "placeholder": {
       "score": "score username (e.g. ahmet)",
@@ -213,5 +217,14 @@
     "cannotMessageSelf": "You can't message yourself",
     "newMessage": "New message",
     "noMessages": "No messages yet. Send the first one."
+  },
+  "onboarding": {
+    "welcome": "Welcome",
+    "chooseUsernameTitle": "Choose your username",
+    "chooseUsernameDesc": "Pick a unique username that will represent you on Score. You won't be able to change it later.",
+    "checking": "Checking...",
+    "available": "Username is available",
+    "taken": "Username is taken",
+    "continue": "Continue"
   }
 }
