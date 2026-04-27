@@ -101,6 +101,12 @@ const UserProfile = () => {
           )}
         </div>
 
+        {user && user.id === profile.user_id && (
+          <div className="mt-4">
+            <LinkedAccountsPanel />
+          </div>
+        )}
+
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mt-6 mb-3">
           {t("profile.entries")}
         </h2>
