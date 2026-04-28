@@ -126,3 +126,37 @@
     border-image: linear-gradient(135deg, hsl(145 80% 42% / 0.5), hsl(280 70% 55% / 0.5)) 1;
   }
 }
+
+/* react-phone-number-input theme integration */
+.phone-input-wrapper .PhoneInput {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid hsl(var(--input));
+  background-color: hsl(var(--background));
+}
+.phone-input-wrapper .PhoneInputCountry {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.phone-input-wrapper .PhoneInputInput {
+  flex: 1;
+  background: transparent;
+  outline: none;
+  border: none;
+  color: hsl(var(--foreground));
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875rem;
+  min-width: 0;
+}
+.phone-input-wrapper .PhoneInputCountrySelect {
+  color: hsl(var(--foreground));
+  background: transparent;
+}
+.phone-input-wrapper .PhoneInputCountryIcon--border {
+  box-shadow: 0 0 0 1px hsl(var(--border));
+}

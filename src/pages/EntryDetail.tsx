@@ -45,9 +45,8 @@ const platformLabel: Record<string, string> = {
   instagram: "Instagram",
   tiktok: "TikTok",
   twitter: "X (Twitter)",
+  score: "Score",
   phone: "Telefon",
-  email: "E-posta",
-  website: "Web sitesi",
 };
 
 const EntryDetail = () => {
