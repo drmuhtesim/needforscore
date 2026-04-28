@@ -67,6 +67,7 @@ export type Database = {
           entry_id: string
           id: string
           is_target_response: boolean
+          parent_comment_id: string | null
           updated_at: string
           user_id: string
         }
@@ -78,6 +79,7 @@ export type Database = {
           entry_id: string
           id?: string
           is_target_response?: boolean
+          parent_comment_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -89,6 +91,7 @@ export type Database = {
           entry_id?: string
           id?: string
           is_target_response?: boolean
+          parent_comment_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -98,6 +101,13 @@ export type Database = {
             columns: ["entry_id"]
             isOneToOne: false
             referencedRelation: "entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
             referencedColumns: ["id"]
           },
         ]
@@ -422,14 +432,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
-      entry_category:
-        | "instagram"
-        | "tiktok"
-        | "twitter"
-        | "phone"
-        | "email"
-        | "website"
-        | "score"
+      entry_category: "instagram" | "tiktok" | "twitter" | "phone" | "score"
       entry_status: "safe" | "suspicious" | "danger"
       media_status: "pending" | "approved" | "rejected"
       social_platform: "instagram" | "x" | "tiktok"
@@ -561,15 +564,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
-      entry_category: [
-        "instagram",
-        "tiktok",
-        "twitter",
-        "phone",
-        "email",
-        "website",
-        "score",
-      ],
+      entry_category: ["instagram", "tiktok", "twitter", "phone", "score"],
       entry_status: ["safe", "suspicious", "danger"],
       media_status: ["pending", "approved", "rejected"],
       social_platform: ["instagram", "x", "tiktok"],
