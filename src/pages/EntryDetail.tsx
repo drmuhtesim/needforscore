@@ -246,10 +246,25 @@ const EntryDetail = () => {
 
   const allComments = commentsQ.data ?? [];
   const activeComments = allComments.filter((c) => !c.deleted_at);
-  const myActiveCount = user ? activeComments.filter((c) => c.user_id === user.id).length : 0;
+  // Only top-level comments count toward the 2-per-entry limit
+  const myActiveCount = user
+    ? activeComments.filter((c) => c.user_id === user.id && !c.parent_comment_id).length
+    : 0;
   const remaining = Math.max(0, 2 - myActiveCount);
-  const pageCount = Math.max(1, Math.ceil(allComments.length / PAGE_SIZE));
-  const pagedComments = allComments.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  // Group replies under their parent. Top-level only paginated.
+  const topLevel = allComments.filter((c) => !c.parent_comment_id);
+  const repliesByParent = new Map<string, CommentRow[]>();
+  allComments.forEach((c) => {
+    if (c.parent_comment_id) {
+      const arr = repliesByParent.get(c.parent_comment_id) ?? [];
+      arr.push(c);
+      repliesByParent.set(c.parent_comment_id, arr);
+    }
+  });
+  const pageCount = Math.max(1, Math.ceil(topLevel.length / PAGE_SIZE));
+  const pagedComments = topLevel.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
 
   return (
     <div className="min-h-screen bg-background">
