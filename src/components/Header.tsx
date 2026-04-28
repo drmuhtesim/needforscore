@@ -37,18 +37,22 @@ const Header = () => {
         </Link>
 
         <div className="flex items-center gap-2">
-          {/* Desktop: Add experience button. Mobile uses bottom bar to avoid overlap with brand. */}
+          {/* Desktop: Score it / Add experience CTA — bigger, eye-catching */}
           <div className="hidden md:inline-flex">
             <AddEntryDialog />
           </div>
-          {/* Mobile: Sign up shortcut when logged out (replaces add-experience overlap) */}
-          {!user && (
+          {/* Mobile: prominent CTA. If logged out → Sign up; if logged in → Score it (Add) */}
+          {!user ? (
             <Link
               to="/auth?mode=signup"
-              className="md:hidden inline-flex px-3 py-1.5 text-xs font-semibold rounded-md border border-[hsl(285_85%_60%/0.5)] text-[hsl(285_85%_70%)]"
+              className="md:hidden inline-flex items-center px-4 py-2 text-sm font-bold rounded-md text-white bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] shadow-md hover:opacity-90"
             >
               {t("header.signUp")}
             </Link>
+          ) : (
+            <div className="md:hidden inline-flex">
+              <AddEntryDialog />
+            </div>
           )}
           {user && (
             <Link
@@ -91,13 +95,13 @@ const Header = () => {
             <>
               <Link
                 to="/auth?mode=signup"
-                className="hidden md:inline-flex px-4 py-2 border border-[hsl(285_85%_60%/0.5)] text-[hsl(285_85%_70%)] text-sm font-semibold rounded-md hover:bg-[hsl(285_85%_60%/0.1)] transition-colors"
+                className="hidden md:inline-flex items-center px-5 py-2.5 text-base font-bold rounded-md text-white bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] shadow-md hover:opacity-90 transition-opacity"
               >
                 {t("header.signUp")}
               </Link>
               <Link
                 to="/auth?mode=signin"
-                className="hidden md:inline-flex px-4 py-2 bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white text-sm font-semibold rounded-md hover:opacity-90 transition-opacity shadow-sm"
+                className="hidden md:inline-flex px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-secondary transition-colors"
               >
                 {t("header.signIn")}
               </Link>
@@ -126,10 +130,10 @@ const Header = () => {
             </>
           ) : (
             <>
-              <Link to="/auth?mode=signup" className="block w-full text-center px-4 py-2 border border-[hsl(285_85%_60%/0.5)] text-[hsl(285_85%_70%)] text-sm font-semibold rounded-md">
+              <Link to="/auth?mode=signup" className="block w-full text-center px-4 py-3 text-base font-bold rounded-md text-white bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] shadow-md">
                 {t("header.signUp")}
               </Link>
-              <Link to="/auth?mode=signin" className="block w-full text-center px-4 py-2 bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white text-sm font-semibold rounded-md">
+              <Link to="/auth?mode=signin" className="block w-full text-center px-4 py-2 text-sm text-muted-foreground">
                 {t("header.signIn")}
               </Link>
             </>
