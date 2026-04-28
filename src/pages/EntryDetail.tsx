@@ -500,10 +500,99 @@ const EntryDetail = () => {
                         </div>
                       )}
 
-                      {/* Footer: votes */}
-                      <div className="mt-2 flex items-center gap-2">
-                        <VoteButtons commentId={c.id} initialScore={c.vote_score} />
-                      </div>
+                      {/* Footer: votes + share + reply */}
+                      {!cDeleted && (
+                        <div className="mt-2 flex items-center gap-1 text-muted-foreground">
+                          <VoteButtons commentId={c.id} initialScore={c.vote_score} />
+                          <button
+                            onClick={() => shareComment(c.id)}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded hover:bg-secondary hover:text-foreground transition-colors text-xs"
+                            aria-label={t("entry.share") as string}
+                          >
+                            <Share2 className="h-3.5 w-3.5" />
+                            <span className="hidden sm:inline">{t("entry.share")}</span>
+                          </button>
+                          {/* Reply button: only verified target may reply, and not on their own top-level comment */}
+                          {user && iVerified && !c.parent_comment_id && (
+                            <button
+                              onClick={() => {
+                                setReplyingTo(replyingTo === c.id ? null : c.id);
+                                setReplyContent("");
+                              }}
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded hover:bg-secondary hover:text-foreground transition-colors text-xs"
+                              aria-label={t("entry.reply") as string}
+                            >
+                              <Reply className="h-3.5 w-3.5" />
+                              <span className="hidden sm:inline">{t("entry.reply")}</span>
+                            </button>
+                          )}
+                          {user && !iVerified && !c.parent_comment_id && (
+                            <span className="text-[10px] italic ml-1 text-muted-foreground/70 hidden md:inline">
+                              {t("entry.replyOnlyTarget")}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Inline reply form */}
+                      {replyingTo === c.id && (
+                        <div className="mt-3 border-l-2 border-primary/40 pl-3">
+                          <textarea
+                            value={replyContent}
+                            onChange={(e) => setReplyContent(e.target.value)}
+                            maxLength={2000}
+                            rows={3}
+                            placeholder={t("entry.replyPlaceholder") as string}
+                            className="w-full text-sm bg-background border border-border rounded-md p-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                          />
+                          <div className="flex items-center justify-end gap-2 mt-2">
+                            <Button size="sm" variant="ghost" onClick={() => setReplyingTo(null)}>
+                              {t("actions.cancel")}
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={() => submitReply(c.id)}
+                              disabled={sendingReply || replyContent.trim().length < 1}
+                            >
+                              {sendingReply ? "..." : t("entry.sendReply")}
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Replies (always rendered under their parent) */}
+                      {(repliesByParent.get(c.id) ?? []).length > 0 && (
+                        <div className="mt-3 space-y-2 border-l-2 border-primary/30 pl-3">
+                          {(repliesByParent.get(c.id) ?? []).map((r) => {
+                            const rUsername = r.profiles?.username ?? "unknown";
+                            const rDeleted = !!r.deleted_at;
+                            const rTime = new Date(r.created_at).toLocaleDateString();
+                            return (
+                              <div key={r.id} className="text-sm bg-primary/5 rounded-md p-2.5">
+                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                  <UserHoverCard username={rUsername}>
+                                    <Link to={`/u/${rUsername}`} className="font-semibold text-foreground hover:underline">
+                                      @{rUsername}
+                                    </Link>
+                                  </UserHoverCard>
+                                  <BadgeCheck className="h-3 w-3 text-primary" />
+                                  <span>·</span>
+                                  <span>{rTime}</span>
+                                </div>
+                                {rDeleted ? (
+                                  <p className="mt-1 italic text-danger/80 text-xs">
+                                    {r.deleted_by === r.user_id ? t("moderation.removedByOwner") : t("moderation.removed")}
+                                  </p>
+                                ) : (
+                                  <p className="mt-1 text-foreground/95 whitespace-pre-wrap break-words">
+                                    {cleanCommentContent(r.content)}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </article>
