@@ -7,6 +7,8 @@ import {
   BadgeCheck,
   ExternalLink,
   Star,
+  Share2,
+  Reply,
 } from "lucide-react";
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
@@ -32,6 +34,7 @@ interface CommentRow {
   user_id: string;
   content: string;
   is_target_response: boolean;
+  parent_comment_id: string | null;
   created_at: string;
   deleted_at: string | null;
   deleted_by: string | null;
