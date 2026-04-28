@@ -15,7 +15,6 @@ import VoteButtons from "@/components/VoteButtons";
 import ContentActionsMenu from "@/components/ContentActionsMenu";
 import EditEntryDialog from "@/components/EditEntryDialog";
 import EditCommentDialog from "@/components/EditCommentDialog";
-import UserScore from "@/components/UserScore";
 import CommentForm from "@/components/CommentForm";
 import { extractRatingFromComment, cleanCommentContent } from "@/lib/commentRating";
 import CommentMediaGallery, { type MediaRow } from "@/components/comment-media/CommentMediaGallery";
@@ -286,7 +285,6 @@ const EntryDetail = () => {
                       <UserHoverCard username={entry.profiles.username}>
                         <span className="text-foreground/80 hover:text-primary">@{entry.profiles.username}</span>
                       </UserHoverCard>
-                      <UserScore userId={entry.user_id} />
                     </>
                   ) : null}
                 </div>
