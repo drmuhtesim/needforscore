@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { ExternalLink, Plus } from "lucide-react";
 import { z } from "zod";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +27,8 @@ import { buildProfileUrl, cleanTarget, normalizeTarget, validateTarget } from "@
 
 type Cat = Exclude<CategoryType, "all">;
 
-const categories: Cat[] = ["score", "instagram", "tiktok", "twitter", "phone", "email", "website"];
+// Order requested: instagram, tiktok, x, score, phone
+const categories: Cat[] = ["instagram", "tiktok", "twitter", "score", "phone"];
 
 interface AddEntryDialogProps {
   trigger?: React.ReactNode;
@@ -37,7 +40,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [category, setCategory] = useState<Cat>("score");
+  const [category, setCategory] = useState<Cat>("instagram");
   const [target, setTarget] = useState("");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
@@ -55,7 +58,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const profileUrl = formatValid ? buildProfileUrl(target, category) : null;
 
   const reset = () => {
-    setCategory("score");
+    setCategory("instagram");
     setTarget("");
     setRating(5);
     setDescription("");
@@ -77,7 +80,6 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
 
     const normalized = normalizeTarget(target, category);
 
-    // For Score category: verify the username actually exists in profiles
     if (category === "score") {
       const { data: existing } = await supabase
         .from("profiles")
@@ -95,11 +97,10 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
       }
     }
 
-    // Duplicate guard (UI side) — fast feedback before INSERT
     const { data: existingEntry } = await supabase
       .from("entries")
       .select("id")
-      .eq("category", category)
+      .eq("category", category as any)
       .eq("target_normalized", normalized)
       .is("deleted_at", null)
       .maybeSingle();
@@ -115,13 +116,15 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
       return;
     }
 
+    const cleanedTarget = category === "phone" ? target : cleanTarget(target).toLowerCase();
+
     const { data, error } = await supabase
       .from("entries")
       .insert({
         user_id: user.id,
-        target: cleanTarget(target),
+        target: cleanedTarget,
         target_normalized: normalized,
-        category,
+        category: category as any,
         description: description.trim(),
         rating,
       })
@@ -140,10 +143,8 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
       return;
     }
 
-    // Also post the description as the entry-opener's first comment so it
-    // appears in the experiences feed (no longer hidden from the list).
     if (data?.id) {
-      const firstComment = `${description.trim()}\n\n— ${t("entry.yourScore")}: ${rating}/10`;
+      const firstComment = `${description.trim()}\n\n${rating}/10`;
       await supabase.from("comments").insert({
         entry_id: data.id,
         user_id: user.id,
@@ -180,7 +181,6 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Compact platform picker: just icons */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label>{t("entry.category")}</Label>
@@ -193,7 +193,10 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
                   <button
                     key={c}
                     type="button"
-                    onClick={() => setCategory(c)}
+                    onClick={() => {
+                      setCategory(c);
+                      setTarget("");
+                    }}
                     aria-label={t(`categories.${c}`)}
                     title={t(`categories.${c}`) as string}
                     className={`h-10 w-10 inline-flex items-center justify-center rounded-md border transition-all ${
@@ -209,16 +212,30 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
             </div>
           </div>
 
-          {/* Target */}
           <div className="space-y-2">
             <Label htmlFor="target">{t("entry.target")}</Label>
-            <Input
-              id="target"
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-              placeholder={t(`entry.placeholder.${category}`)}
-              className="font-mono"
-            />
+            {category === "phone" ? (
+              <div className="phone-input-wrapper">
+                <PhoneInput
+                  international
+                  defaultCountry="TR"
+                  value={target}
+                  onChange={(v) => setTarget(v ?? "")}
+                  placeholder={t(`entry.placeholder.phone`) as string}
+                  className="font-mono"
+                />
+              </div>
+            ) : (
+              <Input
+                id="target"
+                value={target}
+                onChange={(e) => setTarget(e.target.value.toLowerCase())}
+                placeholder={t(`entry.placeholder.${category}`)}
+                className="font-mono"
+                autoCapitalize="off"
+                autoCorrect="off"
+              />
+            )}
             {target.trim() && (
               <div className="text-xs">
                 {formatValid ? (
@@ -236,13 +253,14 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
                     )}
                   </div>
                 ) : (
-                  <span className="text-danger">✗ {t("entry.formatBad")}</span>
+                  <span className="text-danger">
+                    ✗ {category === "phone" ? t("entry.phoneInvalid") : t("entry.formatBad")}
+                  </span>
                 )}
               </div>
             )}
           </div>
 
-          {/* Rating */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="rating">{t("entry.rating")}</Label>
@@ -259,7 +277,6 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
             />
           </div>
 
-          {/* Description — büyük alan */}
           <div className="space-y-2">
             <Label htmlFor="desc">{t("entry.description")}</Label>
             <Textarea

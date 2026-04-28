@@ -8,7 +8,7 @@ interface Props {
   onChange: (cat: CategoryType) => void;
 }
 
-const categories: CategoryType[] = ["all", "score", "instagram", "tiktok", "twitter", "phone", "email", "website"];
+const categories: CategoryType[] = ["all", "instagram", "tiktok", "twitter", "score", "phone"];
 
 const MobileCategoryBar = ({ active, onChange }: Props) => {
   const { t } = useTranslation();
