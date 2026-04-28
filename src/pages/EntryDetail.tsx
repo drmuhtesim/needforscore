@@ -65,6 +65,46 @@ const EntryDetail = () => {
   const [editEntryOpen, setEditEntryOpen] = useState(false);
   const [editingComment, setEditingComment] = useState<CommentRow | null>(null);
   const [page, setPage] = useState(1);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyContent, setReplyContent] = useState("");
+  const [sendingReply, setSendingReply] = useState(false);
+
+  const shareComment = async (commentId: string) => {
+    const url = `${window.location.origin}/e/${id}#c-${commentId}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast({ title: t("entry.shareCopied") });
+      }
+    } catch {
+      /* user cancelled */
+    }
+  };
+
+  const submitReply = async (parentCommentId: string) => {
+    if (!user || !id) return;
+    const text = replyContent.trim();
+    if (text.length < 1 || text.length > 2000) return;
+    setSendingReply(true);
+    const { error } = await supabase.from("comments").insert({
+      entry_id: id,
+      user_id: user.id,
+      content: text,
+      is_target_response: true,
+      parent_comment_id: parentCommentId,
+    } as any);
+    setSendingReply(false);
+    if (error) {
+      toast({ title: t("entry.failed"), description: error.message, variant: "destructive" });
+      return;
+    }
+    setReplyingTo(null);
+    setReplyContent("");
+    qc.invalidateQueries({ queryKey: ["comments", id] });
+  };
+
 
   const commentsQ = useQuery({
     queryKey: ["comments", id],
