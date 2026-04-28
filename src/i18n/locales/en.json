@@ -17,10 +17,10 @@
     "profile": "Profile"
   },
   "auth": {
-    "signInTitle": "Welcome back",
-    "signInSubtitle": "Sign in to your account to continue",
-    "signUpTitle": "Create an account",
-    "signUpSubtitle": "Join the community and share your reports",
+    "signInTitle": "Welcome back to Score",
+    "signInSubtitle": "Sign in to your Score account to continue",
+    "signUpTitle": "Create a Score account",
+    "signUpSubtitle": "Join the community and share your experiences",
     "email": "Email",
     "password": "Password",
     "username": "Username",
@@ -28,7 +28,7 @@
     "usernameSaved": "Username saved",
     "usernameTakenTitle": "Username unavailable",
     "passwordHint": "At least 8 characters",
-    "continueWithGoogle": "Continue with Google",
+    "continueWithGoogle": "Sign in to Score",
     "or": "or",
     "noAccount": "Don't have an account?",
     "haveAccount": "Already have an account?",
@@ -42,26 +42,20 @@
     "backHome": "Back home"
   },
   "ticker": {
-    "motto": "Trust layer of internet. Score everyone, don't get scammed!",
-    "bankFraud": "05XX 123 45 67 - Bank fraud",
-    "safeApproved": "@guvenilir_satis - Safe approved",
-    "phishing": "info@kampanya-ozel.com - 567 reports",
-    "suspicious": "@xtrader_signals - Suspicious"
+    "motto": "Score: Tell fake accounts, bad service and the good ones apart with Score. Give everyone their score."
   },
   "search": {
-    "placeholder": "Search Instagram, TikTok, phone, email or website...",
+    "placeholder": "Search Instagram, TikTok, X, Score or phone...",
     "button": "Search"
   },
   "categories": {
     "title": "Categories",
     "all": "All",
-    "score": "Score",
     "instagram": "Instagram",
     "tiktok": "TikTok",
     "twitter": "X (Twitter)",
-    "phone": "Phone",
-    "email": "Email",
-    "website": "Website"
+    "score": "Score",
+    "phone": "Phone"
   },
   "filters": {
     "featured": "Featured",
@@ -94,11 +88,11 @@
     "dayAgo_other": "{{count}} days ago"
   },
   "entry": {
-    "add": "Add Experience",
-    "addTitle": "Share an experience",
+    "add": "Score it",
+    "addTitle": "Score it — Share your experience",
     "addDesc": "Share your experience. Format will be checked before posting.",
     "category": "Category",
-    "target": "Target (username, phone, email or website)",
+    "target": "Target (username or phone)",
     "rating": "Trust score (1-10)",
     "description": "Description",
     "descPlaceholder": "Describe your experience in detail (min 10 characters)...",
@@ -111,8 +105,8 @@
     "checkFields": "Please check the fields and try again.",
     "failed": "Failed",
     "created": "Entry published",
-    "duplicateTitle": "An entry already exists for this user",
-    "duplicateDesc": "You can't open multiple entries for the same social media handle. Add your experience to the existing entry instead.",
+    "duplicateTitle": "An entry already exists for this target",
+    "duplicateDesc": "You can't open multiple entries for the same target. Add your experience to the existing entry instead.",
     "scoreUserMissingTitle": "No such user on Score",
     "scoreUserMissingDesc": "To open an entry under the Score category, the target user must be a registered Score account.",
     "avgRatingTitle": "Average of scores given by commenters",
@@ -121,9 +115,7 @@
       "instagram": "username (e.g. nikelab)",
       "tiktok": "username (e.g. tiktok)",
       "twitter": "handle (e.g. elonmusk)",
-      "phone": "+1 555 123 4567",
-      "email": "name@example.com",
-      "website": "example.com"
+      "phone": "+1 555 123 4567"
     },
     "by": "by",
     "verifiedTarget": "Verified target",
@@ -160,7 +152,14 @@
     "page": "Page",
     "of": "/",
     "prev": "Prev",
-    "next": "Next"
+    "next": "Next",
+    "reply": "Reply",
+    "share": "Share",
+    "shareCopied": "Link copied",
+    "replyOnlyTarget": "Only the verified target can reply",
+    "replyPlaceholder": "Write your reply...",
+    "sendReply": "Send reply",
+    "phoneInvalid": "Please enter a valid phone number"
   },
   "profile": {
     "viewProfile": "View profile",

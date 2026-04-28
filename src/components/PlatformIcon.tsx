@@ -1,15 +1,13 @@
-import { Instagram, Phone, Mail, Globe, Globe2 } from "lucide-react";
+import { Instagram, Phone, Globe2 } from "lucide-react";
 import type { CategoryType } from "./CategorySidebar";
 import scoreIcon from "@/assets/score-icon.jpeg";
 
 interface Props {
   category: CategoryType;
   className?: string;
-  /** Render with brand color background tint (rounded). */
   withBg?: boolean;
 }
 
-// 2026 brand SVGs for X and TikTok
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/>
@@ -28,12 +26,9 @@ const meta: Record<Exclude<CategoryType, "score">, { Icon: any; color: string; b
   tiktok: { Icon: TikTokIcon, color: "text-foreground", bg: "bg-foreground/10" },
   twitter: { Icon: XIcon, color: "text-foreground", bg: "bg-foreground/10" },
   phone: { Icon: Phone, color: "text-[hsl(145_70%_55%)]", bg: "bg-[hsl(145_70%_55%/0.12)]" },
-  email: { Icon: Mail, color: "text-[hsl(210_85%_60%)]", bg: "bg-[hsl(210_85%_60%/0.12)]" },
-  website: { Icon: Globe, color: "text-[hsl(35_90%_60%)]", bg: "bg-[hsl(35_90%_60%/0.12)]" },
 };
 
 const PlatformIcon = ({ category, className = "h-5 w-5", withBg = false }: Props) => {
-  // Score uses the brand logo image instead of a Lucide icon
   if (category === "score") {
     if (withBg) {
       return (

@@ -17,9 +17,9 @@
     "profile": "Profil"
   },
   "auth": {
-    "signInTitle": "Tekrar hoş geldin",
-    "signInSubtitle": "Devam etmek için hesabına giriş yap",
-    "signUpTitle": "Hesap oluştur",
+    "signInTitle": "Score'a tekrar hoş geldin",
+    "signInSubtitle": "Devam etmek için Score hesabına giriş yap",
+    "signUpTitle": "Score hesabı oluştur",
     "signUpSubtitle": "Topluluğa katıl ve deneyimlerini paylaş",
     "email": "E-posta",
     "password": "Şifre",
@@ -28,7 +28,7 @@
     "usernameSaved": "Kullanıcı adı kaydedildi",
     "usernameTakenTitle": "Kullanıcı adı kullanılamıyor",
     "passwordHint": "En az 8 karakter",
-    "continueWithGoogle": "Google ile devam et",
+    "continueWithGoogle": "Score'a giriş yap",
     "or": "veya",
     "noAccount": "Hesabın yok mu?",
     "haveAccount": "Zaten hesabın var mı?",
@@ -42,22 +42,20 @@
     "backHome": "Anasayfaya dön"
   },
   "ticker": {
-    "motto": "Gerçek deneyimlere dayalı skorlarla, kime güveneceğini bil. Sen de deneyimini skorla!"
+    "motto": "Score: Sahte hesapları, kötü hizmeti ve iyi olanları Score ile ayırt et. Herkese puanını ver."
   },
   "search": {
-    "placeholder": "Instagram, TikTok, telefon, e-posta veya web sitesi ara...",
+    "placeholder": "Instagram, TikTok, X, Score veya telefon ara...",
     "button": "Ara"
   },
   "categories": {
     "title": "Kategoriler",
     "all": "Tümü",
-    "score": "Score",
     "instagram": "Instagram",
     "tiktok": "TikTok",
     "twitter": "X (Twitter)",
-    "phone": "Telefon",
-    "email": "E-posta",
-    "website": "Web Sitesi"
+    "score": "Score",
+    "phone": "Telefon"
   },
   "filters": {
     "featured": "Öne çıkanlar",
@@ -90,11 +88,11 @@
     "dayAgo_other": "{{count}} gün önce"
   },
   "entry": {
-    "add": "Deneyim Ekle",
-    "addTitle": "Deneyimini paylaş",
+    "add": "Puanla",
+    "addTitle": "Puanla — Deneyimini paylaş",
     "addDesc": "Deneyimini paylaş. Yayınlamadan önce format kontrol edilecek.",
     "category": "Kategori",
-    "target": "Hedef (kullanıcı adı, telefon, e-posta veya site)",
+    "target": "Hedef (kullanıcı adı veya telefon)",
     "rating": "Güven puanı (1-10)",
     "description": "Açıklama",
     "descPlaceholder": "Deneyimini detaylı anlat (en az 10 karakter)...",
@@ -107,8 +105,8 @@
     "checkFields": "Lütfen alanları kontrol edip tekrar dene.",
     "failed": "Başarısız",
     "created": "Entry yayınlandı",
-    "duplicateTitle": "Bu kullanıcı için zaten bir başlık var",
-    "duplicateDesc": "Aynı sosyal medya kullanıcı adıyla birden fazla başlık açılamaz. Mevcut başlığa deneyim ekleyebilirsin.",
+    "duplicateTitle": "Bu hedef için zaten bir başlık var",
+    "duplicateDesc": "Aynı hedefe birden fazla başlık açılamaz. Mevcut başlığa deneyim ekleyebilirsin.",
     "scoreUserMissingTitle": "Score'da böyle bir kullanıcı yok",
     "scoreUserMissingDesc": "Score kategorisinde başlık açabilmek için hedef kullanıcının Score'a kayıtlı olması gerekir.",
     "avgRatingTitle": "Yorum yapan kullanıcıların verdiği skorların ortalaması",
@@ -117,9 +115,7 @@
       "instagram": "kullanıcı adı (örn. nikelab)",
       "tiktok": "kullanıcı adı (örn. tiktok)",
       "twitter": "kullanıcı adı (örn. elonmusk)",
-      "phone": "+90 555 123 45 67",
-      "email": "ad@ornek.com",
-      "website": "ornek.com"
+      "phone": "+90 555 123 45 67"
     },
     "by": "tarafından",
     "verifiedTarget": "Doğrulanmış hedef",
@@ -156,7 +152,14 @@
     "page": "Sayfa",
     "of": "/",
     "prev": "Önceki",
-    "next": "Sonraki"
+    "next": "Sonraki",
+    "reply": "Yanıtla",
+    "share": "Paylaş",
+    "shareCopied": "Bağlantı kopyalandı",
+    "replyOnlyTarget": "Sadece doğrulanmış hedef yanıt verebilir",
+    "replyPlaceholder": "Yanıtını yaz...",
+    "sendReply": "Yanıt gönder",
+    "phoneInvalid": "Geçerli bir telefon numarası giriniz"
   },
   "profile": {
     "viewProfile": "Profili gör",
