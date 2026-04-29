@@ -202,13 +202,13 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-lg max-h-[92vh] sm:max-h-[88vh] p-0 overflow-hidden flex flex-col">
+        <DialogHeader className="px-4 sm:px-6 pt-5 pb-3 border-b border-border/40 shrink-0">
           <DialogTitle>{t("entry.addTitle")}</DialogTitle>
-          <DialogDescription>{t("entry.addDesc")}</DialogDescription>
+          <DialogDescription className="text-xs">{t("entry.addDesc")}</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto px-4 sm:px-6 py-4 flex-1 min-h-0">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label>{t("entry.category")}</Label>
@@ -372,7 +372,9 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
             <p className="text-xs text-muted-foreground text-right font-mono">{description.length}/2000</p>
             <MediaUploader files={media} onChange={setMedia} max={10} disabled={submitting} />
           </div>
+        </div>
 
+        <div className="px-4 sm:px-6 py-3 border-t border-border/40 bg-background/95 backdrop-blur shrink-0">
           <Button
             onClick={submit}
             disabled={submitting || !formatValid || description.trim().length < 10}
