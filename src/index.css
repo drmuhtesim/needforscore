@@ -146,23 +146,14 @@
     filter: drop-shadow(0 1px 0 hsl(0 0% 0% / 0.06)) drop-shadow(0 0 14px hsl(220 95% 55% / 0.25));
   }
   .dark .hero-gradient-text {
-    background: linear-gradient(
-      100deg,
-      hsl(140 100% 70%) 0%,
-      hsl(170 100% 72%) 16%,
-      hsl(195 100% 75%) 32%,
-      hsl(265 100% 80%) 50%,
-      hsl(310 100% 78%) 68%,
-      hsl(45 100% 70%) 84%,
-      hsl(140 100% 70%) 100%
-    );
-    background-size: 240% auto;
-    -webkit-text-fill-color: transparent;
-    filter:
-      drop-shadow(0 0 6px hsl(140 100% 60% / 0.85))
-      drop-shadow(0 0 18px hsl(195 100% 60% / 0.55))
-      drop-shadow(0 0 32px hsl(280 100% 65% / 0.4));
-    animation: hero-shimmer 5s linear infinite, hero-neon-flicker 4.2s ease-in-out infinite;
+    background: none;
+    -webkit-text-fill-color: hsl(210 25% 96%);
+    color: hsl(210 25% 96%);
+    filter: drop-shadow(0 0 10px hsl(145 80% 50% / 0.25));
+    animation: none;
+  }
+  .dark .hero-sweep::after {
+    display: none;
   }
 
   /* Light-sweep highlight that moves across the gradient text */
