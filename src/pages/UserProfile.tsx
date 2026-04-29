@@ -171,7 +171,8 @@ const UserProfile = () => {
         </h2>
         <div className="space-y-2">
           {entries.map((e: any) => {
-            const s = statusMeta[e.status as keyof typeof statusMeta] ?? statusMeta.suspicious;
+            const tone = riskFromRating(e.rating);
+            const s = statusMeta[tone];
             const StatusIcon = s.Icon;
             return (
               <Link
@@ -185,10 +186,10 @@ const UserProfile = () => {
                   <p className="text-xs text-muted-foreground truncate">{e.description}</p>
                 </div>
                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${s.bg} ${s.color}`}>
-                  <StatusIcon className="h-3 w-3" /> {t(`status.${e.status}`)}
+                  <StatusIcon className="h-3 w-3" /> {t(`status.${tone}`)}
                 </span>
                 <span className="text-xs font-mono text-suspicious flex items-center gap-1">
-                  <Star className="h-3 w-3 fill-current" />{e.rating}
+                  <Star className="h-3 w-3 fill-current" />{e.rating ?? "—"}
                 </span>
               </Link>
             );
