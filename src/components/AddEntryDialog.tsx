@@ -370,6 +370,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
               className="min-h-[180px] resize-y"
             />
             <p className="text-xs text-muted-foreground text-right font-mono">{description.length}/2000</p>
+            <MediaUploader files={media} onChange={setMedia} max={10} disabled={submitting} />
           </div>
 
           <Button
