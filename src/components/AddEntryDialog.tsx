@@ -22,6 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import PlatformIcon from "./PlatformIcon";
+import MediaUploader, { type PendingFile } from "./comment-media/MediaUploader";
 import type { CategoryType } from "./CategorySidebar";
 import { buildProfileUrl, cleanTarget, normalizeTarget, validateTarget } from "@/lib/platforms";
 
@@ -44,6 +45,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const [target, setTarget] = useState("");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
+  const [media, setMedia] = useState<PendingFile[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const handleOpen = (next: boolean) => {
@@ -62,6 +64,8 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     setTarget("");
     setRating(5);
     setDescription("");
+    media.forEach((m) => URL.revokeObjectURL(m.previewUrl));
+    setMedia([]);
   };
 
   const submit = async () => {
@@ -145,12 +149,36 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
 
     if (data?.id) {
       const firstComment = `${description.trim()}\n\n${rating}/10`;
-      await supabase.from("comments").insert({
-        entry_id: data.id,
-        user_id: user.id,
-        content: firstComment,
-        is_target_response: false,
-      });
+      const { data: insertedComment } = await supabase
+        .from("comments")
+        .insert({
+          entry_id: data.id,
+          user_id: user.id,
+          content: firstComment,
+          is_target_response: false,
+        })
+        .select("id")
+        .single();
+
+      // Upload media attached to the first comment
+      if (insertedComment?.id && media.length > 0) {
+        for (const m of media) {
+          const ext = m.file.name.split(".").pop()?.toLowerCase() || "jpg";
+          const path = `${user.id}/${insertedComment.id}/${crypto.randomUUID()}.${ext}`;
+          const { error: upErr } = await supabase.storage
+            .from("comment-media")
+            .upload(path, m.file, { contentType: m.file.type, upsert: false });
+          if (upErr) {
+            toast({ title: t("entry.failed"), description: upErr.message, variant: "destructive" });
+            continue;
+          }
+          await supabase.from("comment_media").insert({
+            comment_id: insertedComment.id,
+            user_id: user.id,
+            storage_path: path,
+          });
+        }
+      }
     }
 
     setSubmitting(false);
@@ -342,6 +370,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
               className="min-h-[180px] resize-y"
             />
             <p className="text-xs text-muted-foreground text-right font-mono">{description.length}/2000</p>
+            <MediaUploader files={media} onChange={setMedia} max={10} disabled={submitting} />
           </div>
 
           <Button
