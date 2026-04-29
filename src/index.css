@@ -240,6 +240,13 @@
     0%, 100% { opacity: 0.55; transform: scale(1); }
     50%      { opacity: 1;    transform: scale(1.08); }
   }
+  @keyframes hero-neon-flicker {
+    0%, 100%       { opacity: 1; }
+    42%, 44%       { opacity: 0.82; }
+    43%            { opacity: 0.6; }
+    70%            { opacity: 0.94; }
+    72%            { opacity: 1; }
+  }
   .hero-line {
     opacity: 0;
     animation: hero-line-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
