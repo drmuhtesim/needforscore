@@ -376,19 +376,13 @@ const EntryDetail = () => {
             </h2>
           </div>
 
-          {/* Comment / experience form */}
-          {user && !entryDeleted ? (
-            <CommentForm
-              entryId={entry.id}
-              canReplyAsTarget={iVerified}
-              remaining={remaining}
-            />
-          ) : !user ? (
+          {/* Anonim kullanıcılar için giriş çağrısı yorumların üstünde kalır */}
+          {!user && (
             <div className="border border-border rounded-md p-4 mb-5 text-sm text-muted-foreground">
               <Link to="/auth?mode=signin" className="text-primary hover:underline">{t("header.signIn")}</Link>{" "}
               {t("entry.signInToComment")}
             </div>
-          ) : null}
+          )}
 
           {/* Comment list — Twitter/X style cards */}
           <div className="divide-y divide-border/60 border-y border-border/60">
