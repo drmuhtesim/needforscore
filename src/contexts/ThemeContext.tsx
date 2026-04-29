@@ -14,9 +14,9 @@ const STORAGE_KEY = "safenet-theme";
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === "undefined") return "dark";
+    if (typeof window === "undefined") return "light";
     const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    return stored === "light" || stored === "dark" ? stored : "dark";
+    return stored === "light" || stored === "dark" ? stored : "light";
   });
 
   useEffect(() => {
