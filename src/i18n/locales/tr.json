@@ -1,4 +1,10 @@
 {
+  "status": {
+    "safe": "Güvenli",
+    "suspicious": "Şüpheli",
+    "danger": "Riskli",
+    "neutral": "Puanlanmadı"
+  },
   "header": {
     "signUp": "üye ol",
     "signIn": "giriş yap",

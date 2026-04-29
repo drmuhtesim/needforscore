@@ -1,4 +1,10 @@
 {
+  "status": {
+    "safe": "Safe",
+    "suspicious": "Suspicious",
+    "danger": "Risky",
+    "neutral": "Not rated"
+  },
   "header": {
     "signUp": "sign up",
     "signIn": "sign in",
