@@ -598,6 +598,17 @@ const EntryDetail = () => {
           </div>
 
           <Pagination page={page} pageCount={pageCount} onChange={setPage} />
+
+          {/* Yorum formu — son yorumun altında */}
+          {user && !entryDeleted && (
+            <div className="mt-6">
+              <CommentForm
+                entryId={entry.id}
+                canReplyAsTarget={iVerified}
+                remaining={remaining}
+              />
+            </div>
+          )}
         </div>
       </div>
 
