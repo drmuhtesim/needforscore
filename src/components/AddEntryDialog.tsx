@@ -45,6 +45,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const [target, setTarget] = useState("");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
+  const [media, setMedia] = useState<PendingFile[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const handleOpen = (next: boolean) => {
@@ -63,6 +64,8 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     setTarget("");
     setRating(5);
     setDescription("");
+    media.forEach((m) => URL.revokeObjectURL(m.previewUrl));
+    setMedia([]);
   };
 
   const submit = async () => {
