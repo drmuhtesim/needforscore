@@ -1,9 +1,10 @@
-import { Home, Plus, User as UserIcon, LogIn, Bell, MessageSquare } from "lucide-react";
+import { Home, User as UserIcon, LogIn, Bell, MessageSquare } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import AddEntryDialog from "./AddEntryDialog";
 import { toast } from "sonner";
+import scoreLogo from "@/assets/score-logo.jpeg";
 
 /**
  * Mobil cihazlarda sayfanın en altında sabit duran navigasyon barı.
@@ -62,9 +63,9 @@ const MobileBottomBar = () => {
               <button
                 type="button"
                 aria-label={t("entry.add") as string}
-                className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-md -mt-3 active:scale-95 transition-transform"
+                className="flex items-center justify-center h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary shadow-[0_0_18px_hsl(var(--primary)/0.55)] -mt-3 active:scale-95 transition-transform bg-card"
               >
-                <Plus className="h-5 w-5" />
+                <img src={scoreLogo} alt="" className="h-full w-full object-cover" />
               </button>
             }
           />
