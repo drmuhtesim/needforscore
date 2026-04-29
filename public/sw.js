@@ -1,10 +1,7 @@
-const CACHE_NAME = "needforscore-v3";
-const STATIC_ASSETS = [
-  "/favicon.png",
-  "/manifest.json",
-];
+const CACHE_NAME = "needforscore-v5";
+const STATIC_ASSETS = ["/favicon.png", "/manifest.json"];
 
-// Install: cache static assets and activate immediately
+// Install: pre-cache minimal static assets and activate immediately
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
@@ -13,71 +10,93 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-// Activate: clean old caches and take control
+// Activate: drop old caches and take control of all clients
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) =>
-      Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      )
-    )
+    (async () => {
+      const names = await caches.keys();
+      await Promise.all(
+        names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))
+      );
+      // @ts-ignore
+      await self.clients.claim();
+    })()
   );
-  // @ts-ignore
-  self.clients.claim();
 });
 
-// Fetch strategy:
-// - HTML / navigation requests: ALWAYS network-first so users see latest deploys
-// - API (rest/auth): network-first with cache fallback
-// - Other static assets: cache-first
+// Listen for SKIP_WAITING from the page (so newly installed SW can take over immediately)
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    // @ts-ignore
+    self.skipWaiting();
+  }
+});
+
+/**
+ * Fetch strategy:
+ * - HTML / navigations: NETWORK-ONLY (no cache fallback) so new deploys are always seen.
+ * - Hashed build assets under /assets/: cache-first (immutable, hash changes per build).
+ * - Supabase REST/Auth: network-only.
+ * - Other static (favicon, manifest, images): cache-first with network fallback.
+ */
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
+
   const isNavigation =
     request.mode === "navigate" ||
-    (request.destination === "document") ||
+    request.destination === "document" ||
     request.headers.get("accept")?.includes("text/html");
 
-  // Never cache HTML/navigations — always go to network so deploys are visible
+  // Always go to network for HTML so deploys propagate immediately
   if (isNavigation) {
     event.respondWith(
-      fetch(request).catch(() =>
-        caches.match("/index.html").then((r) => r || new Response("Offline", { status: 503 }))
+      fetch(request, { cache: "no-store" }).catch(
+        () => new Response("Offline", { status: 503 })
       )
     );
     return;
   }
 
-  // Supabase / API: network-first
-  if (url.pathname.startsWith("/rest/") || url.pathname.startsWith("/auth/")) {
+  // Don't cache Supabase API responses
+  if (
+    url.pathname.startsWith("/rest/") ||
+    url.pathname.startsWith("/auth/") ||
+    url.hostname.endsWith("supabase.co")
+  ) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  // Hashed Vite build assets — safe to cache aggressively (filename changes per build)
+  if (url.pathname.startsWith("/assets/")) {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request).then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
           return response;
-        })
-        .catch(() =>
-          caches.match(request).then((r) => r || new Response("Offline", { status: 503 }))
-        )
+        });
+      })
     );
     return;
   }
 
-  // Static assets: cache first, fallback to network
+  // Other static assets: cache-first with network fallback
   event.respondWith(
-    caches.match(request).then((response) => {
-      if (response) return response;
-      return fetch(request).then((fetchResponse) => {
-        if (fetchResponse.ok) {
-          const clone = fetchResponse.clone();
+    caches.match(request).then((cached) => {
+      if (cached) return cached;
+      return fetch(request).then((response) => {
+        if (response.ok && url.origin === self.location.origin) {
+          const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
-        return fetchResponse;
+        return response;
       });
     })
   );
