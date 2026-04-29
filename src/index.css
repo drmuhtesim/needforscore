@@ -148,15 +148,21 @@
   .dark .hero-gradient-text {
     background: linear-gradient(
       100deg,
-      hsl(145 90% 55%) 0%,
-      hsl(180 90% 60%) 20%,
-      hsl(220 95% 70%) 40%,
-      hsl(280 90% 70%) 60%,
-      hsl(330 90% 65%) 80%,
-      hsl(145 90% 55%) 100%
+      hsl(140 100% 70%) 0%,
+      hsl(170 100% 72%) 16%,
+      hsl(195 100% 75%) 32%,
+      hsl(265 100% 80%) 50%,
+      hsl(310 100% 78%) 68%,
+      hsl(45 100% 70%) 84%,
+      hsl(140 100% 70%) 100%
     );
-    background-size: 220% auto;
-    filter: drop-shadow(0 0 18px hsl(145 80% 50% / 0.35)) drop-shadow(0 0 28px hsl(280 90% 65% / 0.2));
+    background-size: 240% auto;
+    -webkit-text-fill-color: transparent;
+    filter:
+      drop-shadow(0 0 6px hsl(140 100% 60% / 0.85))
+      drop-shadow(0 0 18px hsl(195 100% 60% / 0.55))
+      drop-shadow(0 0 32px hsl(280 100% 65% / 0.4));
+    animation: hero-shimmer 5s linear infinite, hero-neon-flicker 4.2s ease-in-out infinite;
   }
 
   /* Light-sweep highlight that moves across the gradient text */
@@ -205,15 +211,20 @@
   .dark .hero-glow-accent {
     background: linear-gradient(
       90deg,
-      hsl(38 100% 60%) 0%,
-      hsl(20 100% 60%) 50%,
-      hsl(0 95% 65%) 100%
+      hsl(48 100% 70%) 0%,
+      hsl(25 100% 68%) 35%,
+      hsl(0 100% 72%) 65%,
+      hsl(330 100% 72%) 100%
     );
-    background-size: 200% auto;
+    background-size: 220% auto;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 14px hsl(20 100% 55% / 0.45)) drop-shadow(0 0 28px hsl(0 90% 55% / 0.25));
+    filter:
+      drop-shadow(0 0 8px hsl(35 100% 60% / 0.7))
+      drop-shadow(0 0 22px hsl(0 100% 60% / 0.45))
+      drop-shadow(0 0 36px hsl(330 100% 60% / 0.3));
+    animation: hero-shimmer 6s linear infinite reverse, hero-neon-flicker 5.6s ease-in-out infinite;
   }
 
   @keyframes hero-shimmer {
@@ -233,6 +244,13 @@
   @keyframes hero-pulse-glow {
     0%, 100% { opacity: 0.55; transform: scale(1); }
     50%      { opacity: 1;    transform: scale(1.08); }
+  }
+  @keyframes hero-neon-flicker {
+    0%, 100%       { opacity: 1; }
+    42%, 44%       { opacity: 0.82; }
+    43%            { opacity: 0.6; }
+    70%            { opacity: 0.94; }
+    72%            { opacity: 1; }
   }
   .hero-line {
     opacity: 0;
