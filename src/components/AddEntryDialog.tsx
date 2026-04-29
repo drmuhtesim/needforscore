@@ -22,6 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import PlatformIcon from "./PlatformIcon";
+import MediaUploader, { type PendingFile } from "./comment-media/MediaUploader";
 import type { CategoryType } from "./CategorySidebar";
 import { buildProfileUrl, cleanTarget, normalizeTarget, validateTarget } from "@/lib/platforms";
 
