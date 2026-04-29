@@ -149,12 +149,36 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
 
     if (data?.id) {
       const firstComment = `${description.trim()}\n\n${rating}/10`;
-      await supabase.from("comments").insert({
-        entry_id: data.id,
-        user_id: user.id,
-        content: firstComment,
-        is_target_response: false,
-      });
+      const { data: insertedComment } = await supabase
+        .from("comments")
+        .insert({
+          entry_id: data.id,
+          user_id: user.id,
+          content: firstComment,
+          is_target_response: false,
+        })
+        .select("id")
+        .single();
+
+      // Upload media attached to the first comment
+      if (insertedComment?.id && media.length > 0) {
+        for (const m of media) {
+          const ext = m.file.name.split(".").pop()?.toLowerCase() || "jpg";
+          const path = `${user.id}/${insertedComment.id}/${crypto.randomUUID()}.${ext}`;
+          const { error: upErr } = await supabase.storage
+            .from("comment-media")
+            .upload(path, m.file, { contentType: m.file.type, upsert: false });
+          if (upErr) {
+            toast({ title: t("entry.failed"), description: upErr.message, variant: "destructive" });
+            continue;
+          }
+          await supabase.from("comment_media").insert({
+            comment_id: insertedComment.id,
+            user_id: user.id,
+            storage_path: path,
+          });
+        }
+      }
     }
 
     setSubmitting(false);
