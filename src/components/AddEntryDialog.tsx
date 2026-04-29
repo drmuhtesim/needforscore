@@ -371,8 +371,9 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
             />
             <p className="text-xs text-muted-foreground text-right font-mono">{description.length}/2000</p>
             <MediaUploader files={media} onChange={setMedia} max={10} disabled={submitting} />
-          </div>
+        </div>
 
+        <div className="px-4 sm:px-6 py-3 border-t border-border/40 bg-background/95 backdrop-blur shrink-0">
           <Button
             onClick={submit}
             disabled={submitting || !formatValid || description.trim().length < 10}
