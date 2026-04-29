@@ -258,5 +258,10 @@
     "available": "Bu kullanıcı adı uygun",
     "taken": "Bu kullanıcı adı alınmış",
     "continue": "Devam et"
+  },
+  "update": {
+    "title": "Yeni sürüm hazır",
+    "description": "Sayfayı yenileyerek son güncellemeleri al.",
+    "action": "Yenile"
   }
 }

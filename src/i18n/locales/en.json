@@ -258,5 +258,10 @@
     "available": "Username is available",
     "taken": "Username is taken",
     "continue": "Continue"
+  },
+  "update": {
+    "title": "New version available",
+    "description": "Refresh to get the latest updates.",
+    "action": "Refresh"
   }
 }
