@@ -21,10 +21,10 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col pb-14 lg:pb-0">
       <Header />
 
-      {/* Hero — kompakt motto + arama */}
-      <div className="border-b border-border px-3 py-3">
-        <div className="max-w-3xl mx-auto text-center space-y-2">
-          <h1 className="font-semibold tracking-tight text-sm sm:text-base text-foreground">
+      {/* Hero — büyük motto + arama */}
+      <div className="border-b border-border px-4 py-10 sm:py-14 bg-gradient-to-b from-primary/5 via-background to-background">
+        <div className="max-w-3xl mx-auto text-center space-y-6">
+          <h1 className="font-bold tracking-tight text-xl sm:text-3xl lg:text-4xl leading-snug text-foreground">
             {t("ticker.motto")}
           </h1>
           <SearchBar onSearch={setSearchQuery} />
