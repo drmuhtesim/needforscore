@@ -28,15 +28,15 @@ const Index = () => {
         <div aria-hidden className="hero-pulse-glow pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-accent/30 blur-3xl" style={{ animationDelay: "1.2s" }} />
         <div aria-hidden className="hero-pulse-glow pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-40 w-[60%] rounded-full bg-warning/20 blur-3xl" style={{ animationDelay: "0.6s" }} />
 
-        <div className="relative max-w-5xl mx-auto text-center space-y-5 sm:space-y-6">
-          <h1 className="font-bold tracking-tight leading-none">
-            <span className="hero-line hero-line-1 block hero-neon-vertical-wrap">
-              <span className="hero-neon-vertical whitespace-nowrap block">
-                {t("ticker.motto")}
+        <div className="relative max-w-3xl mx-auto text-center space-y-5 sm:space-y-6">
+          <h1 className="font-bold tracking-tight leading-snug">
+            <span className="hero-line hero-line-1 block hero-marquee-wrap">
+              <span className="hero-marquee-track">
+                <span className="hero-marquee-item hero-neon-flow">{t("ticker.motto")}</span>
+                <span className="hero-marquee-item hero-glow-accent">{t("ticker.mottoLine2")}</span>
+                <span className="hero-marquee-item hero-neon-flow" aria-hidden="true">{t("ticker.motto")}</span>
+                <span className="hero-marquee-item hero-glow-accent" aria-hidden="true">{t("ticker.mottoLine2")}</span>
               </span>
-            </span>
-            <span className="hero-line hero-line-2 block mt-4 text-base sm:text-2xl lg:text-3xl">
-              <span className="hero-glow-accent">{t("ticker.mottoLine2")}</span>
             </span>
           </h1>
           <SearchBar onSearch={setSearchQuery} />
