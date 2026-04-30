@@ -253,16 +253,30 @@
     animation: hero-pulse-glow 4s ease-in-out infinite;
   }
 
-  /* Neon flow: vivid gradient + glow + left→right reveal (sol fade-out, sağ fade-in) */
-  .hero-neon-flow {
-    display: inline-block;
+  /* Neon vertical: tek satır, 3x büyüklük, dikey akış (üst fade-out, alt fade-in) */
+  .hero-neon-vertical-wrap {
+    /* Görünür pencere — yazının üstü ve altı bu alanda fade ile akar */
+    overflow: hidden;
+    line-height: 1;
+    /* Yüksekliği font boyutuyla orantılı tut, animasyon alanı için biraz pay bırak */
+    height: clamp(2.4rem, 9vw, 6.5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+            mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  }
+  .hero-neon-vertical {
+    /* Tek satıra sığacak responsive boyut — viewport'a göre ölçekler, taşmaz */
+    font-size: clamp(1.6rem, 7.5vw, 5.5rem);
+    line-height: 1;
     background: linear-gradient(
       90deg,
-      hsl(145 90% 45%) 0%,
-      hsl(180 95% 50%) 25%,
-      hsl(220 95% 60%) 50%,
-      hsl(280 90% 60%) 75%,
-      hsl(330 95% 60%) 100%
+      hsl(145 90% 50%) 0%,
+      hsl(180 95% 55%) 25%,
+      hsl(220 95% 62%) 50%,
+      hsl(280 90% 62%) 75%,
+      hsl(330 95% 62%) 100%
     );
     background-size: 200% auto;
     -webkit-background-clip: text;
@@ -270,31 +284,36 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
     filter:
-      drop-shadow(0 0 8px hsl(180 95% 50% / 0.45))
-      drop-shadow(0 0 18px hsl(280 90% 60% / 0.35))
-      drop-shadow(0 0 28px hsl(145 90% 45% / 0.25));
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
-            mask-image: linear-gradient(90deg, transparent 0%, #000 25%, #000 75%, transparent 100%);
-    -webkit-mask-size: 250% 100%;
-            mask-size: 250% 100%;
-    -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
+      drop-shadow(0 0 10px hsl(180 95% 55% / 0.5))
+      drop-shadow(0 0 22px hsl(280 90% 60% / 0.4))
+      drop-shadow(0 0 36px hsl(145 90% 50% / 0.3));
     animation:
       hero-neon-shimmer 7s linear infinite,
-      hero-neon-mask 5s ease-in-out infinite;
-    will-change: background-position, mask-position;
+      hero-neon-vertical-flow 4.5s ease-in-out infinite;
+    will-change: transform, background-position;
   }
   @keyframes hero-neon-shimmer {
     0%   { background-position: 0% center; }
     100% { background-position: 200% center; }
   }
-  @keyframes hero-neon-mask {
-    0%   { -webkit-mask-position: 150% 0; mask-position: 150% 0; }
-    100% { -webkit-mask-position: -150% 0; mask-position: -150% 0; }
+  /* Yukarıdan aşağıya akış: yazı üstten gelir, ortada okunur, alttan kayarak çıkar; loop */
+  @keyframes hero-neon-vertical-flow {
+    0%   { transform: translateY(-110%); }
+    20%  { transform: translateY(0%); }
+    80%  { transform: translateY(0%); }
+    100% { transform: translateY(110%); }
+  }
+  @media (max-width: 640px) {
+    .hero-neon-vertical {
+      animation-duration: 7s, 6s; /* mobilde daha yumuşak */
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .hero-neon-flow {
+    .hero-neon-vertical {
       animation: none;
+      transform: none;
+    }
+    .hero-neon-vertical-wrap {
       -webkit-mask-image: none;
               mask-image: none;
     }
