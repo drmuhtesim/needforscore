@@ -34,7 +34,7 @@ import { toast } from "@/hooks/use-toast";
 import PlatformIcon from "./PlatformIcon";
 import MediaUploader, { type PendingFile } from "./comment-media/MediaUploader";
 import type { CategoryType } from "./CategorySidebar";
-import { buildProfileUrl, cleanTarget, normalizeTarget, validateTarget } from "@/lib/platforms";
+import { buildProfileUrl, canonicalizeTarget, formatTargetPreview, normalizeTarget, validateTarget } from "@/lib/platforms";
 
 type Cat = Exclude<CategoryType, "all">;
 
@@ -224,7 +224,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
       return;
     }
 
-    const cleanedTarget = category === "phone" ? target : cleanTarget(target).toLowerCase();
+    const cleanedTarget = canonicalizeTarget(target, category);
     const fullDescription = `**${about.trim()}**\n\n${description.trim()}`;
 
     const { data, error } = await supabase
@@ -528,10 +528,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
                 {t("entry.confirmTargetLabel")}
               </span>
               <span className="font-mono font-semibold text-right break-all max-w-[70%]">
-                {(() => {
-                  const preview = category === "phone" ? target.trim() : `@${cleanTarget(target).toLowerCase()}`;
-                  return preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
-                })()}
+                {formatTargetPreview(target, category)}
               </span>
             </div>
             <div className="flex items-center justify-between gap-3">
