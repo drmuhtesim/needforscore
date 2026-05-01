@@ -1,4 +1,7 @@
-const CACHE_NAME = "needforscore-v6";
+// __BUILD_ID__ is replaced at build time by the swVersion Vite plugin.
+// In dev (no replacement) it falls back to "dev" so the SW still works locally.
+const BUILD_ID = "__BUILD_ID__".replace(/^__|__$/g, "") === "BUILD_ID" ? "dev" : "__BUILD_ID__";
+const CACHE_NAME = `needforscore-${BUILD_ID}`;
 const STATIC_ASSETS = ["/favicon.png", "/manifest.json"];
 
 // Install: pre-cache minimal static assets and activate immediately
