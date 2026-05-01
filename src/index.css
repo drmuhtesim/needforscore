@@ -276,7 +276,7 @@
     width: 100%;
     text-align: center;
     line-height: 1.15;
-    font-size: clamp(1.6rem, 5.2vw, 3.4rem);
+    font-size: clamp(1.12rem, 3.64vw, 2.38rem);
     font-weight: 800;
     letter-spacing: -0.01em;
     white-space: normal;
