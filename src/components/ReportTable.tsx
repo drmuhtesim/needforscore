@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect } from "react";
 import { Shield, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { setPendingAddEntry } from "@/lib/pendingAddEntry";
 import type { CategoryType } from "./CategorySidebar";
 import { useEntries } from "@/hooks/useEntries";
 import EntryCard from "./EntryCard";
@@ -28,6 +29,7 @@ const AUTO_OPEN_DELAY_MS = 700;
 const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { data: entries = [], isLoading } = useEntries(category, searchQuery);
   const [page, setPage] = useState(1);
   const [ctaOpen, setCtaOpen] = useState(false);
@@ -224,12 +226,17 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
             >
               {t("table.signupPromptCancel")}
             </button>
-            <Link
-              to="/auth?mode=signup"
+            <button
+              type="button"
+              onClick={() => {
+                setPendingAddEntry({ target: trimmedQuery, category: guessedCategory });
+                setSignupPromptOpen(false);
+                navigate("/auth?mode=signup");
+              }}
               className="inline-flex items-center justify-center px-5 py-2 text-sm font-bold rounded-md text-white bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] shadow-md hover:opacity-90 transition-opacity"
             >
               {t("table.signupPromptCta")}
-            </Link>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

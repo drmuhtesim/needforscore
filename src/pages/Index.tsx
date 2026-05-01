@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
@@ -6,13 +6,31 @@ import CategorySidebar, { type CategoryType } from "@/components/CategorySidebar
 import MobileCategoryBar from "@/components/MobileCategoryBar";
 import ReportTable from "@/components/ReportTable";
 import MobileBottomBar from "@/components/MobileBottomBar";
+import AddEntryDialog from "@/components/AddEntryDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { consumePendingAddEntry } from "@/lib/pendingAddEntry";
 import { TrendingUp, Clock } from "lucide-react";
 
 const Index = () => {
   const { t } = useTranslation();
+  const { user, loading } = useAuth();
   const [category, setCategory] = useState<CategoryType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState<string>("24h");
+  const [pendingTarget, setPendingTarget] = useState<string | null>(null);
+  const [pendingCategory, setPendingCategory] = useState<Exclude<CategoryType, "all"> | undefined>(undefined);
+  const [pendingOpen, setPendingOpen] = useState(false);
+
+  // After signup/login, if there's a pending "add entry" intent, open the dialog
+  // pre-filled with the original search query.
+  useEffect(() => {
+    if (loading || !user) return;
+    const pending = consumePendingAddEntry();
+    if (!pending) return;
+    setPendingTarget(pending.target);
+    setPendingCategory(pending.category as Exclude<CategoryType, "all"> | undefined);
+    setPendingOpen(true);
+  }, [user, loading]);
 
   const tfRaw = t("filters.timeFilters", { returnObjects: true });
   const timeFilters = Array.isArray(tfRaw) ? (tfRaw as string[]) : ["5m", "1h", "6h", "24h", "7d", "30d"];
@@ -20,6 +38,18 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col pb-14 lg:pb-0">
       <Header />
+
+      {pendingTarget && (
+        <AddEntryDialog
+          initialTarget={pendingTarget}
+          initialCategory={pendingCategory}
+          open={pendingOpen}
+          onOpenChange={(o) => {
+            setPendingOpen(o);
+            if (!o) setPendingTarget(null);
+          }}
+        />
+      )}
 
       {/* Hero — büyük motto + arama */}
       <div className="relative overflow-hidden border-b border-border px-4 py-10 sm:py-14 bg-gradient-to-b from-primary/10 via-background to-background">
