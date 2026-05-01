@@ -77,7 +77,11 @@
     "comments": "Experiences",
     "risk": "Risk",
     "noResults": "No results found",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "emptySearchTitle": "No entries or experiences yet about \"{{query}}\"",
+    "emptySearchDesc": "Be the first to share an experience about this account, number or user — warn the community and become a reference for digital trust.",
+    "emptySearchCtaAuth": "Share the first experience",
+    "emptySearchCtaAnon": "Sign up and share the first experience"
   },
   "stats": {
     "totalEntries": "Total Entries",
