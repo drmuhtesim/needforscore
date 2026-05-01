@@ -1,10 +1,13 @@
 import { useMemo, useState, useEffect } from "react";
-import { Shield } from "lucide-react";
+import { Shield, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import type { CategoryType } from "./CategorySidebar";
 import { useEntries } from "@/hooks/useEntries";
 import EntryCard from "./EntryCard";
 import Pagination from "./Pagination";
+import AddEntryDialog from "./AddEntryDialog";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ReportTableProps {
   category: CategoryType;
@@ -15,8 +18,10 @@ const PAGE_SIZE = 25;
 
 const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { data: entries = [], isLoading } = useEntries(category, searchQuery);
   const [page, setPage] = useState(1);
+  const [ctaOpen, setCtaOpen] = useState(false);
 
   useEffect(() => {
     setPage(1);
@@ -27,6 +32,17 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
     () => entries.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
     [entries, page]
   );
+
+  const trimmedQuery = searchQuery.trim();
+  const showSearchEmptyCta = !isLoading && entries.length === 0 && trimmedQuery.length > 0;
+
+  // Heuristic: if search looks numeric/+ → phone, otherwise default instagram
+  const guessedCategory = useMemo<Exclude<CategoryType, "all">>(() => {
+    if (category !== "all") return category as Exclude<CategoryType, "all">;
+    const q = trimmedQuery;
+    if (/^[+\d\s\-()]+$/.test(q) && q.replace(/\D/g, "").length >= 7) return "phone";
+    return "instagram";
+  }, [category, trimmedQuery]);
 
   return (
     <div className="px-3 sm:px-4 py-3">
@@ -45,7 +61,48 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
         ))}
       </div>
 
-      {!isLoading && entries.length === 0 && (
+      {showSearchEmptyCta && (
+        <div className="my-6 mx-auto max-w-xl rounded-xl border border-primary/30 bg-gradient-to-b from-primary/10 via-card to-card p-6 text-center shadow-sm">
+          <div className="mx-auto mb-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary/15 text-primary">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <h3 className="text-base sm:text-lg font-bold text-foreground">
+            {t("table.emptySearchTitle", { query: trimmedQuery })}
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t("table.emptySearchDesc")}
+          </p>
+          <div className="mt-4 flex items-center justify-center">
+            {user ? (
+              <>
+                <AddEntryDialog
+                  initialTarget={trimmedQuery}
+                  initialCategory={guessedCategory}
+                  open={ctaOpen}
+                  onOpenChange={setCtaOpen}
+                  trigger={
+                    <button
+                      type="button"
+                      className="inline-flex items-center px-5 py-2.5 text-sm font-bold rounded-md text-white bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] shadow-md hover:opacity-90 transition-opacity"
+                    >
+                      {t("table.emptySearchCtaAuth")}
+                    </button>
+                  }
+                />
+              </>
+            ) : (
+              <Link
+                to="/auth?mode=signup"
+                className="inline-flex items-center px-5 py-2.5 text-sm font-bold rounded-md text-white bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] shadow-md hover:opacity-90 transition-opacity"
+              >
+                {t("table.emptySearchCtaAnon")}
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
+      {!isLoading && entries.length === 0 && !trimmedQuery && (
         <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
           <Shield className="h-12 w-12 mb-3 opacity-30" />
           <p className="text-sm">{t("table.noResults")}</p>

@@ -77,7 +77,11 @@
     "comments": "Deneyim",
     "risk": "Risk",
     "noResults": "Sonuç bulunamadı",
-    "loading": "Yükleniyor..."
+    "loading": "Yükleniyor...",
+    "emptySearchTitle": "\"{{query}}\" hakkında henüz bir başlık veya deneyim yok",
+    "emptySearchDesc": "Bu hesap, numara veya kullanıcı hakkında ilk deneyimi sen paylaş; topluluğu uyar ve dijital güvenin referansı ol.",
+    "emptySearchCtaAuth": "İlk deneyimi sen paylaş",
+    "emptySearchCtaAnon": "Üye ol ve ilk deneyimi paylaş"
   },
   "stats": {
     "totalEntries": "Toplam Entry",

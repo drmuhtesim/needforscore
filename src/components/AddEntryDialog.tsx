@@ -33,21 +33,31 @@ const categories: Cat[] = ["instagram", "tiktok", "twitter", "score", "phone"];
 
 interface AddEntryDialogProps {
   trigger?: React.ReactNode;
+  initialTarget?: string;
+  initialCategory?: Cat;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
+const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openProp, onOpenChange }: AddEntryDialogProps = {}) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [open, setOpen] = useState(false);
-  const [category, setCategory] = useState<Cat>("instagram");
-  const [target, setTarget] = useState("");
+  const [openInternal, setOpenInternal] = useState(false);
+  const open = openProp ?? openInternal;
+  const [category, setCategory] = useState<Cat>(initialCategory ?? "instagram");
+  const [target, setTarget] = useState(initialTarget ?? "");
   const [about, setAbout] = useState("");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
   const [media, setMedia] = useState<PendingFile[]>([]);
   const [submitting, setSubmitting] = useState(false);
+
+  const setOpen = (next: boolean) => {
+    setOpenInternal(next);
+    onOpenChange?.(next);
+  };
 
   const handleOpen = (next: boolean) => {
     if (next && !user) {
