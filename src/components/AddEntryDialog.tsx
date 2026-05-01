@@ -63,6 +63,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const reset = () => {
     setCategory("instagram");
     setTarget("");
+    setAbout("");
     setRating(5);
     setDescription("");
     media.forEach((m) => URL.revokeObjectURL(m.previewUrl));
