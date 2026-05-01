@@ -32,6 +32,7 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
   const [page, setPage] = useState(1);
   const [ctaOpen, setCtaOpen] = useState(false);
   const [signupPromptOpen, setSignupPromptOpen] = useState(false);
+  const [notFoundPromptOpen, setNotFoundPromptOpen] = useState(false);
   // Track which queries we've already auto-opened for, so we don't re-prompt
   // every time the user closes the dialog or re-renders happen.
   const [autoOpenedFor, setAutoOpenedFor] = useState<string | null>(null);
