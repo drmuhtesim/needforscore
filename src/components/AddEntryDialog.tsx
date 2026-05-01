@@ -54,6 +54,11 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const [media, setMedia] = useState<PendingFile[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
+  const setOpen = (next: boolean) => {
+    setOpenInternal(next);
+    onOpenChange?.(next);
+  };
+
   const handleOpen = (next: boolean) => {
     if (next && !user) {
       navigate("/auth?mode=signin");
