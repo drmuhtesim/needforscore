@@ -35,6 +35,9 @@ const Auth = () => {
   const { user, loading } = useAuth();
 
   const initialMode = params.get("mode") === "signup" ? "signup" : "signin";
+  const nextParam = params.get("next");
+  // Only allow same-origin relative paths to avoid open-redirect issues.
+  const safeNext = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
   const [mode, setMode] = useState<"signin" | "signup">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,8 +45,8 @@ const Auth = () => {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate("/", { replace: true });
-  }, [user, loading, navigate]);
+    if (!loading && user) navigate(safeNext, { replace: true });
+  }, [user, loading, navigate, safeNext]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
