@@ -277,18 +277,19 @@
     text-align: center;
     line-height: 1.15;
     font-size: clamp(1.6rem, 5.2vw, 3.4rem);
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: -0.01em;
     white-space: normal;
     word-break: break-word;
     padding: 0 0.25em;
+    /* Light mode: koyu, yüksek kontrastlı marka gradyanı (yeşil → mor) */
     background: linear-gradient(
       100deg,
-      hsl(145 90% 50%) 0%,
-      hsl(180 95% 55%) 25%,
-      hsl(220 100% 65%) 50%,
-      hsl(280 95% 65%) 75%,
-      hsl(330 95% 65%) 100%
+      hsl(145 75% 28%) 0%,
+      hsl(180 70% 30%) 30%,
+      hsl(230 70% 38%) 55%,
+      hsl(280 65% 40%) 80%,
+      hsl(145 75% 28%) 100%
     );
     background-size: 220% auto;
     -webkit-background-clip: text;
@@ -296,10 +297,28 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
     filter:
-      drop-shadow(0 0 6px hsl(145 90% 50% / 0.45))
-      drop-shadow(0 0 18px hsl(220 100% 60% / 0.35))
-      drop-shadow(0 0 28px hsl(280 95% 60% / 0.25));
+      drop-shadow(0 1px 0 hsl(0 0% 0% / 0.08))
+      drop-shadow(0 0 10px hsl(145 80% 42% / 0.18));
     animation: hero-shimmer 9s linear infinite;
+  }
+  .dark .hero-prompter-item {
+    /* Dark mode: parlak neon tonlar */
+    background: linear-gradient(
+      100deg,
+      hsl(145 90% 55%) 0%,
+      hsl(180 95% 60%) 25%,
+      hsl(220 100% 70%) 50%,
+      hsl(280 95% 70%) 75%,
+      hsl(145 90% 55%) 100%
+    );
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter:
+      drop-shadow(0 0 6px hsl(145 90% 50% / 0.45))
+      drop-shadow(0 0 18px hsl(220 100% 60% / 0.30))
+      drop-shadow(0 0 28px hsl(280 95% 60% / 0.22));
   }
   @keyframes hero-prompter-down {
     0%   { transform: translateY(-50%); }
