@@ -35,6 +35,9 @@ const Auth = () => {
   const { user, loading } = useAuth();
 
   const initialMode = params.get("mode") === "signup" ? "signup" : "signin";
+  const nextParam = params.get("next");
+  // Only allow same-origin relative paths to avoid open-redirect issues.
+  const safeNext = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
   const [mode, setMode] = useState<"signin" | "signup">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,8 +45,8 @@ const Auth = () => {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate("/", { replace: true });
-  }, [user, loading, navigate]);
+    if (!loading && user) navigate(safeNext, { replace: true });
+  }, [user, loading, navigate, safeNext]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +62,7 @@ const Auth = () => {
           email: parsed.data.email,
           password: parsed.data.password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}${safeNext}`,
             data: { username: parsed.data.username },
           },
         });
@@ -83,7 +86,7 @@ const Auth = () => {
           return;
         }
         toast({ title: t("auth.welcome") });
-        navigate("/", { replace: true });
+        navigate(safeNext, { replace: true });
       }
     } finally {
       setSubmitting(false);
@@ -94,7 +97,7 @@ const Auth = () => {
     setSubmitting(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/`,
+        redirect_uri: `${window.location.origin}${safeNext}`,
       });
       if (result.error) {
         toast({ title: t("auth.signInFailed"), description: String(result.error.message ?? result.error), variant: "destructive" });
@@ -102,7 +105,7 @@ const Auth = () => {
         return;
       }
       if (result.redirected) return; // browser will navigate
-      navigate("/", { replace: true });
+      navigate(safeNext, { replace: true });
     } catch (err) {
       toast({ title: t("auth.signInFailed"), description: String(err), variant: "destructive" });
       setSubmitting(false);
