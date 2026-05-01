@@ -224,7 +224,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
       return;
     }
 
-    const cleanedTarget = category === "phone" ? target : cleanTarget(target).toLowerCase();
+    const cleanedTarget = canonicalizeTarget(target, category);
     const fullDescription = `**${about.trim()}**\n\n${description.trim()}`;
 
     const { data, error } = await supabase
