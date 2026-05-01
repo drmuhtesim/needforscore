@@ -74,10 +74,11 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     if (!user) return;
     const schema = z.object({
       target: z.string().trim().min(1).max(200),
+      about: z.string().trim().min(10).max(60),
       description: z.string().trim().min(10).max(2000),
       rating: z.number().int().min(1).max(10),
     });
-    const parsed = schema.safeParse({ target, description, rating });
+    const parsed = schema.safeParse({ target, about, description, rating });
     if (!parsed.success || !formatValid) {
       toast({ title: t("entry.invalidInput"), description: t("entry.checkFields"), variant: "destructive" });
       return;
