@@ -253,45 +253,65 @@
     animation: hero-pulse-glow 4s ease-in-out infinite;
   }
 
-  /* Hero marquee: tek başlık penceresi, içerik aşağıdan yukarıya akar (loop) */
-  .hero-marquee-wrap {
+  /* Hero teleprompter: yukarıdan aşağıya akan, neon gradient + glow başlık */
+  .hero-prompter-wrap {
     position: relative;
     display: block;
+    width: 100%;
     overflow: hidden;
-    /* Hero büyüklüğünde tek satırlık görünüm penceresi */
-    height: clamp(2rem, 5.5vw, 3.5rem);
+    height: clamp(11rem, 32vw, 22rem);
     -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
             mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
   }
-  .hero-marquee-track {
+  .hero-prompter-track {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* 4 öğe (2 orijinal + 2 kopya) → -50% ile sorunsuz loop */
-    animation: hero-marquee-up 14s linear infinite;
+    gap: 1.2em;
+    animation: hero-prompter-down 26s linear infinite;
     will-change: transform;
   }
-  .hero-marquee-item {
+  .hero-prompter-item {
     display: block;
     width: 100%;
     text-align: center;
-    line-height: 1;
-    padding: 0.25em 0;
-    font-size: clamp(1rem, 2.6vw, 1.6rem);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.15;
+    font-size: clamp(1.6rem, 5.2vw, 3.4rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: normal;
+    word-break: break-word;
+    padding: 0 0.25em;
+    background: linear-gradient(
+      100deg,
+      hsl(145 90% 50%) 0%,
+      hsl(180 95% 55%) 25%,
+      hsl(220 100% 65%) 50%,
+      hsl(280 95% 65%) 75%,
+      hsl(330 95% 65%) 100%
+    );
+    background-size: 220% auto;
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter:
+      drop-shadow(0 0 6px hsl(145 90% 50% / 0.45))
+      drop-shadow(0 0 18px hsl(220 100% 60% / 0.35))
+      drop-shadow(0 0 28px hsl(280 95% 60% / 0.25));
+    animation: hero-shimmer 9s linear infinite;
   }
-  @keyframes hero-marquee-up {
-    0%   { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
+  @keyframes hero-prompter-down {
+    0%   { transform: translateY(-50%); }
+    100% { transform: translateY(0%); }
   }
   @media (max-width: 640px) {
-    .hero-marquee-track { animation-duration: 18s; }
+    .hero-prompter-track { animation-duration: 32s; gap: 1em; }
+    .hero-prompter-wrap  { height: clamp(10rem, 55vw, 18rem); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .hero-marquee-track { animation: none; transform: none; }
-    .hero-marquee-wrap { -webkit-mask-image: none; mask-image: none; }
+    .hero-prompter-track { animation: none; transform: none; }
+    .hero-prompter-wrap  { -webkit-mask-image: none; mask-image: none; height: auto; }
   }
 }
 
