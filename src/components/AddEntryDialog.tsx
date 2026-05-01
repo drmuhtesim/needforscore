@@ -404,7 +404,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
         <div className="px-4 sm:px-6 py-3 border-t border-border/40 bg-background/95 backdrop-blur shrink-0">
           <Button
             onClick={submit}
-            disabled={submitting || !formatValid || description.trim().length < 10}
+            disabled={submitting || !formatValid || description.trim().length < 10 || about.trim().length < 10 || about.trim().length > 60}
             className="w-full bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90"
           >
             {submitting ? t("entry.submitting") : t("entry.publish")}
