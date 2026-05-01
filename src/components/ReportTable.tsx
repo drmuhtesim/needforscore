@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect } from "react";
 import { Shield, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { PENDING_ADD_ENTRY_KEY } from "@/lib/pendingAddEntry";
 import type { CategoryType } from "./CategorySidebar";
 import { useEntries } from "@/hooks/useEntries";
 import EntryCard from "./EntryCard";
