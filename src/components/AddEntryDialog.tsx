@@ -352,6 +352,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
                 id="target"
                 value={target}
                 onChange={(e) => setTarget(e.target.value.toLowerCase())}
+                onPaste={handleTargetPaste}
                 placeholder={t(`entry.placeholder.${category}`)}
                 className="font-mono"
                 autoCapitalize="off"
