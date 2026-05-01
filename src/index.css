@@ -321,8 +321,8 @@
       drop-shadow(0 0 28px hsl(280 95% 60% / 0.22));
   }
   @keyframes hero-prompter-down {
-    0%   { transform: translateY(-50%); }
-    100% { transform: translateY(0%); }
+    0%   { transform: translateY(0%); }
+    100% { transform: translateY(-50%); }
   }
   @media (max-width: 640px) {
     .hero-prompter-track { animation-duration: 32s; gap: 1em; }
