@@ -58,20 +58,25 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
     return "instagram";
   }, [category, trimmedQuery]);
 
-  // Auto-open popup when search returns empty
+  // Auto-open the neutral "not found" prompt first
   useEffect(() => {
     if (!showSearchEmptyCta) return;
     if (autoOpenedFor === trimmedQuery) return;
     const timer = setTimeout(() => {
       setAutoOpenedFor(trimmedQuery);
-      if (user) {
-        setCtaOpen(true);
-      } else {
-        setSignupPromptOpen(true);
-      }
+      setNotFoundPromptOpen(true);
     }, AUTO_OPEN_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [showSearchEmptyCta, trimmedQuery, user, autoOpenedFor]);
+  }, [showSearchEmptyCta, trimmedQuery, autoOpenedFor]);
+
+  const handleNotFoundYes = () => {
+    setNotFoundPromptOpen(false);
+    if (user) {
+      setCtaOpen(true);
+    } else {
+      setSignupPromptOpen(true);
+    }
+  };
 
   // Reset auto-open tracking when query changes
   useEffect(() => {
