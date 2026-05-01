@@ -293,6 +293,29 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
             )}
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="about">{t("entry.about")}</Label>
+            <Input
+              id="about"
+              value={about}
+              onChange={(e) => setAbout(e.target.value.slice(0, 60))}
+              placeholder={t("entry.aboutPlaceholder") as string}
+              maxLength={60}
+            />
+            <div className="flex items-center justify-between text-[11px] font-mono">
+              <span
+                className={
+                  about.trim().length > 0 && about.trim().length < 10
+                    ? "text-danger"
+                    : "text-muted-foreground"
+                }
+              >
+                {t("entry.aboutHelp")}
+              </span>
+              <span className="text-muted-foreground">{about.length}/60</span>
+            </div>
+          </div>
+
           {(() => {
             const level =
               rating <= 2
