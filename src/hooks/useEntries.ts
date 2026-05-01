@@ -49,7 +49,7 @@ export const useEntries = (category: CategoryType, search: string) => {
       const [{ data: profiles }, { data: votes }, { data: comments }] = await Promise.all([
         supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").in("user_id", userIds),
         supabase.from("votes").select("entry_id, value").in("entry_id", ids),
-        supabase.from("comments").select("entry_id, content").in("entry_id", ids).is("deleted_at", null),
+        supabase.from("comments").select("entry_id, content, created_at").in("entry_id", ids).is("deleted_at", null),
       ]);
 
       const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
@@ -60,20 +60,33 @@ export const useEntries = (category: CategoryType, search: string) => {
       });
       const commentMap = new Map<string, number>();
       const commentContentMap = new Map<string, string[]>();
+      const lastActivityMap = new Map<string, number>();
       (comments ?? []).forEach((c) => {
         commentMap.set(c.entry_id, (commentMap.get(c.entry_id) ?? 0) + 1);
         const arr = commentContentMap.get(c.entry_id) ?? [];
         arr.push(c.content);
         commentContentMap.set(c.entry_id, arr);
+        const ts = c.created_at ? new Date(c.created_at).getTime() : 0;
+        const prev = lastActivityMap.get(c.entry_id) ?? 0;
+        if (ts > prev) lastActivityMap.set(c.entry_id, ts);
       });
 
-      return entries.map((e) => ({
+      const enriched = entries.map((e) => ({
         ...e,
         profiles: (profileMap.get(e.user_id) as any) ?? null,
         vote_score: voteMap.get(e.id) ?? 0,
         comment_count: commentMap.get(e.id) ?? 0,
         avg_rating: averageRating(commentContentMap.get(e.id) ?? []),
       }));
+
+      // En son yorum/deneyim eklenen başlık en üstte; yorumu olmayanlar için entry'nin oluşturulma tarihi kullanılır.
+      enriched.sort((a, b) => {
+        const aTs = lastActivityMap.get(a.id) ?? new Date(a.created_at).getTime();
+        const bTs = lastActivityMap.get(b.id) ?? new Date(b.created_at).getTime();
+        return bTs - aTs;
+      });
+
+      return enriched;
     },
   });
 };
