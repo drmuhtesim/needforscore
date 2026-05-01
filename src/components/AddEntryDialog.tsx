@@ -93,6 +93,63 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const formatValid = target.trim() ? validateTarget(target, category) : false;
   const profileUrl = formatValid ? buildProfileUrl(target, category) : null;
 
+  // Detect what was pasted into the target field and adjust value/category
+  // accordingly. Returns the cleaned value to set, or null to keep original.
+  const handleTargetPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const raw = e.clipboardData.getData("text").trim();
+    if (!raw) return;
+
+    // Email — not supported, warn and let default paste happen for visibility.
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)) {
+      e.preventDefault();
+      toast({ title: t("entry.invalidInput"), description: t("entry.pasteWarnEmail"), variant: "destructive" });
+      return;
+    }
+
+    // URL — try to extract a known platform handle.
+    if (/^https?:\/\//i.test(raw) || /^(www\.)?(instagram|tiktok|x|twitter)\.com\//i.test(raw)) {
+      e.preventDefault();
+      try {
+        const url = new URL(raw.startsWith("http") ? raw : `https://${raw}`);
+        const host = url.hostname.replace(/^www\./, "").toLowerCase();
+        const seg = url.pathname.split("/").filter(Boolean)[0]?.replace(/^@/, "") ?? "";
+
+        let nextCategory: Cat | null = null;
+        if (host.endsWith("instagram.com")) nextCategory = "instagram";
+        else if (host.endsWith("tiktok.com")) nextCategory = "tiktok";
+        else if (host === "x.com" || host.endsWith("twitter.com")) nextCategory = "twitter";
+
+        if (nextCategory && seg) {
+          setCategory(nextCategory);
+          setTarget(seg.toLowerCase());
+          toast({
+            title: t("entry.pasteDetectedTitle"),
+            description: t("entry.pasteDetectedUrl", { category: t(`categories.${nextCategory}`, { defaultValue: nextCategory }) }),
+          });
+          return;
+        }
+        toast({ title: t("entry.invalidInput"), description: t("entry.pasteWarnUnknownUrl"), variant: "destructive" });
+      } catch {
+        toast({ title: t("entry.invalidInput"), description: t("entry.pasteWarnUnknownUrl"), variant: "destructive" });
+      }
+      return;
+    }
+
+    // Phone-like pasted into a non-phone category.
+    if (category !== "phone" && /^[+\d][\d\s().-]{6,}$/.test(raw)) {
+      // don't preventDefault — let user keep the value, but suggest switching.
+      toast({ title: t("entry.invalidInput"), description: t("entry.pasteWarnPhone"), variant: "destructive" });
+      return;
+    }
+
+    // Strip leading @ on handle pastes.
+    if (raw.startsWith("@")) {
+      e.preventDefault();
+      setTarget(raw.slice(1).toLowerCase());
+      toast({ title: t("entry.pasteDetectedTitle"), description: t("entry.pasteDetectedHandle") });
+    }
+  };
+
   const reset = () => {
     setCategory("instagram");
     setTarget("");
