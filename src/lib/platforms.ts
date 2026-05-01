@@ -60,3 +60,40 @@ export const formatTargetDisplay = (raw: string, category: Exclude<CategoryType,
   }
   return raw;
 };
+
+/**
+ * Canonical "stored" form of a target — used both when persisting to the DB
+ * and when previewing back to the user. Handles get cleaned + lowercased,
+ * phone numbers fall back to E.164 (or stripped) when parseable.
+ *
+ * Keep this in sync with `formatTargetPreview` so what the user sees in the
+ * confirmation dialog matches what is actually written to the DB.
+ */
+export const canonicalizeTarget = (raw: string, category: Exclude<CategoryType, "all">): string => {
+  if (category === "phone") {
+    const parsed = parsePhoneNumberFromString(raw);
+    return parsed ? parsed.number : raw.trim().replace(/[^\d+]/g, "");
+  }
+  return cleanTarget(raw).toLowerCase();
+};
+
+/**
+ * User-facing preview of a target. Always derived from the same canonical
+ * value used at submit time, with consistent truncation rules.
+ */
+export const formatTargetPreview = (
+  raw: string,
+  category: Exclude<CategoryType, "all">,
+  maxLen = 60,
+): string => {
+  const canonical = canonicalizeTarget(raw, category);
+  let display: string;
+  if (category === "phone") {
+    const parsed = parsePhoneNumberFromString(canonical);
+    display = parsed ? parsed.formatInternational() : canonical;
+  } else {
+    display = canonical ? `@${canonical}` : "";
+  }
+  if (display.length <= maxLen) return display;
+  return `${display.slice(0, Math.max(0, maxLen - 1))}…`;
+};
