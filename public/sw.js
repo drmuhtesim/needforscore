@@ -1,4 +1,4 @@
-const CACHE_NAME = "needforscore-v5";
+const CACHE_NAME = "needforscore-v6";
 const STATIC_ASSETS = ["/favicon.png", "/manifest.json"];
 
 // Install: pre-cache minimal static assets and activate immediately
