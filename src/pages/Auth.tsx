@@ -97,7 +97,7 @@ const Auth = () => {
     setSubmitting(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: `${window.location.origin}/`,
+        redirect_uri: `${window.location.origin}${safeNext}`,
       });
       if (result.error) {
         toast({ title: t("auth.signInFailed"), description: String(result.error.message ?? result.error), variant: "destructive" });
@@ -105,7 +105,7 @@ const Auth = () => {
         return;
       }
       if (result.redirected) return; // browser will navigate
-      navigate("/", { replace: true });
+      navigate(safeNext, { replace: true });
     } catch (err) {
       toast({ title: t("auth.signInFailed"), description: String(err), variant: "destructive" });
       setSubmitting(false);
