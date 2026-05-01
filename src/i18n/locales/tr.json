@@ -81,7 +81,11 @@
     "emptySearchTitle": "\"{{query}}\" hakkında henüz bir başlık veya deneyim yok",
     "emptySearchDesc": "Bu hesap, numara veya kullanıcı hakkında ilk deneyimi sen paylaş; topluluğu uyar ve dijital güvenin referansı ol.",
     "emptySearchCtaAuth": "İlk deneyimi sen paylaş",
-    "emptySearchCtaAnon": "Üye ol ve ilk deneyimi paylaş"
+    "emptySearchCtaAnon": "Üye ol ve ilk deneyimi paylaş",
+    "signupPromptTitle": "Önce üye olman gerek",
+    "signupPromptDesc": "\"{{query}}\" hakkında ilk deneyimi paylaşabilmen için Score hesabı açman gerekiyor. Hızlıca üye ol, hemen geri dön ve deneyimini paylaş.",
+    "signupPromptCta": "Üye ol",
+    "signupPromptCancel": "Vazgeç"
   },
   "stats": {
     "totalEntries": "Toplam Entry",
