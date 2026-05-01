@@ -528,10 +528,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
                 {t("entry.confirmTargetLabel")}
               </span>
               <span className="font-mono font-semibold text-right break-all max-w-[70%]">
-                {(() => {
-                  const preview = category === "phone" ? target.trim() : `@${cleanTarget(target).toLowerCase()}`;
-                  return preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
-                })()}
+                {formatTargetPreview(target, category)}
               </span>
             </div>
             <div className="flex items-center justify-between gap-3">
