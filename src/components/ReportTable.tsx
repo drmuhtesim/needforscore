@@ -58,12 +58,45 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
     return "instagram";
   }, [category, trimmedQuery]);
 
-  // Auto-open the neutral "not found" prompt first
+  // Persistent storage key for "already shown" queries
+  const NOT_FOUND_SHOWN_KEY = "score:notFoundPromptShown";
+
+  const wasPromptShownFor = (q: string): boolean => {
+    try {
+      const raw = localStorage.getItem(NOT_FOUND_SHOWN_KEY);
+      if (!raw) return false;
+      const arr = JSON.parse(raw) as string[];
+      return Array.isArray(arr) && arr.includes(q.toLowerCase());
+    } catch {
+      return false;
+    }
+  };
+
+  const markPromptShownFor = (q: string) => {
+    try {
+      const raw = localStorage.getItem(NOT_FOUND_SHOWN_KEY);
+      const arr = raw ? (JSON.parse(raw) as string[]) : [];
+      const set = new Set(Array.isArray(arr) ? arr : []);
+      set.add(q.toLowerCase());
+      // Keep only the last 200 entries to avoid unbounded growth
+      const next = Array.from(set).slice(-200);
+      localStorage.setItem(NOT_FOUND_SHOWN_KEY, JSON.stringify(next));
+    } catch {
+      // ignore quota / parse errors
+    }
+  };
+
+  // Auto-open the neutral "not found" prompt first (once per query, persisted)
   useEffect(() => {
     if (!showSearchEmptyCta) return;
     if (autoOpenedFor === trimmedQuery) return;
+    if (wasPromptShownFor(trimmedQuery)) {
+      setAutoOpenedFor(trimmedQuery);
+      return;
+    }
     const timer = setTimeout(() => {
       setAutoOpenedFor(trimmedQuery);
+      markPromptShownFor(trimmedQuery);
       setNotFoundPromptOpen(true);
     }, AUTO_OPEN_DELAY_MS);
     return () => clearTimeout(timer);
