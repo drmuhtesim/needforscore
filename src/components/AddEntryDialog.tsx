@@ -54,6 +54,14 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const [media, setMedia] = useState<PendingFile[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
+  // When the dialog is opened (controlled or uncontrolled) with an initialTarget,
+  // sync the target/category fields so the search query auto-fills.
+  useEffect(() => {
+    if (!open) return;
+    if (initialTarget !== undefined) setTarget(initialTarget);
+    if (initialCategory !== undefined) setCategory(initialCategory);
+  }, [open, initialTarget, initialCategory]);
+
   const setOpen = (next: boolean) => {
     setOpenInternal(next);
     onOpenChange?.(next);
