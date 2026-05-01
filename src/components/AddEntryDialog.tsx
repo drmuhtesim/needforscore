@@ -43,6 +43,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState<Cat>("instagram");
   const [target, setTarget] = useState("");
+  const [about, setAbout] = useState("");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
   const [media, setMedia] = useState<PendingFile[]>([]);
