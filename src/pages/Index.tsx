@@ -51,22 +51,19 @@ const Index = () => {
         />
       )}
 
-      {/* Hero — büyük motto + arama */}
-      <div className="relative overflow-hidden border-b border-border px-4 py-10 sm:py-14 bg-gradient-to-b from-primary/10 via-background to-background">
+      {/* Hero — kompakt motto + arama */}
+      <div className="relative overflow-hidden border-b border-border px-4 py-5 sm:py-7 bg-gradient-to-b from-primary/10 via-background to-background">
         {/* Ambient glow blobs (pulsing) */}
-        <div aria-hidden className="hero-pulse-glow pointer-events-none absolute -top-24 -left-16 h-72 w-72 rounded-full bg-primary/30 blur-3xl" />
-        <div aria-hidden className="hero-pulse-glow pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-accent/30 blur-3xl" style={{ animationDelay: "1.2s" }} />
-        <div aria-hidden className="hero-pulse-glow pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-40 w-[60%] rounded-full bg-warning/20 blur-3xl" style={{ animationDelay: "0.6s" }} />
+        <div aria-hidden className="hero-pulse-glow pointer-events-none absolute -top-16 -left-10 h-44 w-44 rounded-full bg-primary/25 blur-3xl" />
+        <div aria-hidden className="hero-pulse-glow pointer-events-none absolute -bottom-16 -right-10 h-44 w-44 rounded-full bg-accent/25 blur-3xl" style={{ animationDelay: "1.2s" }} />
 
-        <div className="relative max-w-3xl mx-auto text-center space-y-5 sm:space-y-6">
-          <h1 className="font-bold tracking-tight leading-snug">
-            <span className="hero-line hero-line-1 block hero-prompter-wrap">
-              <span className="hero-prompter-track">
-                <span className="hero-prompter-item">{t("ticker.motto")}</span>
-                <span className="hero-prompter-item">{t("ticker.mottoLine2")}</span>
-                <span className="hero-prompter-item" aria-hidden="true">{t("ticker.motto")}</span>
-                <span className="hero-prompter-item" aria-hidden="true">{t("ticker.mottoLine2")}</span>
-              </span>
+        <div className="relative max-w-3xl mx-auto text-center space-y-3 sm:space-y-4">
+          <h1 className="font-bold tracking-tight leading-tight space-y-1">
+            <span className="hero-line hero-line-1 block text-base sm:text-xl md:text-2xl text-foreground">
+              {t("ticker.motto")}
+            </span>
+            <span className="hero-line hero-line-2 block text-sm sm:text-base md:text-lg hero-glow-accent">
+              {t("ticker.mottoLine2")}
             </span>
           </h1>
           <SearchBar onSearch={setSearchQuery} />
