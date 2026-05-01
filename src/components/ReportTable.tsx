@@ -29,6 +29,7 @@ const AUTO_OPEN_DELAY_MS = 700;
 const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { data: entries = [], isLoading } = useEntries(category, searchQuery);
   const [page, setPage] = useState(1);
   const [ctaOpen, setCtaOpen] = useState(false);
