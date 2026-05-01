@@ -85,7 +85,11 @@
     "signupPromptTitle": "You need to sign up first",
     "signupPromptDesc": "To share the first experience about \"{{query}}\" you need a Score account. Sign up quickly, come right back and post.",
     "signupPromptCta": "Sign up",
-    "signupPromptCancel": "Cancel"
+    "signupPromptCancel": "Cancel",
+    "notFoundPromptTitle": "No experience found",
+    "notFoundPromptDesc": "No experience was found about the person you searched. Would you like to share the first experience?",
+    "notFoundPromptYes": "Yes, share",
+    "notFoundPromptNo": "Not now"
   },
   "stats": {
     "totalEntries": "Total Entries",

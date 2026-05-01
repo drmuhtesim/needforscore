@@ -85,7 +85,11 @@
     "signupPromptTitle": "Önce üye olman gerek",
     "signupPromptDesc": "\"{{query}}\" hakkında ilk deneyimi paylaşabilmen için Score hesabı açman gerekiyor. Hızlıca üye ol, hemen geri dön ve deneyimini paylaş.",
     "signupPromptCta": "Üye ol",
-    "signupPromptCancel": "Vazgeç"
+    "signupPromptCancel": "Vazgeç",
+    "notFoundPromptTitle": "Deneyim bulunamadı",
+    "notFoundPromptDesc": "Aradığınız kişi ile ilgili deneyim bulunamadı. İlk deneyimi siz paylaşmak ister misiniz?",
+    "notFoundPromptYes": "Evet, paylaş",
+    "notFoundPromptNo": "Şimdi değil"
   },
   "stats": {
     "totalEntries": "Toplam Entry",

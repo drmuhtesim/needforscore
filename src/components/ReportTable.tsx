@@ -32,6 +32,7 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
   const [page, setPage] = useState(1);
   const [ctaOpen, setCtaOpen] = useState(false);
   const [signupPromptOpen, setSignupPromptOpen] = useState(false);
+  const [notFoundPromptOpen, setNotFoundPromptOpen] = useState(false);
   // Track which queries we've already auto-opened for, so we don't re-prompt
   // every time the user closes the dialog or re-renders happen.
   const [autoOpenedFor, setAutoOpenedFor] = useState<string | null>(null);
@@ -57,20 +58,25 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
     return "instagram";
   }, [category, trimmedQuery]);
 
-  // Auto-open popup when search returns empty
+  // Auto-open the neutral "not found" prompt first
   useEffect(() => {
     if (!showSearchEmptyCta) return;
     if (autoOpenedFor === trimmedQuery) return;
     const timer = setTimeout(() => {
       setAutoOpenedFor(trimmedQuery);
-      if (user) {
-        setCtaOpen(true);
-      } else {
-        setSignupPromptOpen(true);
-      }
+      setNotFoundPromptOpen(true);
     }, AUTO_OPEN_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [showSearchEmptyCta, trimmedQuery, user, autoOpenedFor]);
+  }, [showSearchEmptyCta, trimmedQuery, autoOpenedFor]);
+
+  const handleNotFoundYes = () => {
+    setNotFoundPromptOpen(false);
+    if (user) {
+      setCtaOpen(true);
+    } else {
+      setSignupPromptOpen(true);
+    }
+  };
 
   // Reset auto-open tracking when query changes
   useEffect(() => {
@@ -133,6 +139,37 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
           </div>
         </div>
       )}
+
+      {/* "Deneyim bulunamadı" ön sorusu */}
+      <Dialog open={notFoundPromptOpen} onOpenChange={setNotFoundPromptOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              {t("table.notFoundPromptTitle")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("table.notFoundPromptDesc")}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <button
+              type="button"
+              onClick={() => setNotFoundPromptOpen(false)}
+              className="inline-flex items-center justify-center px-4 py-2 text-sm rounded-md border border-border text-muted-foreground hover:bg-secondary"
+            >
+              {t("table.notFoundPromptNo")}
+            </button>
+            <button
+              type="button"
+              onClick={handleNotFoundYes}
+              className="inline-flex items-center justify-center px-5 py-2 text-sm font-bold rounded-md text-white bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] shadow-md hover:opacity-90 transition-opacity"
+            >
+              {t("table.notFoundPromptYes")}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Anonim kullanıcı için üye ol diyaloğu */}
       <Dialog open={signupPromptOpen} onOpenChange={setSignupPromptOpen}>
