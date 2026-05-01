@@ -81,7 +81,11 @@
     "emptySearchTitle": "No entries or experiences yet about \"{{query}}\"",
     "emptySearchDesc": "Be the first to share an experience about this account, number or user — warn the community and become a reference for digital trust.",
     "emptySearchCtaAuth": "Share the first experience",
-    "emptySearchCtaAnon": "Sign up and share the first experience"
+    "emptySearchCtaAnon": "Sign up and share the first experience",
+    "signupPromptTitle": "You need to sign up first",
+    "signupPromptDesc": "To share the first experience about \"{{query}}\" you need a Score account. Sign up quickly, come right back and post.",
+    "signupPromptCta": "Sign up",
+    "signupPromptCancel": "Cancel"
   },
   "stats": {
     "totalEntries": "Total Entries",
