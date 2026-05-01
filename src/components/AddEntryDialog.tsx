@@ -124,6 +124,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     }
 
     const cleanedTarget = category === "phone" ? target : cleanTarget(target).toLowerCase();
+    const fullDescription = `**${about.trim()}**\n\n${description.trim()}`;
 
     const { data, error } = await supabase
       .from("entries")
@@ -132,7 +133,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
         target: cleanedTarget,
         target_normalized: normalized,
         category: category as any,
-        description: description.trim(),
+        description: fullDescription,
         rating,
       })
       .select("id")
@@ -151,7 +152,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     }
 
     if (data?.id) {
-      const firstComment = `${description.trim()}\n\n${rating}/10`;
+      const firstComment = `${fullDescription}\n\n${rating}/10`;
       const { data: insertedComment } = await supabase
         .from("comments")
         .insert({
