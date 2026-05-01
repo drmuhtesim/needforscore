@@ -505,7 +505,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
 
         <div className="px-4 sm:px-6 py-3 border-t border-border/40 bg-background/95 backdrop-blur shrink-0">
           <Button
-            onClick={submit}
+            onClick={() => setConfirmOpen(true)}
             disabled={submitting || !formatValid || description.trim().length < 10 || about.trim().length < 10 || about.trim().length > 60}
             className="w-full bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90"
           >
@@ -513,6 +513,57 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
           </Button>
         </div>
       </DialogContent>
+
+      {/* Onay penceresi: hedef + kategori + about önizlemesi */}
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("entry.confirmTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("entry.confirmDesc")}</AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="rounded-md border border-border bg-muted/30 p-3 space-y-2 text-sm">
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-xs uppercase tracking-wider text-muted-foreground font-mono">
+                {t("entry.confirmTargetLabel")}
+              </span>
+              <span className="font-mono font-semibold text-right break-all max-w-[70%]">
+                {(() => {
+                  const preview = category === "phone" ? target.trim() : `@${cleanTarget(target).toLowerCase()}`;
+                  return preview.length > 60 ? `${preview.slice(0, 60)}…` : preview;
+                })()}
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs uppercase tracking-wider text-muted-foreground font-mono">
+                {t("entry.confirmCategoryLabel")}
+              </span>
+              <span className="font-semibold capitalize">{category}</span>
+            </div>
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-xs uppercase tracking-wider text-muted-foreground font-mono">
+                {t("entry.confirmAboutLabel")}
+              </span>
+              <span className="text-right max-w-[70%] break-words">
+                {about.trim().length > 80 ? `${about.trim().slice(0, 80)}…` : about.trim()}
+              </span>
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("entry.confirmCancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                setConfirmOpen(false);
+                await submit();
+              }}
+              className="bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90"
+            >
+              {t("entry.confirmPublish")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 };
