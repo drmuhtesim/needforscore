@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
@@ -6,6 +6,9 @@ import CategorySidebar, { type CategoryType } from "@/components/CategorySidebar
 import MobileCategoryBar from "@/components/MobileCategoryBar";
 import ReportTable from "@/components/ReportTable";
 import MobileBottomBar from "@/components/MobileBottomBar";
+import AddEntryDialog from "@/components/AddEntryDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { consumePendingAddEntry } from "@/lib/pendingAddEntry";
 import { TrendingUp, Clock } from "lucide-react";
 
 const Index = () => {
