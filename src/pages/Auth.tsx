@@ -86,7 +86,7 @@ const Auth = () => {
           return;
         }
         toast({ title: t("auth.welcome") });
-        navigate("/", { replace: true });
+        navigate(safeNext, { replace: true });
       }
     } finally {
       setSubmitting(false);
