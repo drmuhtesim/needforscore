@@ -253,7 +253,8 @@
   "language": {
     "label": "Language",
     "tr": "Turkish",
-    "en": "English"
+    "en": "English",
+    "ar": "Arabic"
   },
   "theme": {
     "toggle": "Toggle theme",

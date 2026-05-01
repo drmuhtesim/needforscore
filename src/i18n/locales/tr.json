@@ -253,7 +253,8 @@
   "language": {
     "label": "Dil",
     "tr": "Türkçe",
-    "en": "İngilizce"
+    "en": "İngilizce",
+    "ar": "Arapça"
   },
   "theme": {
     "toggle": "Temayı değiştir",
