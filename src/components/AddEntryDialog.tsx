@@ -34,7 +34,7 @@ import { toast } from "@/hooks/use-toast";
 import PlatformIcon from "./PlatformIcon";
 import MediaUploader, { type PendingFile } from "./comment-media/MediaUploader";
 import type { CategoryType } from "./CategorySidebar";
-import { buildProfileUrl, cleanTarget, normalizeTarget, validateTarget } from "@/lib/platforms";
+import { buildProfileUrl, canonicalizeTarget, formatTargetPreview, normalizeTarget, validateTarget } from "@/lib/platforms";
 
 type Cat = Exclude<CategoryType, "all">;
 
