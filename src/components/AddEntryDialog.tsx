@@ -46,8 +46,21 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const qc = useQueryClient();
   const [openInternal, setOpenInternal] = useState(false);
   const open = openProp ?? openInternal;
-  const [category, setCategory] = useState<Cat>(initialCategory ?? "instagram");
-  const [target, setTarget] = useState(initialTarget ?? "");
+  const DEFAULT_CATEGORY: Cat = "instagram";
+  const TARGET_MAX = 200;
+
+  const sanitizeTarget = (raw: string | undefined | null): string => {
+    if (!raw) return "";
+    return raw.trim().slice(0, TARGET_MAX);
+  };
+
+  const sanitizeCategory = (raw: Cat | undefined): Cat => {
+    if (raw && categories.includes(raw)) return raw;
+    return DEFAULT_CATEGORY;
+  };
+
+  const [category, setCategory] = useState<Cat>(sanitizeCategory(initialCategory));
+  const [target, setTarget] = useState(sanitizeTarget(initialTarget));
   const [about, setAbout] = useState("");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
@@ -56,10 +69,12 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
 
   // When the dialog is opened (controlled or uncontrolled) with an initialTarget,
   // sync the target/category fields so the search query auto-fills.
+  // Trims whitespace, enforces a max length, and falls back to the default
+  // category when the supplied one is missing or unknown.
   useEffect(() => {
     if (!open) return;
-    if (initialTarget !== undefined) setTarget(initialTarget);
-    if (initialCategory !== undefined) setCategory(initialCategory);
+    if (initialTarget !== undefined) setTarget(sanitizeTarget(initialTarget));
+    setCategory(sanitizeCategory(initialCategory));
   }, [open, initialTarget, initialCategory]);
 
   const setOpen = (next: boolean) => {
