@@ -43,6 +43,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const [open, setOpen] = useState(false);
   const [category, setCategory] = useState<Cat>("instagram");
   const [target, setTarget] = useState("");
+  const [about, setAbout] = useState("");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
   const [media, setMedia] = useState<PendingFile[]>([]);
@@ -62,6 +63,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
   const reset = () => {
     setCategory("instagram");
     setTarget("");
+    setAbout("");
     setRating(5);
     setDescription("");
     media.forEach((m) => URL.revokeObjectURL(m.previewUrl));
@@ -72,10 +74,11 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     if (!user) return;
     const schema = z.object({
       target: z.string().trim().min(1).max(200),
+      about: z.string().trim().min(10).max(60),
       description: z.string().trim().min(10).max(2000),
       rating: z.number().int().min(1).max(10),
     });
-    const parsed = schema.safeParse({ target, description, rating });
+    const parsed = schema.safeParse({ target, about, description, rating });
     if (!parsed.success || !formatValid) {
       toast({ title: t("entry.invalidInput"), description: t("entry.checkFields"), variant: "destructive" });
       return;
@@ -121,6 +124,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     }
 
     const cleanedTarget = category === "phone" ? target : cleanTarget(target).toLowerCase();
+    const fullDescription = `**${about.trim()}**\n\n${description.trim()}`;
 
     const { data, error } = await supabase
       .from("entries")
@@ -129,7 +133,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
         target: cleanedTarget,
         target_normalized: normalized,
         category: category as any,
-        description: description.trim(),
+        description: fullDescription,
         rating,
       })
       .select("id")
@@ -148,7 +152,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
     }
 
     if (data?.id) {
-      const firstComment = `${description.trim()}\n\n${rating}/10`;
+      const firstComment = `${fullDescription}\n\n${rating}/10`;
       const { data: insertedComment } = await supabase
         .from("comments")
         .insert({
@@ -289,6 +293,29 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
             )}
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="about">{t("entry.about")}</Label>
+            <Input
+              id="about"
+              value={about}
+              onChange={(e) => setAbout(e.target.value.slice(0, 60))}
+              placeholder={t("entry.aboutPlaceholder") as string}
+              maxLength={60}
+            />
+            <div className="flex items-center justify-between text-[11px] font-mono">
+              <span
+                className={
+                  about.trim().length > 0 && about.trim().length < 10
+                    ? "text-danger"
+                    : "text-muted-foreground"
+                }
+              >
+                {t("entry.aboutHelp")}
+              </span>
+              <span className="text-muted-foreground">{about.length}/60</span>
+            </div>
+          </div>
+
           {(() => {
             const level =
               rating <= 2
@@ -377,7 +404,7 @@ const AddEntryDialog = ({ trigger }: AddEntryDialogProps = {}) => {
         <div className="px-4 sm:px-6 py-3 border-t border-border/40 bg-background/95 backdrop-blur shrink-0">
           <Button
             onClick={submit}
-            disabled={submitting || !formatValid || description.trim().length < 10}
+            disabled={submitting || !formatValid || description.trim().length < 10 || about.trim().length < 10 || about.trim().length > 60}
             className="w-full bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90"
           >
             {submitting ? t("entry.submitting") : t("entry.publish")}
