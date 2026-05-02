@@ -12,6 +12,7 @@ import UserProfile from "./pages/UserProfile.tsx";
 import Messages from "./pages/Messages.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import UsernameOnboarding from "./pages/UsernameOnboarding.tsx";
+import VerifyEmail from "./pages/VerifyEmail.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 
 const queryClient = new QueryClient();
