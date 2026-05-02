@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import AddEntryDialog from "./AddEntryDialog";
+import EmailVerifyBanner from "./EmailVerifyBanner";
 import { useAuth } from "@/contexts/AuthContext";
 import scoreLogo from "@/assets/score-logo.jpeg";
 import {
