@@ -58,7 +58,7 @@ const Auth = () => {
           toast({ title: t("auth.invalidInput"), description: parsed.error.issues[0].message, variant: "destructive" });
           return;
         }
-        const { error } = await supabase.auth.signUp({
+        const { data: signUpData, error } = await supabase.auth.signUp({
           email: parsed.data.email,
           password: parsed.data.password,
           options: {
@@ -67,10 +67,40 @@ const Auth = () => {
           },
         });
         if (error) {
-          toast({ title: t("auth.signUpFailed"), description: error.message, variant: "destructive" });
+          const msg = (error.message ?? "").toLowerCase();
+          const isDuplicate =
+            msg.includes("already registered") ||
+            msg.includes("already exists") ||
+            msg.includes("user already") ||
+            (error as any)?.code === "user_already_exists" ||
+            (error as any)?.code === "email_exists";
+          toast({
+            title: isDuplicate ? t("auth.emailTakenTitle") : t("auth.signUpFailed"),
+            description: isDuplicate ? t("auth.emailTakenDesc") : error.message,
+            variant: "destructive",
+          });
           return;
         }
-        toast({ title: t("auth.checkEmail"), description: t("auth.checkEmailDesc") });
+        // Detect "user already exists" silently returned (Supabase returns user with empty identities)
+        if (signUpData.user && Array.isArray(signUpData.user.identities) && signUpData.user.identities.length === 0) {
+          toast({
+            title: t("auth.emailTakenTitle"),
+            description: t("auth.emailTakenDesc"),
+            variant: "destructive",
+          });
+          return;
+        }
+        // Auto-confirm is enabled at the auth level so the user gets a session immediately.
+        // Email verification (custom flag in profiles.email_verified) is required only to post entries/comments.
+        if (!signUpData.session) {
+          // Fallback: try to sign in directly so the user is logged in right away
+          await supabase.auth.signInWithPassword({
+            email: parsed.data.email,
+            password: parsed.data.password,
+          });
+        }
+        toast({ title: t("auth.welcome"), description: t("auth.verifyEmailToPost") });
+        navigate(safeNext, { replace: true });
       } else {
         const parsed = signInSchema.safeParse({ email, password });
         if (!parsed.success) {
