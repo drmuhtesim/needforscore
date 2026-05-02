@@ -224,22 +224,23 @@ const Auth = () => {
 
             {mode === "signup" && (
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("auth.username")}</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">
+                  {t("auth.username")} <span className="text-muted-foreground/70 normal-case">({t("auth.optional")})</span>
+                </label>
                 <div className="relative">
                   <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     type="text"
-                    required
                     value={username}
                     onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                    pattern="[a-z0-9_.]{3,30}"
+                    pattern="^$|[a-z0-9_.]{3,30}"
                     className="w-full pl-9 pr-3 py-2.5 bg-background border border-border rounded-md text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/40"
-                    placeholder="user_name"
+                    placeholder={email ? email.split("@")[0] : "user_name"}
                     maxLength={30}
                     autoComplete="username"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">{t("auth.usernameHint")}</p>
+                <p className="text-xs text-muted-foreground">{t("auth.usernameAutoHint")}</p>
               </div>
             )}
 
