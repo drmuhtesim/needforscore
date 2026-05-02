@@ -51,7 +51,7 @@ export const useEntries = (category: CategoryType, search: string) => {
       const [{ data: profiles }, { data: votes }, { data: comments }] = await Promise.all([
         supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").in("user_id", userIds),
         supabase.from("votes").select("entry_id, value").in("entry_id", ids),
-        supabase.from("comments").select("entry_id, content, created_at").in("entry_id", ids).is("deleted_at", null),
+        supabase.from("comments").select("entry_id, content, created_at").in("entry_id", ids).is("deleted_at", null).order("created_at", { ascending: false }),
       ]);
 
       const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
@@ -63,6 +63,7 @@ export const useEntries = (category: CategoryType, search: string) => {
       const commentMap = new Map<string, number>();
       const commentContentMap = new Map<string, string[]>();
       const lastActivityMap = new Map<string, number>();
+      const lastCommentMap = new Map<string, string>();
       (comments ?? []).forEach((c) => {
         commentMap.set(c.entry_id, (commentMap.get(c.entry_id) ?? 0) + 1);
         const arr = commentContentMap.get(c.entry_id) ?? [];
@@ -70,8 +71,18 @@ export const useEntries = (category: CategoryType, search: string) => {
         commentContentMap.set(c.entry_id, arr);
         const ts = c.created_at ? new Date(c.created_at).getTime() : 0;
         const prev = lastActivityMap.get(c.entry_id) ?? 0;
-        if (ts > prev) lastActivityMap.set(c.entry_id, ts);
+        if (ts > prev) {
+          lastActivityMap.set(c.entry_id, ts);
+          lastCommentMap.set(c.entry_id, c.content);
+        }
       });
+
+      const firstLine = (text: string): string => {
+        const cleaned = cleanCommentContent(text);
+        if (!cleaned) return "";
+        const line = cleaned.split(/\r?\n/).map((s) => s.trim()).find((s) => s.length > 0) ?? "";
+        return line;
+      };
 
       const enriched = entries.map((e) => ({
         ...e,
@@ -79,6 +90,7 @@ export const useEntries = (category: CategoryType, search: string) => {
         vote_score: voteMap.get(e.id) ?? 0,
         comment_count: commentMap.get(e.id) ?? 0,
         avg_rating: averageRating(commentContentMap.get(e.id) ?? []),
+        last_comment_excerpt: lastCommentMap.has(e.id) ? firstLine(lastCommentMap.get(e.id)!) : null,
       }));
 
       // En son yorum/deneyim eklenen başlık en üstte; yorumu olmayanlar için entry'nin oluşturulma tarihi kullanılır.
