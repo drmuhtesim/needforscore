@@ -20,6 +20,8 @@ export interface EntryRow {
   comment_count?: number;
   /** Yorumların içeriğindeki skorlardan hesaplanan aritmetik ortalama; yorum yoksa null. */
   avg_rating?: number | null;
+  /** Son eklenen yorumun (deneyimin) ilk satırı (rating ve about temizlenmiş). */
+  last_comment_excerpt?: string | null;
 }
 
 export const useEntries = (category: CategoryType, search: string) => {
