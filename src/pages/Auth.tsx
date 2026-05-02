@@ -65,7 +65,7 @@ const Auth = () => {
           password: parsed.data.password,
           options: {
             emailRedirectTo: `${window.location.origin}${safeNext}`,
-            data: { username: parsed.data.username },
+            data: parsed.data.username ? { username: parsed.data.username } : {},
           },
         });
         if (error) {
