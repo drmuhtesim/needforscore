@@ -16,7 +16,11 @@ export const extractRatingFromComment = (content: string): number | null => {
 export const cleanCommentContent = (content: string): string => {
   if (!content) return "";
   // Remove the trailing rating line (e.g. "\n\n9/10" or "\n\n— Your score: 9/10")
-  return content.replace(/\n\n(?:— [^:]+: )?\d{1,2}\/10\s*$/, "").trim();
+  let out = content.replace(/\n\n(?:— [^:]+: )?\d{1,2}\/10\s*$/, "");
+  // Remove the leading "about" line (bold markdown wrapper inserted on entry creation)
+  // Format: "**about text**\n\nrest..."
+  out = out.replace(/^\s*\*\*[^\n]+?\*\*\s*\n+/, "");
+  return out.trim();
 };
 
 export const averageRating = (contents: string[]): number | null => {
