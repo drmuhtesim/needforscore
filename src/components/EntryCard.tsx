@@ -73,7 +73,7 @@ const EntryCard = ({ entry, index }: Props) => {
       {/* Sol risk şeridi */}
       <div className={`w-1 shrink-0 ${r.bar}`} aria-hidden />
 
-      <Link to={`/e/${entry.id}`} className="flex-1 min-w-0 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_auto_auto] items-center gap-3 px-3 py-2.5">
+      <Link to={`/e/${entry.id}`} className="relative flex-1 min-w-0 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_auto_auto] items-center gap-3 px-3 py-2.5">
         {/* Index + ikon */}
         <div className="flex items-center gap-2 shrink-0">
           <span className="text-[10px] font-mono text-muted-foreground w-6 text-right">#{index + 1}</span>
@@ -107,17 +107,16 @@ const EntryCard = ({ entry, index }: Props) => {
             </p>
           )}
           {lastExcerpt && (
-            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1 sm:line-clamp-2 italic">
+            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 italic">
               “{lastExcerpt}”
             </p>
           )}
-          {/* Mobil mini metrikler — sadece yorum sayısı */}
-          <div className="flex items-center gap-3 mt-1.5 sm:hidden text-[11px] font-mono">
-            <span className="inline-flex items-center gap-1 text-muted-foreground">
-              <MessageSquare className="h-3 w-3" />
-              {entry.comment_count ?? 0}
-            </span>
-          </div>
+          {/* Mobil mini metrikler — yorum sayısı sağ alta sabitlendi */}
+          <div className="sm:hidden h-4 mt-1.5" aria-hidden />
+          <span className="sm:hidden absolute bottom-1.5 right-2 inline-flex items-center gap-1 text-[11px] font-mono text-muted-foreground">
+            <MessageSquare className="h-3 w-3" />
+            {entry.comment_count ?? 0}
+          </span>
         </div>
 
         {/* Sağ kolon — desktop: son yorum ilk satırı (eski büyük puanın yerine) */}
