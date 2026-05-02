@@ -49,6 +49,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/onboarding/username" element={<UsernameOnboarding />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/e/:id" element={<EntryDetail />} />
               <Route path="/u/:username" element={<UserProfile />} />
               <Route path="/messages" element={<Messages />} />
