@@ -272,6 +272,8 @@ export type Database = {
           city: string | null
           created_at: string
           display_name: string | null
+          email_verification_token: string | null
+          email_verified: boolean
           id: string
           occupation: string | null
           signup_order: number
@@ -287,6 +289,8 @@ export type Database = {
           city?: string | null
           created_at?: string
           display_name?: string | null
+          email_verification_token?: string | null
+          email_verified?: boolean
           id?: string
           occupation?: string | null
           signup_order?: number
@@ -302,6 +306,8 @@ export type Database = {
           city?: string | null
           created_at?: string
           display_name?: string | null
+          email_verification_token?: string | null
+          email_verified?: boolean
           id?: string
           occupation?: string | null
           signup_order?: number
@@ -430,6 +436,7 @@ export type Database = {
         Args: { _entry_id: string; _user_id: string }
         Returns: boolean
       }
+      verify_email_with_token: { Args: { _token: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
