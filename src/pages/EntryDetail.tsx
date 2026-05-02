@@ -13,6 +13,7 @@ import {
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import UserHoverCard from "@/components/UserHoverCard";
+import UserScore from "@/components/UserScore";
 import VoteButtons from "@/components/VoteButtons";
 import ContentActionsMenu from "@/components/ContentActionsMenu";
 import EditEntryDialog from "@/components/EditEntryDialog";
@@ -334,18 +335,30 @@ const EntryDetail = () => {
 
               {/* Bottom: opener author left, actions right.
                   Note: opener can edit but CANNOT delete the entry. Only moderators can. */}
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+              <div className="mt-6 flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
                   {entry.profiles?.username ? (
-                    <>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
                       <span>{t("entry.by")}</span>
                       <UserHoverCard username={entry.profiles.username}>
                         <span className="text-foreground/80 hover:text-primary">@{entry.profiles.username}</span>
                       </UserHoverCard>
-                    </>
+                      <UserScore userId={entry.user_id} size="sm" />
+                    </div>
                   ) : null}
+                  {(() => {
+                    const desc = entry.description ?? "";
+                    const m = desc.match(/^\*\*(.+?)\*\*/s);
+                    const about = m?.[1]?.trim();
+                    if (!about) return null;
+                    return (
+                      <p className="mt-2 text-base sm:text-lg font-semibold text-foreground leading-snug break-words">
+                        {about}
+                      </p>
+                    );
+                  })()}
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 shrink-0">
                   <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} size="md" />
                   {canClaim && (
                     <Button size="sm" variant="outline" onClick={claimAsTarget} disabled={verifying}>
