@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import AddEntryDialog from "./AddEntryDialog";
+import EmailVerifyBanner from "./EmailVerifyBanner";
 import { useAuth } from "@/contexts/AuthContext";
 import scoreLogo from "@/assets/score-logo.jpeg";
 import {
@@ -28,6 +29,7 @@ const Header = () => {
 
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
+      <EmailVerifyBanner />
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
         <Link to="/" className="flex items-center gap-2" aria-label="Score — needforscore.com">
           <img src={scoreLogo} alt="Score logo" className="h-8 w-8 rounded-lg object-cover shadow-sm" />

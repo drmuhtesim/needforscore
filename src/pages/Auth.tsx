@@ -17,9 +17,11 @@ const signUpSchema = z.object({
     .string()
     .trim()
     .toLowerCase()
-    .min(3)
     .max(30)
-    .regex(/^[a-z0-9_.]+$/, "lowercase letters, numbers, _ or . only"),
+    .optional()
+    .refine((v) => !v || /^[a-z0-9_.]{3,30}$/.test(v), {
+      message: "lowercase letters, numbers, _ or . only (3-30 chars)",
+    }),
 });
 
 const signInSchema = z.object({
@@ -58,19 +60,49 @@ const Auth = () => {
           toast({ title: t("auth.invalidInput"), description: parsed.error.issues[0].message, variant: "destructive" });
           return;
         }
-        const { error } = await supabase.auth.signUp({
+        const { data: signUpData, error } = await supabase.auth.signUp({
           email: parsed.data.email,
           password: parsed.data.password,
           options: {
             emailRedirectTo: `${window.location.origin}${safeNext}`,
-            data: { username: parsed.data.username },
+            data: parsed.data.username ? { username: parsed.data.username } : {},
           },
         });
         if (error) {
-          toast({ title: t("auth.signUpFailed"), description: error.message, variant: "destructive" });
+          const msg = (error.message ?? "").toLowerCase();
+          const isDuplicate =
+            msg.includes("already registered") ||
+            msg.includes("already exists") ||
+            msg.includes("user already") ||
+            (error as any)?.code === "user_already_exists" ||
+            (error as any)?.code === "email_exists";
+          toast({
+            title: isDuplicate ? t("auth.emailTakenTitle") : t("auth.signUpFailed"),
+            description: isDuplicate ? t("auth.emailTakenDesc") : error.message,
+            variant: "destructive",
+          });
           return;
         }
-        toast({ title: t("auth.checkEmail"), description: t("auth.checkEmailDesc") });
+        // Detect "user already exists" silently returned (Supabase returns user with empty identities)
+        if (signUpData.user && Array.isArray(signUpData.user.identities) && signUpData.user.identities.length === 0) {
+          toast({
+            title: t("auth.emailTakenTitle"),
+            description: t("auth.emailTakenDesc"),
+            variant: "destructive",
+          });
+          return;
+        }
+        // Auto-confirm is enabled at the auth level so the user gets a session immediately.
+        // Email verification (custom flag in profiles.email_verified) is required only to post entries/comments.
+        if (!signUpData.session) {
+          // Fallback: try to sign in directly so the user is logged in right away
+          await supabase.auth.signInWithPassword({
+            email: parsed.data.email,
+            password: parsed.data.password,
+          });
+        }
+        toast({ title: t("auth.welcome"), description: t("auth.verifyEmailToPost") });
+        navigate(safeNext, { replace: true });
       } else {
         const parsed = signInSchema.safeParse({ email, password });
         if (!parsed.success) {
@@ -93,10 +125,10 @@ const Auth = () => {
     }
   };
 
-  const handleGoogle = async () => {
+  const handleOAuth = async (provider: "google" | "apple") => {
     setSubmitting(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
+      const result = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: `${window.location.origin}${safeNext}`,
       });
       if (result.error) {
@@ -140,20 +172,33 @@ const Auth = () => {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleGoogle}
-            disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 border border-border rounded-md py-2.5 text-sm font-semibold hover:bg-secondary transition-colors disabled:opacity-50"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.26 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.83z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38z"/>
-            </svg>
-            {t("auth.continueWithGoogle")}
-          </button>
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => handleOAuth("google")}
+              disabled={submitting}
+              className="w-full flex items-center justify-center gap-2 border border-border rounded-md py-2.5 text-sm font-semibold hover:bg-secondary transition-colors disabled:opacity-50"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.26 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.83z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38z"/>
+              </svg>
+              {t("auth.continueWithGoogle")}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOAuth("apple")}
+              disabled={submitting}
+              className="w-full flex items-center justify-center gap-2 border border-border rounded-md py-2.5 text-sm font-semibold bg-foreground text-background hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+              </svg>
+              {t("auth.continueWithApple")}
+            </button>
+          </div>
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
@@ -179,22 +224,23 @@ const Auth = () => {
 
             {mode === "signup" && (
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-muted-foreground uppercase">{t("auth.username")}</label>
+                <label className="text-xs font-semibold text-muted-foreground uppercase">
+                  {t("auth.username")} <span className="text-muted-foreground/70 normal-case">({t("auth.optional")})</span>
+                </label>
                 <div className="relative">
                   <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <input
                     type="text"
-                    required
                     value={username}
                     onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                    pattern="[a-z0-9_.]{3,30}"
+                    pattern="^$|[a-z0-9_.]{3,30}"
                     className="w-full pl-9 pr-3 py-2.5 bg-background border border-border rounded-md text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary/40"
-                    placeholder="user_name"
+                    placeholder={email ? email.split("@")[0] : "user_name"}
                     maxLength={30}
                     autoComplete="username"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">{t("auth.usernameHint")}</p>
+                <p className="text-xs text-muted-foreground">{t("auth.usernameAutoHint")}</p>
               </div>
             )}
 

@@ -27,7 +27,7 @@ interface Props {
 
 const CommentForm = ({ entryId, canReplyAsTarget, remaining }: Props) => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const qc = useQueryClient();
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(5);
@@ -37,7 +37,8 @@ const CommentForm = ({ entryId, canReplyAsTarget, remaining }: Props) => {
   const [posting, setPosting] = useState(false);
 
   const reachedLimit = remaining <= 0;
-  const canSubmit = !!user && !reachedLimit && content.trim().length >= 1 && content.trim().length <= 2000;
+  const emailVerified = !!profile?.email_verified;
+  const canSubmit = !!user && emailVerified && !reachedLimit && content.trim().length >= 1 && content.trim().length <= 2000;
 
   const openConfirm = () => {
     if (!canSubmit) return;
@@ -96,6 +97,15 @@ const CommentForm = ({ entryId, canReplyAsTarget, remaining }: Props) => {
     return (
       <div className="border border-border rounded-md p-4 mb-5 text-sm text-muted-foreground">
         {t("entry.limitReached")}
+      </div>
+    );
+  }
+
+  if (user && !emailVerified) {
+    return (
+      <div className="border border-warning/40 bg-warning/10 rounded-md p-4 mb-5 text-sm">
+        <p className="font-semibold mb-1">{t("verify.requiredTitle")}</p>
+        <p className="text-muted-foreground">{t("verify.requiredDesc")}</p>
       </div>
     );
   }

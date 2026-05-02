@@ -51,7 +51,7 @@ interface AddEntryDialogProps {
 
 const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openProp, onOpenChange }: AddEntryDialogProps = {}) => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [openInternal, setOpenInternal] = useState(false);
@@ -96,6 +96,14 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const handleOpen = (next: boolean) => {
     if (next && !user) {
       navigate("/auth?mode=signin");
+      return;
+    }
+    if (next && profile && !profile.email_verified) {
+      toast({
+        title: t("verify.requiredTitle"),
+        description: t("verify.requiredDesc"),
+        variant: "destructive",
+      });
       return;
     }
     setOpen(next);
