@@ -433,13 +433,12 @@ const EntryDetail = () => {
                               to={`/u/${username}`}
                               className="font-semibold text-foreground hover:underline truncate"
                             >
-                              {displayName}
+                              @{username}
                             </Link>
                           </UserHoverCard>
                           {!cDeleted && c.is_target_response && (
                             <BadgeCheck className="h-4 w-4 text-primary flex-shrink-0" aria-label={t("entry.targetResponse") as string} />
                           )}
-                          <span className="text-muted-foreground truncate">@{username}</span>
                           <span className="text-muted-foreground">·</span>
                           <span className="text-muted-foreground text-xs">{timeAgo}</span>
                         </div>
