@@ -17,9 +17,11 @@ const signUpSchema = z.object({
     .string()
     .trim()
     .toLowerCase()
-    .min(3)
     .max(30)
-    .regex(/^[a-z0-9_.]+$/, "lowercase letters, numbers, _ or . only"),
+    .optional()
+    .refine((v) => !v || /^[a-z0-9_.]{3,30}$/.test(v), {
+      message: "lowercase letters, numbers, _ or . only (3-30 chars)",
+    }),
 });
 
 const signInSchema = z.object({
