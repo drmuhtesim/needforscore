@@ -13,6 +13,7 @@ import {
 import Header from "@/components/Header";
 import PlatformIcon from "@/components/PlatformIcon";
 import UserHoverCard from "@/components/UserHoverCard";
+import UserScore from "@/components/UserScore";
 import VoteButtons from "@/components/VoteButtons";
 import ContentActionsMenu from "@/components/ContentActionsMenu";
 import EditEntryDialog from "@/components/EditEntryDialog";
