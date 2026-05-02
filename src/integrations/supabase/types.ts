@@ -420,6 +420,7 @@ export type Database = {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
       }
+      is_email_confirmed: { Args: { _user_id: string }; Returns: boolean }
       is_entry_target: {
         Args: { _entry_id: string; _user_id: string }
         Returns: boolean
