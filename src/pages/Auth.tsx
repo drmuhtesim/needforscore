@@ -123,10 +123,10 @@ const Auth = () => {
     }
   };
 
-  const handleGoogle = async () => {
+  const handleOAuth = async (provider: "google" | "apple") => {
     setSubmitting(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
+      const result = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: `${window.location.origin}${safeNext}`,
       });
       if (result.error) {
