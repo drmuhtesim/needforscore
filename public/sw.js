@@ -1,106 +1,61 @@
-// __BUILD_ID__ is replaced at build time by the swVersion Vite plugin.
-// In dev (no replacement) it falls back to "dev" so the SW still works locally.
-const BUILD_ID = "__BUILD_ID__".replace(/^__|__$/g, "") === "BUILD_ID" ? "dev" : "__BUILD_ID__";
-const CACHE_NAME = `needforscore-${BUILD_ID}`;
-const STATIC_ASSETS = ["/favicon.png", "/manifest.json"];
+/**
+ * KILL-SWITCH SERVICE WORKER
+ *
+ * Bu dosya, daha önce kayıtlı olan eski service worker'ları
+ * cihazlardan temizlemek için var. Yaptıkları:
+ *   1) Tüm cache'leri siler
+ *   2) Açık tüm sekmeleri cache-bust query ile yeniden yükler
+ *   3) Kendini unregister eder
+ *
+ * Yeni cache YAPMAZ, fetch'leri INTERCEPT etmez.
+ * Safari dahil tüm tarayıcılar artık her zaman ağdan taze HTML/asset alır.
+ */
 
-// Install: pre-cache minimal static assets and activate immediately
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
-  );
   // @ts-ignore
-  self.skipWaiting();
+  event.waitUntil(self.skipWaiting());
 });
 
-// Activate: drop old caches and take control of all clients
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
-      const names = await caches.keys();
-      await Promise.all(
-        names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n))
-      );
-      // @ts-ignore
-      await self.clients.claim();
+      try {
+        // 1) Tüm cache'leri sil
+        const names = await caches.keys();
+        await Promise.all(names.map((n) => caches.delete(n)));
+
+        // 2) Tüm istemcileri ele al
+        // @ts-ignore
+        await self.clients.claim();
+
+        // 3) Açık sekmeleri taze URL ile yeniden yükle
+        // @ts-ignore
+        const clients = await self.clients.matchAll({
+          type: "window",
+          includeUncontrolled: true,
+        });
+        await Promise.all(
+          clients.map((c) => {
+            try {
+              const url = new URL(c.url);
+              url.searchParams.set("sw-cleanup", Date.now().toString());
+              // @ts-ignore
+              return c.navigate(url.toString());
+            } catch {
+              return Promise.resolve();
+            }
+          })
+        );
+
+        // 4) Kendini unregister et — bir daha bu cihazda SW olmayacak
+        // @ts-ignore
+        await self.registration.unregister();
+      } catch {
+        // sessizce geç — kötü bir şey olmasın
+      }
     })()
   );
 });
 
-// Listen for SKIP_WAITING from the page (so newly installed SW can take over immediately)
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    // @ts-ignore
-    self.skipWaiting();
-  }
-});
-
-/**
- * Fetch strategy:
- * - HTML / navigations: NETWORK-ONLY (no cache fallback) so new deploys are always seen.
- * - Hashed build assets under /assets/: cache-first (immutable, hash changes per build).
- * - Supabase REST/Auth: network-only.
- * - Other static (favicon, manifest, images): cache-first with network fallback.
- */
-self.addEventListener("fetch", (event) => {
-  const { request } = event;
-  if (request.method !== "GET") return;
-
-  const url = new URL(request.url);
-
-  const isNavigation =
-    request.mode === "navigate" ||
-    request.destination === "document" ||
-    request.headers.get("accept")?.includes("text/html");
-
-  // Always go to network for HTML so deploys propagate immediately
-  if (isNavigation) {
-    event.respondWith(
-      fetch(request, { cache: "no-store" }).catch(
-        () => new Response("Offline", { status: 503 })
-      )
-    );
-    return;
-  }
-
-  // Don't cache Supabase API responses
-  if (
-    url.pathname.startsWith("/rest/") ||
-    url.pathname.startsWith("/auth/") ||
-    url.hostname.endsWith("supabase.co")
-  ) {
-    event.respondWith(fetch(request));
-    return;
-  }
-
-  // Hashed Vite build assets — safe to cache aggressively (filename changes per build)
-  if (url.pathname.startsWith("/assets/")) {
-    event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) return cached;
-        return fetch(request).then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
-          return response;
-        });
-      })
-    );
-    return;
-  }
-
-  // Other static assets: cache-first with network fallback
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).then((response) => {
-        if (response.ok && url.origin === self.location.origin) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-        }
-        return response;
-      });
-    })
-  );
-});
+// Hiçbir fetch'i intercept etme — her şey ağa gitsin
+self.addEventListener("fetch", () => {});
