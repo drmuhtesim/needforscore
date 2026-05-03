@@ -109,13 +109,25 @@ const Auth = () => {
         toast({ title: t("auth.welcome"), description: t("auth.verifyEmailToPost") });
         navigate(safeNext, { replace: true });
       } else {
-        const parsed = signInSchema.safeParse({ email, password });
+        const parsed = signInSchema.safeParse({ identifier: email, password });
         if (!parsed.success) {
           toast({ title: t("auth.invalidInput"), description: parsed.error.issues[0].message, variant: "destructive" });
           return;
         }
+        let loginEmail = parsed.data.identifier;
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginEmail);
+        if (!isEmail) {
+          // Treat as username — resolve to email via secure RPC
+          const uname = loginEmail.toLowerCase().replace(/^@/, "");
+          const { data: resolved, error: rpcErr } = await supabase.rpc("get_email_by_username", { _username: uname });
+          if (rpcErr || !resolved) {
+            toast({ title: t("auth.signInFailed"), description: t("auth.userNotFound"), variant: "destructive" });
+            return;
+          }
+          loginEmail = resolved as string;
+        }
         const { error } = await supabase.auth.signInWithPassword({
-          email: parsed.data.email,
+          email: loginEmail,
           password: parsed.data.password,
         });
         if (error) {
