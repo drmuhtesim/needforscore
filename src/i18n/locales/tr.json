@@ -93,7 +93,10 @@
   },
   "search": {
     "placeholder": "kullanıcı adı ara",
-    "button": "Ara"
+    "button": "Ara",
+    "usersTitle": "Kullanıcı ara",
+    "usersPlaceholder": "Kullanıcı adı yaz...",
+    "noResults": "Sonuç bulunamadı"
   },
   "categories": {
     "title": "Kategoriler",
