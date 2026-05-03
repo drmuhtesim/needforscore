@@ -98,9 +98,11 @@ const Messages = () => {
       const otherIds = list.map((c) => (c.user1_id === user!.id ? c.user2_id : c.user1_id));
       const { data: profs } = await supabase
         .from("profiles")
-        .select("user_id, username, display_name, avatar_url")
+        .select(PROFILE_PRIVACY_FIELDS)
         .in("user_id", otherIds);
-      const map = new Map((profs ?? []).map((p) => [p.user_id, p]));
+      const map = new Map(
+        (profs ?? []).map((p) => [p.user_id, applyProfilePrivacy(p as any, user!.id) as any]),
+      );
 
       // Son mesajları çek
       const { data: lastMsgs } = await supabase
