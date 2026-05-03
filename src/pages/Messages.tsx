@@ -325,8 +325,8 @@ const Messages = () => {
               </div>
 
               {/* Composer */}
-              <div className="border-t border-border bg-card/95 backdrop-blur-sm px-3 sm:px-4 py-2.5 flex-shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
-                <div className="flex items-end gap-2 max-w-3xl mx-auto">
+              <div className="border-t border-border bg-card/95 backdrop-blur-sm px-4 sm:px-6 py-2.5 flex-shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
+                <div className="flex items-end gap-2 max-w-3xl mx-auto w-full">
                   <Textarea
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
@@ -338,7 +338,7 @@ const Messages = () => {
                     }}
                     placeholder={t("messages.placeholder") as string}
                     rows={1}
-                    className="resize-none min-h-[44px] max-h-32 rounded-2xl px-4 py-2.5 text-sm flex-1 bg-background"
+                    className="resize-none min-h-[44px] max-h-32 rounded-2xl px-4 py-2.5 text-sm flex-1 min-w-0 bg-background"
                   />
                   <Button
                     onClick={send}
