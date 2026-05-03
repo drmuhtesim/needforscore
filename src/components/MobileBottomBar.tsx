@@ -122,6 +122,7 @@ const MobileBottomBar = () => {
           )}
         </li>
       </ul>
+      <UserSearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </nav>
   );
 };
