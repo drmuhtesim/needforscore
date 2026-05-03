@@ -32,6 +32,13 @@ interface Props {
     occupation?: string | null;
     age?: number | null;
     bio?: string | null;
+    show_avatar?: boolean;
+    show_display_name?: boolean;
+    show_city?: boolean;
+    show_occupation?: boolean;
+    show_age?: boolean;
+    show_bio?: boolean;
+    show_linked_accounts?: boolean;
   };
 }
 
