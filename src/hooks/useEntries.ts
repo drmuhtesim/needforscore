@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { CategoryType } from "@/components/CategorySidebar";
 import { averageRating, cleanCommentContent } from "@/lib/commentRating";
+import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
 
 export interface EntryRow {
   id: string;
