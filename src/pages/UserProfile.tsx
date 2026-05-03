@@ -167,6 +167,13 @@ const UserProfile = () => {
               occupation: (profile as any).occupation ?? null,
               age: (profile as any).age ?? null,
               bio: (profile as any).bio ?? null,
+              show_avatar: (profile as any).show_avatar ?? false,
+              show_display_name: (profile as any).show_display_name ?? false,
+              show_city: (profile as any).show_city ?? false,
+              show_occupation: (profile as any).show_occupation ?? false,
+              show_age: (profile as any).show_age ?? false,
+              show_bio: (profile as any).show_bio ?? false,
+              show_linked_accounts: (profile as any).show_linked_accounts ?? false,
             }}
           />
         )}
