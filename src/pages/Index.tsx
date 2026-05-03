@@ -82,7 +82,7 @@ const Index = () => {
               {t("ticker.mottoLine2")}
             </span>
           </h1>
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar value={searchQuery} onSearch={handleSearch} />
         </div>
       </div>
 
