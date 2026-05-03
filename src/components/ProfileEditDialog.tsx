@@ -238,6 +238,28 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
             />
             <p className="text-[11px] text-muted-foreground text-right font-mono">{bio.length}/500</p>
           </div>
+
+          {/* Privacy / visibility settings */}
+          <div className="border-t border-border pt-4 space-y-3">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">{t("profile.edit.privacy.title")}</h3>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{t("profile.edit.privacy.desc")}</p>
+            </div>
+            {[
+              { key: "avatar", label: t("profile.edit.privacy.avatar"), value: showAvatar, set: setShowAvatar },
+              { key: "displayName", label: t("profile.edit.privacy.displayName"), value: showDisplayName, set: setShowDisplayName },
+              { key: "city", label: t("profile.edit.privacy.city"), value: showCity, set: setShowCity },
+              { key: "occupation", label: t("profile.edit.privacy.occupation"), value: showOccupation, set: setShowOccupation },
+              { key: "age", label: t("profile.edit.privacy.age"), value: showAge, set: setShowAge },
+              { key: "bio", label: t("profile.edit.privacy.bio"), value: showBio, set: setShowBio },
+              { key: "linkedAccounts", label: t("profile.edit.privacy.linkedAccounts"), value: showLinkedAccounts, set: setShowLinkedAccounts },
+            ].map((row) => (
+              <div key={row.key} className="flex items-center justify-between gap-3">
+                <Label htmlFor={`pv-${row.key}`} className="text-sm font-normal cursor-pointer">{row.label}</Label>
+                <Switch id={`pv-${row.key}`} checked={row.value} onCheckedChange={row.set} />
+              </div>
+            ))}
+          </div>
         </div>
 
         <DialogFooter>
