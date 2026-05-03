@@ -322,7 +322,7 @@ const Messages = () => {
               </div>
 
               {/* Composer */}
-              <div className="border-t border-border bg-card/60 backdrop-blur-sm px-3 sm:px-4 py-2.5 flex-shrink-0">
+              <div className="border-t border-border bg-card/95 backdrop-blur-sm px-3 sm:px-4 py-2.5 flex-shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
                 <div className="flex items-end gap-2 max-w-3xl mx-auto">
                   <Textarea
                     value={draft}
@@ -341,7 +341,7 @@ const Messages = () => {
                     onClick={send}
                     disabled={sending || !draft.trim()}
                     size="icon"
-                    className="h-11 w-11 rounded-full flex-shrink-0 bg-gradient-to-br from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90 disabled:opacity-40"
+                    className="h-11 w-11 rounded-full flex-shrink-0 bg-gradient-to-br from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90 disabled:opacity-40 shadow-lg"
                     aria-label={t("messages.send") as string}
                   >
                     <Send className="h-4 w-4" />
