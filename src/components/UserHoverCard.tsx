@@ -45,7 +45,7 @@ const UserHoverCard = ({ username, children }: Props) => {
         .eq("username", username)
         .maybeSingle();
       if (!data) {
-        cache.set(username, null);
+        cache.set(cacheKey, null);
         if (!cancelled) setProfile(null);
         return;
       }
