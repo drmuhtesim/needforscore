@@ -54,6 +54,13 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initial.avatar_url);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showAvatar, setShowAvatar] = useState(!!initial.show_avatar);
+  const [showDisplayName, setShowDisplayName] = useState(!!initial.show_display_name);
+  const [showCity, setShowCity] = useState(!!initial.show_city);
+  const [showOccupation, setShowOccupation] = useState(!!initial.show_occupation);
+  const [showAge, setShowAge] = useState(!!initial.show_age);
+  const [showBio, setShowBio] = useState(!!initial.show_bio);
+  const [showLinkedAccounts, setShowLinkedAccounts] = useState(!!initial.show_linked_accounts);
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -64,6 +71,13 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
       setAge(initial.age != null ? String(initial.age) : "");
       setBio(initial.bio ?? "");
       setAvatarUrl(initial.avatar_url);
+      setShowAvatar(!!initial.show_avatar);
+      setShowDisplayName(!!initial.show_display_name);
+      setShowCity(!!initial.show_city);
+      setShowOccupation(!!initial.show_occupation);
+      setShowAge(!!initial.show_age);
+      setShowBio(!!initial.show_bio);
+      setShowLinkedAccounts(!!initial.show_linked_accounts);
     }
   }, [open, initial]);
 
