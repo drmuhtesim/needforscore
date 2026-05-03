@@ -25,7 +25,7 @@ const signUpSchema = z.object({
 });
 
 const signInSchema = z.object({
-  email: z.string().trim().email().max(255),
+  identifier: z.string().trim().min(1).max(255),
   password: z.string().min(1).max(72),
 });
 
@@ -109,13 +109,25 @@ const Auth = () => {
         toast({ title: t("auth.welcome"), description: t("auth.verifyEmailToPost") });
         navigate(safeNext, { replace: true });
       } else {
-        const parsed = signInSchema.safeParse({ email, password });
+        const parsed = signInSchema.safeParse({ identifier: email, password });
         if (!parsed.success) {
           toast({ title: t("auth.invalidInput"), description: parsed.error.issues[0].message, variant: "destructive" });
           return;
         }
+        let loginEmail = parsed.data.identifier;
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginEmail);
+        if (!isEmail) {
+          // Treat as username — resolve to email via secure RPC
+          const uname = loginEmail.toLowerCase().replace(/^@/, "");
+          const { data: resolved, error: rpcErr } = await supabase.rpc("get_email_by_username", { _username: uname });
+          if (rpcErr || !resolved) {
+            toast({ title: t("auth.signInFailed"), description: t("auth.userNotFound"), variant: "destructive" });
+            return;
+          }
+          loginEmail = resolved as string;
+        }
         const { error } = await supabase.auth.signInWithPassword({
-          email: parsed.data.email,
+          email: loginEmail,
           password: parsed.data.password,
         });
         if (error) {
@@ -216,16 +228,18 @@ const Auth = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-muted-foreground uppercase">{t("auth.email")}</label>
+              <label className="text-xs font-semibold text-muted-foreground uppercase">
+                {mode === "signin" ? t("auth.emailOrUsername") : t("auth.email")}
+              </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
-                  type="email"
+                  type={mode === "signin" ? "text" : "email"}
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-9 pr-3 py-2.5 bg-background border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                  autoComplete="email"
+                  autoComplete={mode === "signin" ? "username" : "email"}
                   maxLength={255}
                 />
               </div>
