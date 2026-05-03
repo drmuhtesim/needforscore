@@ -67,13 +67,13 @@ const UserHoverCard = ({ username, children }: Props) => {
         show_avatar: showAvatar,
         show_display_name: showDisplayName,
       };
-      cache.set(username, mini);
+      cache.set(cacheKey, mini);
       if (!cancelled) setProfile(mini);
     })();
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, cacheKey, user?.id]);
 
   return (
     <HoverCard openDelay={200}>
