@@ -22,6 +22,23 @@
     "notifications": "التنبيهات",
     "profile": "الملف الشخصي"
   },
+  "notif": {
+    "title": "الإشعارات",
+    "empty": "لا توجد إشعارات بعد.",
+    "markAllRead": "تحديد الكل كمقروء",
+    "sentMessage": "أرسل لك رسالة",
+    "repliedToYou": "رد على تعليقك",
+    "commentedOnYourEntry": "علّق على منشورك",
+    "commentedOnThread": "علّق على منشور شاركت فيه"
+  },
+  "terms": {
+    "agreeIntro": "بالتسجيل، أوافق على",
+    "termsLink": "شروط الاستخدام",
+    "and": "و",
+    "privacyLink": "سياسة الخصوصية",
+    "agreeOutro": "وأتحمل المسؤولية الكاملة عن المحتوى الذي أنشره.",
+    "mustAccept": "يجب الموافقة على الشروط للمتابعة."
+  },
   "auth": {
     "signInTitle": "أهلاً بعودتك إلى Score",
     "signInSubtitle": "سجّل الدخول إلى حسابك في Score للمتابعة",

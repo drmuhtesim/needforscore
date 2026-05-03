@@ -22,6 +22,23 @@
     "notifications": "Alerts",
     "profile": "Profile"
   },
+  "notif": {
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "markAllRead": "Mark all as read",
+    "sentMessage": "sent you a message",
+    "repliedToYou": "replied to your comment",
+    "commentedOnYourEntry": "commented on your entry",
+    "commentedOnThread": "commented on a thread you joined"
+  },
+  "terms": {
+    "agreeIntro": "By signing up, I agree to the",
+    "termsLink": "Terms of Use",
+    "and": "and",
+    "privacyLink": "Privacy Policy",
+    "agreeOutro": "and accept full responsibility for my own content.",
+    "mustAccept": "You must accept the terms to continue."
+  },
   "auth": {
     "signInTitle": "Welcome back to Score",
     "signInSubtitle": "Sign in to your Score account to continue",

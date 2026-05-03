@@ -2,8 +2,8 @@ import { Home, User as UserIcon, LogIn, Bell, MessageSquare } from "lucide-react
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNotifications } from "@/hooks/useNotifications";
 import AddEntryDialog from "./AddEntryDialog";
-import { toast } from "sonner";
 import scoreLogo from "@/assets/score-logo.jpeg";
 
 /**
@@ -16,6 +16,7 @@ const MobileBottomBar = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { unreadCount } = useNotifications(20);
 
   const requireAuth = (next: string) => {
     if (!user) {
@@ -73,19 +74,20 @@ const MobileBottomBar = () => {
         <li>
           <button
             type="button"
-            onClick={() => {
-              if (!user) {
-                navigate("/auth?mode=signin");
-                return;
-              }
-              toast.info(t("nav.notifications") as string, {
-                description: t("messages.empty") as string,
-              });
-            }}
-            className={`${itemBase} text-muted-foreground`}
+            onClick={() => requireAuth("/notifications")}
+            className={`${itemBase} relative ${
+              pathname.startsWith("/notifications") ? "text-primary" : "text-muted-foreground"
+            }`}
             aria-label={t("nav.notifications") as string}
           >
-            <Bell className="h-5 w-5" />
+            <span className="relative">
+              <Bell className="h-5 w-5" />
+              {user && unreadCount > 0 && (
+                <span className="absolute -top-1 -right-2 min-w-[14px] h-3.5 px-1 rounded-full bg-danger text-white text-[9px] font-bold inline-flex items-center justify-center">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </span>
             {t("nav.notifications")}
           </button>
         </li>
