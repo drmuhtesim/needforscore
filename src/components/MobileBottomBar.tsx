@@ -1,22 +1,28 @@
-import { Home, User as UserIcon, LogIn, Bell, MessageSquare } from "lucide-react";
+import { useState } from "react";
+import { Home, User as UserIcon, LogIn, Search, MessageSquare } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/hooks/useNotifications";
 import AddEntryDialog from "./AddEntryDialog";
+import UserSearchDialog from "./UserSearchDialog";
 import scoreLogo from "@/assets/score-logo.jpeg";
 
 /**
  * Mobil cihazlarda sayfanın en altında sabit duran navigasyon barı.
- * Masaüstünde gizlenir (lg:hidden). Tüm tuşlar tıklanabilir; arka uç
- * gerektiren akışlar (mesajlar/bildirimler) henüz yok ise toast gösterir.
  */
 const MobileBottomBar = () => {
   const { t } = useTranslation();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { unreadCount } = useNotifications(20);
+  const { notifications } = useNotifications(20);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const unreadMessages = notifications.filter(
+    (n) => n.kind === "message" && !n.read_at
+  ).length;
+  const hasUnreadMessages = unreadMessages > 0;
 
   const requireAuth = (next: string) => {
     if (!user) {
