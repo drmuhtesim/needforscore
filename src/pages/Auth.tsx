@@ -271,6 +271,28 @@ const Auth = () => {
               {mode === "signup" && <p className="text-xs text-muted-foreground">{t("auth.passwordHint")}</p>}
             </div>
 
+            {mode === "signup" && (
+              <label className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border accent-primary flex-shrink-0"
+                />
+                <span>
+                  {t("terms.agreeIntro")}{" "}
+                  <Link to="/terms" target="_blank" className="text-primary hover:underline font-semibold">
+                    {t("terms.termsLink")}
+                  </Link>{" "}
+                  {t("terms.and")}{" "}
+                  <Link to="/privacy" target="_blank" className="text-primary hover:underline font-semibold">
+                    {t("terms.privacyLink")}
+                  </Link>{" "}
+                  {t("terms.agreeOutro")}
+                </span>
+              </label>
+            )}
+
             <button
               type="submit"
               disabled={submitting}
