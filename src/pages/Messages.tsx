@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Send, ArrowLeft } from "lucide-react";
 import { getOrCreateConversation } from "@/lib/messaging";
+import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
 
 interface ConversationRow {
   id: string;
