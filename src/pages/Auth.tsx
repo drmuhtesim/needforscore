@@ -228,16 +228,18 @@ const Auth = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-muted-foreground uppercase">{t("auth.email")}</label>
+              <label className="text-xs font-semibold text-muted-foreground uppercase">
+                {mode === "signin" ? t("auth.emailOrUsername") : t("auth.email")}
+              </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
-                  type="email"
+                  type={mode === "signin" ? "text" : "email"}
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-9 pr-3 py-2.5 bg-background border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                  autoComplete="email"
+                  autoComplete={mode === "signin" ? "username" : "email"}
                   maxLength={255}
                 />
               </div>
