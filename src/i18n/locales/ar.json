@@ -98,7 +98,8 @@
     "button": "بحث",
     "usersTitle": "بحث عن مستخدم",
     "usersPlaceholder": "اكتب اسم المستخدم...",
-    "noResults": "لا توجد نتائج"
+    "noResults": "لا توجد نتائج",
+    "clear": "مسح"
   },
   "categories": {
     "title": "الفئات",
