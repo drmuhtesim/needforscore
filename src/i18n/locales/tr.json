@@ -46,6 +46,8 @@
     "signUpTitle": "Score hesabı oluştur",
     "signUpSubtitle": "Topluluğa katıl ve deneyimlerini paylaş",
     "email": "E-posta",
+    "emailOrUsername": "E-posta veya kullanıcı adı",
+    "userNotFound": "Bu kullanıcı adıyla bir hesap bulunamadı",
     "password": "Şifre",
     "username": "Kullanıcı adı",
     "usernameHint": "3-30 karakter, küçük harf/rakam/_ veya .",
