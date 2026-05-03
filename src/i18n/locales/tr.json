@@ -98,7 +98,8 @@
     "button": "Ara",
     "usersTitle": "Kullanıcı ara",
     "usersPlaceholder": "Kullanıcı adı yaz...",
-    "noResults": "Sonuç bulunamadı"
+    "noResults": "Sonuç bulunamadı",
+    "clear": "Temizle"
   },
   "categories": {
     "title": "Kategoriler",
