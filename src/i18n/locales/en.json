@@ -93,7 +93,10 @@
   },
   "search": {
     "placeholder": "search username",
-    "button": "Search"
+    "button": "Search",
+    "usersTitle": "Search users",
+    "usersPlaceholder": "Type a username...",
+    "noResults": "No results"
   },
   "categories": {
     "title": "Categories",
