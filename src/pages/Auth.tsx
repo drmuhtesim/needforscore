@@ -44,6 +44,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -55,6 +56,10 @@ const Auth = () => {
     setSubmitting(true);
     try {
       if (mode === "signup") {
+        if (!acceptedTerms) {
+          toast({ title: t("auth.invalidInput"), description: t("terms.mustAccept"), variant: "destructive" });
+          return;
+        }
         const parsed = signUpSchema.safeParse({ email, password, username });
         if (!parsed.success) {
           toast({ title: t("auth.invalidInput"), description: parsed.error.issues[0].message, variant: "destructive" });
@@ -126,6 +131,10 @@ const Auth = () => {
   };
 
   const handleOAuth = async (provider: "google" | "apple") => {
+    if (mode === "signup" && !acceptedTerms) {
+      toast({ title: t("auth.invalidInput"), description: t("terms.mustAccept"), variant: "destructive" });
+      return;
+    }
     setSubmitting(true);
     try {
       const result = await lovable.auth.signInWithOAuth(provider, {
@@ -261,6 +270,28 @@ const Auth = () => {
               </div>
               {mode === "signup" && <p className="text-xs text-muted-foreground">{t("auth.passwordHint")}</p>}
             </div>
+
+            {mode === "signup" && (
+              <label className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border accent-primary flex-shrink-0"
+                />
+                <span>
+                  {t("terms.agreeIntro")}{" "}
+                  <Link to="/terms" target="_blank" className="text-primary hover:underline font-semibold">
+                    {t("terms.termsLink")}
+                  </Link>{" "}
+                  {t("terms.and")}{" "}
+                  <Link to="/privacy" target="_blank" className="text-primary hover:underline font-semibold">
+                    {t("terms.privacyLink")}
+                  </Link>{" "}
+                  {t("terms.agreeOutro")}
+                </span>
+              </label>
+            )}
 
             <button
               type="submit"

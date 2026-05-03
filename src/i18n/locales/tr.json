@@ -22,6 +22,23 @@
     "notifications": "Bildirim",
     "profile": "Profil"
   },
+  "notif": {
+    "title": "Bildirimler",
+    "empty": "Henüz bildirimin yok.",
+    "markAllRead": "Tümünü okundu işaretle",
+    "sentMessage": "sana mesaj gönderdi",
+    "repliedToYou": "yorumuna yanıt verdi",
+    "commentedOnYourEntry": "başlığına yorum yaptı",
+    "commentedOnThread": "yorum yaptığın başlığa yorum yaptı"
+  },
+  "terms": {
+    "agreeIntro": "Üye olarak",
+    "termsLink": "Kullanım Şartları",
+    "and": "ve",
+    "privacyLink": "Gizlilik Politikası",
+    "agreeOutro": "kapsamında kendi içeriklerimden tek başıma sorumlu olduğumu kabul ederim.",
+    "mustAccept": "Devam etmek için sözleşmeyi kabul etmelisin."
+  },
   "auth": {
     "signInTitle": "Score'a tekrar hoş geldin",
     "signInSubtitle": "Devam etmek için Score hesabına giriş yap",

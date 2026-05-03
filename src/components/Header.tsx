@@ -6,6 +6,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import AddEntryDialog from "./AddEntryDialog";
 import EmailVerifyBanner from "./EmailVerifyBanner";
+import NotificationsBell from "./NotificationsBell";
 import { useAuth } from "@/contexts/AuthContext";
 import scoreLogo from "@/assets/score-logo.jpeg";
 import {
@@ -57,13 +58,16 @@ const Header = () => {
             </div>
           )}
           {user && (
-            <Link
-              to="/messages"
-              aria-label={t("messages.title") as string}
-              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <MessageSquare className="h-4 w-4" />
-            </Link>
+            <>
+              <Link
+                to="/messages"
+                aria-label={t("messages.title") as string}
+                className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Link>
+              <NotificationsBell />
+            </>
           )}
           <LanguageSwitcher />
           <ThemeToggle />

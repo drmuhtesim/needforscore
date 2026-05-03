@@ -10,6 +10,9 @@ import Auth from "./pages/Auth.tsx";
 import EntryDetail from "./pages/EntryDetail.tsx";
 import UserProfile from "./pages/UserProfile.tsx";
 import Messages from "./pages/Messages.tsx";
+import NotificationsPage from "./pages/NotificationsPage.tsx";
+import Terms from "./pages/Terms.tsx";
+import Privacy from "./pages/Privacy.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import UsernameOnboarding from "./pages/UsernameOnboarding.tsx";
 import VerifyEmail from "./pages/VerifyEmail.tsx";
@@ -53,6 +56,9 @@ const App = () => (
               <Route path="/e/:id" element={<EntryDetail />} />
               <Route path="/u/:username" element={<UserProfile />} />
               <Route path="/messages" element={<Messages />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
