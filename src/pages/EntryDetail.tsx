@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { buildProfileUrl, cleanTarget, formatTargetDisplay } from "@/lib/platforms";
+import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
 
 interface CommentRow {
   id: string;
@@ -121,10 +122,12 @@ const EntryDetail = () => {
       const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
       const ids = rows.map((r) => r.id);
       const [{ data: profiles }, { data: votes }] = await Promise.all([
-        supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").in("user_id", userIds),
+        supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).in("user_id", userIds),
         supabase.from("votes").select("comment_id, value").in("comment_id", ids),
       ]);
-      const pm = new Map((profiles ?? []).map((p) => [p.user_id, p]));
+      const pm = new Map(
+        (profiles ?? []).map((p) => [p.user_id, applyProfilePrivacy(p as any, user?.id) as any]),
+      );
       const vm = new Map<string, number>();
       (votes ?? []).forEach((v) => {
         if (!v.comment_id) return;

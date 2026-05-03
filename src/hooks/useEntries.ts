@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { CategoryType } from "@/components/CategorySidebar";
 import { averageRating, cleanCommentContent } from "@/lib/commentRating";
+import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
 
 export interface EntryRow {
   id: string;
@@ -48,13 +49,18 @@ export const useEntries = (category: CategoryType, search: string) => {
       const userIds = Array.from(new Set(entries.map((e) => e.user_id)));
       const ids = entries.map((e) => e.id);
 
+      const { data: authData } = await supabase.auth.getUser();
+      const viewerId = authData.user?.id ?? null;
+
       const [{ data: profiles }, { data: votes }, { data: comments }] = await Promise.all([
-        supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").in("user_id", userIds),
+        supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).in("user_id", userIds),
         supabase.from("votes").select("entry_id, value").in("entry_id", ids),
         supabase.from("comments").select("entry_id, content, created_at").in("entry_id", ids).is("deleted_at", null).order("created_at", { ascending: false }),
       ]);
 
-      const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
+      const profileMap = new Map(
+        (profiles ?? []).map((p) => [p.user_id, applyProfilePrivacy(p as any, viewerId) as any]),
+      );
       const voteMap = new Map<string, number>();
       (votes ?? []).forEach((v) => {
         if (!v.entry_id) return;
@@ -114,14 +120,17 @@ export const useEntry = (id: string | undefined) => {
       const { data, error } = await supabase.from("entries").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!data) return null;
+      const [{ data: authData2 }] = await Promise.all([supabase.auth.getUser()]);
+      const viewerId = authData2.user?.id ?? null;
       const [{ data: profile }, { data: votes }, { data: comments }] = await Promise.all([
-        supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").eq("user_id", data.user_id).maybeSingle(),
+        supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).eq("user_id", data.user_id).maybeSingle(),
         supabase.from("votes").select("value").eq("entry_id", id),
         supabase.from("comments").select("content").eq("entry_id", id).is("deleted_at", null),
       ]);
       const score = (votes ?? []).reduce((acc, v) => acc + v.value, 0);
       const avg = averageRating((comments ?? []).map((c) => c.content));
-      return { ...(data as EntryRow), profiles: profile as any, vote_score: score, avg_rating: avg };
+      const safeProfile = applyProfilePrivacy(profile as any, viewerId);
+      return { ...(data as EntryRow), profiles: safeProfile as any, vote_score: score, avg_rating: avg };
     },
   });
 };
