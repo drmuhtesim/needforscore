@@ -44,6 +44,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -55,6 +56,10 @@ const Auth = () => {
     setSubmitting(true);
     try {
       if (mode === "signup") {
+        if (!acceptedTerms) {
+          toast({ title: t("auth.invalidInput"), description: t("terms.mustAccept"), variant: "destructive" });
+          return;
+        }
         const parsed = signUpSchema.safeParse({ email, password, username });
         if (!parsed.success) {
           toast({ title: t("auth.invalidInput"), description: parsed.error.issues[0].message, variant: "destructive" });
@@ -126,6 +131,10 @@ const Auth = () => {
   };
 
   const handleOAuth = async (provider: "google" | "apple") => {
+    if (mode === "signup" && !acceptedTerms) {
+      toast({ title: t("auth.invalidInput"), description: t("terms.mustAccept"), variant: "destructive" });
+      return;
+    }
     setSubmitting(true);
     try {
       const result = await lovable.auth.signInWithOAuth(provider, {
