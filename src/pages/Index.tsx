@@ -16,7 +16,9 @@ const Index = () => {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
   const [category, setCategory] = useState<CategoryType>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQ = searchParams.get("q") ?? "";
+  const [searchQuery, setSearchQuery] = useState(initialQ);
   const [timeFilter, setTimeFilter] = useState<string>("24h");
   const [pendingTarget, setPendingTarget] = useState<string | null>(null);
   const [pendingCategory, setPendingCategory] = useState<Exclude<CategoryType, "all"> | undefined>(undefined);
