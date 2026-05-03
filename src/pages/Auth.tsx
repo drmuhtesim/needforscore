@@ -25,7 +25,7 @@ const signUpSchema = z.object({
 });
 
 const signInSchema = z.object({
-  email: z.string().trim().email().max(255),
+  identifier: z.string().trim().min(1).max(255),
   password: z.string().min(1).max(72),
 });
 
