@@ -43,7 +43,7 @@ const UserProfile = () => {
     queryFn: async () => {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("user_id, username, display_name, avatar_url, created_at, signup_order, city, occupation, age, bio")
+        .select("user_id, username, display_name, avatar_url, created_at, signup_order, city, occupation, age, bio, show_avatar, show_display_name, show_city, show_occupation, show_age, show_bio, show_linked_accounts")
         .eq("username", username!)
         .maybeSingle();
       if (!profile) return null;
