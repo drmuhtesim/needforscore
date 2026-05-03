@@ -120,8 +120,13 @@ export const useEntry = (id: string | undefined) => {
       const { data, error } = await supabase.from("entries").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!data) return null;
+      const [{ data: authData2 }] = await Promise.all([supabase.auth.getUser()]);
+      const viewerId = authData2.user?.id ?? null;
       const [{ data: profile }, { data: votes }, { data: comments }] = await Promise.all([
-        supabase.from("profiles").select("user_id, username, display_name, avatar_url, signup_order").eq("user_id", data.user_id).maybeSingle(),
+        supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).eq("user_id", data.user_id).maybeSingle(),
+        supabase.from("votes").select("value").eq("entry_id", id),
+        supabase.from("comments").select("content").eq("entry_id", id).is("deleted_at", null),
+      ]);
         supabase.from("votes").select("value").eq("entry_id", id),
         supabase.from("comments").select("content").eq("entry_id", id).is("deleted_at", null),
       ]);
