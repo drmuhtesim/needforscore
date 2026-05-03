@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
@@ -15,7 +16,9 @@ const Index = () => {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
   const [category, setCategory] = useState<CategoryType>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQ = searchParams.get("q") ?? "";
+  const [searchQuery, setSearchQuery] = useState(initialQ);
   const [timeFilter, setTimeFilter] = useState<string>("24h");
   const [pendingTarget, setPendingTarget] = useState<string | null>(null);
   const [pendingCategory, setPendingCategory] = useState<Exclude<CategoryType, "all"> | undefined>(undefined);
@@ -31,6 +34,19 @@ const Index = () => {
     setPendingCategory(pending.category as Exclude<CategoryType, "all"> | undefined);
     setPendingOpen(true);
   }, [user, loading]);
+
+  // URL ?q= parametresi değişirse arama kutusunu senkronla (alt bardan gelirken)
+  useEffect(() => {
+    const q = searchParams.get("q") ?? "";
+    setSearchQuery(q);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  const handleSearch = (q: string) => {
+    setSearchQuery(q);
+    if (q) setSearchParams({ q }, { replace: true });
+    else setSearchParams({}, { replace: true });
+  };
 
   const tfRaw = t("filters.timeFilters", { returnObjects: true });
   const timeFilters = Array.isArray(tfRaw) ? (tfRaw as string[]) : ["5m", "1h", "6h", "24h", "7d", "30d"];
@@ -66,7 +82,7 @@ const Index = () => {
               {t("ticker.mottoLine2")}
             </span>
           </h1>
-          <SearchBar onSearch={setSearchQuery} />
+          <SearchBar onSearch={handleSearch} />
         </div>
       </div>
 
