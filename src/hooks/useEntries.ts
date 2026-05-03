@@ -127,12 +127,10 @@ export const useEntry = (id: string | undefined) => {
         supabase.from("votes").select("value").eq("entry_id", id),
         supabase.from("comments").select("content").eq("entry_id", id).is("deleted_at", null),
       ]);
-        supabase.from("votes").select("value").eq("entry_id", id),
-        supabase.from("comments").select("content").eq("entry_id", id).is("deleted_at", null),
-      ]);
       const score = (votes ?? []).reduce((acc, v) => acc + v.value, 0);
       const avg = averageRating((comments ?? []).map((c) => c.content));
-      return { ...(data as EntryRow), profiles: profile as any, vote_score: score, avg_rating: avg };
+      const safeProfile = applyProfilePrivacy(profile as any, viewerId);
+      return { ...(data as EntryRow), profiles: safeProfile as any, vote_score: score, avg_rating: avg };
     },
   });
 };
