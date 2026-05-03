@@ -282,7 +282,18 @@
       "changeAvatar": "Avatarı değiştir",
       "avatarHint": "JPG/PNG/WEBP — 5MB altı",
       "avatarTooBig": "Dosya en fazla 5MB olmalı",
-      "ageInvalid": "Yaş 13 ile 120 arasında olmalı"
+      "ageInvalid": "Yaş 13 ile 120 arasında olmalı",
+      "privacy": {
+        "title": "Gizlilik — Görünürlük",
+        "desc": "Varsayılan olarak diğer kullanıcılar yalnızca kullanıcı adını ve puanını görür. Aşağıdan paylaşmak istediğin bilgileri aç.",
+        "avatar": "Profil fotoğrafı",
+        "displayName": "Görünen ad",
+        "city": "Şehir",
+        "occupation": "Meslek",
+        "age": "Yaş",
+        "bio": "Hakkında",
+        "linkedAccounts": "Bağlı hesaplar"
+      }
     }
   },
   "notFound": {

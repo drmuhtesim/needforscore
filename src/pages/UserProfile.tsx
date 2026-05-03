@@ -43,7 +43,7 @@ const UserProfile = () => {
     queryFn: async () => {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("user_id, username, display_name, avatar_url, created_at, signup_order, city, occupation, age, bio")
+        .select("user_id, username, display_name, avatar_url, created_at, signup_order, city, occupation, age, bio, show_avatar, show_display_name, show_city, show_occupation, show_age, show_bio, show_linked_accounts")
         .eq("username", username!)
         .maybeSingle();
       if (!profile) return null;
@@ -80,9 +80,20 @@ const UserProfile = () => {
           <ArrowLeft className="h-4 w-4" /> {t("entry.backToList")}
         </Link>
 
+        {(() => {
+          const isOwner = !!user && user.id === profile.user_id;
+          const p: any = profile;
+          const canShow = (key: string) => isOwner || !!p[key];
+          const showAvatar = canShow("show_avatar") && profile.avatar_url;
+          const showDisplayName = canShow("show_display_name") && profile.display_name;
+          const showCity = canShow("show_city") && p.city;
+          const showOccupation = canShow("show_occupation") && p.occupation;
+          const showAge = canShow("show_age") && p.age != null;
+          const showBio = canShow("show_bio") && p.bio;
+          return (
         <div className="border border-border rounded-lg p-5 bg-card flex items-start gap-4">
           <Avatar className="h-16 w-16">
-            {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}
+            {showAvatar && <AvatarImage src={profile.avatar_url!} />}
             <AvatarFallback className="bg-primary/10 text-primary font-mono text-base">
               {profile.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
@@ -92,24 +103,24 @@ const UserProfile = () => {
               <h1 className="text-xl font-mono text-foreground">@{profile.username}</h1>
               <UserScore userId={profile.user_id} size="md" />
             </div>
-            {profile.display_name && <p className="text-sm text-muted-foreground">{profile.display_name}</p>}
+            {showDisplayName && <p className="text-sm text-muted-foreground">{profile.display_name}</p>}
 
             {/* Extra profile fields */}
-            {((profile as any).city || (profile as any).occupation || (profile as any).age != null) && (
+            {(showCity || showOccupation || showAge) && (
               <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted-foreground">
-                {(profile as any).city && (
-                  <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{(profile as any).city}</span>
+                {showCity && (
+                  <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{p.city}</span>
                 )}
-                {(profile as any).occupation && (
-                  <span className="inline-flex items-center gap-1"><Briefcase className="h-3 w-3" />{(profile as any).occupation}</span>
+                {showOccupation && (
+                  <span className="inline-flex items-center gap-1"><Briefcase className="h-3 w-3" />{p.occupation}</span>
                 )}
-                {(profile as any).age != null && (
-                  <span className="inline-flex items-center gap-1"><Cake className="h-3 w-3" />{(profile as any).age}</span>
+                {showAge && (
+                  <span className="inline-flex items-center gap-1"><Cake className="h-3 w-3" />{p.age}</span>
                 )}
               </div>
             )}
-            {(profile as any).bio && (
-              <p className="text-sm text-foreground/90 mt-2 whitespace-pre-wrap break-words">{(profile as any).bio}</p>
+            {showBio && (
+              <p className="text-sm text-foreground/90 mt-2 whitespace-pre-wrap break-words">{p.bio}</p>
             )}
 
             <div className="flex items-center gap-4 mt-3 text-xs font-mono text-muted-foreground">
@@ -118,7 +129,7 @@ const UserProfile = () => {
               <span>{t("profile.joined")} {new Date(profile.created_at).toLocaleDateString()}</span>
             </div>
           </div>
-          {user && user.id === profile.user_id ? (
+          {isOwner ? (
             <Button
               size="sm"
               variant="outline"
@@ -128,7 +139,7 @@ const UserProfile = () => {
               <Pencil className="h-4 w-4" />
               {t("profile.edit.button")}
             </Button>
-          ) : user && user.id !== profile.user_id ? (
+          ) : user ? (
             <Button
               size="sm"
               variant="outline"
@@ -140,6 +151,8 @@ const UserProfile = () => {
             </Button>
           ) : null}
         </div>
+          );
+        })()}
 
         {user && user.id === profile.user_id && (
           <ProfileEditDialog
@@ -154,6 +167,13 @@ const UserProfile = () => {
               occupation: (profile as any).occupation ?? null,
               age: (profile as any).age ?? null,
               bio: (profile as any).bio ?? null,
+              show_avatar: (profile as any).show_avatar ?? false,
+              show_display_name: (profile as any).show_display_name ?? false,
+              show_city: (profile as any).show_city ?? false,
+              show_occupation: (profile as any).show_occupation ?? false,
+              show_age: (profile as any).show_age ?? false,
+              show_bio: (profile as any).show_bio ?? false,
+              show_linked_accounts: (profile as any).show_linked_accounts ?? false,
             }}
           />
         )}

@@ -282,7 +282,18 @@
       "changeAvatar": "Change avatar",
       "avatarHint": "JPG/PNG/WEBP — under 5MB",
       "avatarTooBig": "File must be under 5MB",
-      "ageInvalid": "Age must be between 13 and 120"
+      "ageInvalid": "Age must be between 13 and 120",
+      "privacy": {
+        "title": "Privacy — Visibility",
+        "desc": "By default, other users only see your username and score. Toggle on the details you want to share.",
+        "avatar": "Avatar",
+        "displayName": "Display name",
+        "city": "City",
+        "occupation": "Occupation",
+        "age": "Age",
+        "bio": "Bio",
+        "linkedAccounts": "Linked accounts"
+      }
     }
   },
   "notFound": {

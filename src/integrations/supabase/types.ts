@@ -315,6 +315,13 @@ export type Database = {
           email_verified: boolean
           id: string
           occupation: string | null
+          show_age: boolean
+          show_avatar: boolean
+          show_bio: boolean
+          show_city: boolean
+          show_display_name: boolean
+          show_linked_accounts: boolean
+          show_occupation: boolean
           signup_order: number
           updated_at: string
           user_id: string
@@ -332,6 +339,13 @@ export type Database = {
           email_verified?: boolean
           id?: string
           occupation?: string | null
+          show_age?: boolean
+          show_avatar?: boolean
+          show_bio?: boolean
+          show_city?: boolean
+          show_display_name?: boolean
+          show_linked_accounts?: boolean
+          show_occupation?: boolean
           signup_order?: number
           updated_at?: string
           user_id: string
@@ -349,6 +363,13 @@ export type Database = {
           email_verified?: boolean
           id?: string
           occupation?: string | null
+          show_age?: boolean
+          show_avatar?: boolean
+          show_bio?: boolean
+          show_city?: boolean
+          show_display_name?: boolean
+          show_linked_accounts?: boolean
+          show_occupation?: boolean
           signup_order?: number
           updated_at?: string
           user_id?: string

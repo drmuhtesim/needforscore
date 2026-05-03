@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -31,6 +32,13 @@ interface Props {
     occupation?: string | null;
     age?: number | null;
     bio?: string | null;
+    show_avatar?: boolean;
+    show_display_name?: boolean;
+    show_city?: boolean;
+    show_occupation?: boolean;
+    show_age?: boolean;
+    show_bio?: boolean;
+    show_linked_accounts?: boolean;
   };
 }
 
@@ -46,6 +54,13 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initial.avatar_url);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showAvatar, setShowAvatar] = useState(!!initial.show_avatar);
+  const [showDisplayName, setShowDisplayName] = useState(!!initial.show_display_name);
+  const [showCity, setShowCity] = useState(!!initial.show_city);
+  const [showOccupation, setShowOccupation] = useState(!!initial.show_occupation);
+  const [showAge, setShowAge] = useState(!!initial.show_age);
+  const [showBio, setShowBio] = useState(!!initial.show_bio);
+  const [showLinkedAccounts, setShowLinkedAccounts] = useState(!!initial.show_linked_accounts);
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -56,6 +71,13 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
       setAge(initial.age != null ? String(initial.age) : "");
       setBio(initial.bio ?? "");
       setAvatarUrl(initial.avatar_url);
+      setShowAvatar(!!initial.show_avatar);
+      setShowDisplayName(!!initial.show_display_name);
+      setShowCity(!!initial.show_city);
+      setShowOccupation(!!initial.show_occupation);
+      setShowAge(!!initial.show_age);
+      setShowBio(!!initial.show_bio);
+      setShowLinkedAccounts(!!initial.show_linked_accounts);
     }
   }, [open, initial]);
 
@@ -97,6 +119,13 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
       age: ageNum,
       bio: bio.trim() || null,
       avatar_url: avatarUrl,
+      show_avatar: showAvatar,
+      show_display_name: showDisplayName,
+      show_city: showCity,
+      show_occupation: showOccupation,
+      show_age: showAge,
+      show_bio: showBio,
+      show_linked_accounts: showLinkedAccounts,
     };
     const { error } = await supabase
       .from("profiles")
@@ -117,7 +146,7 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("profile.edit.title")}</DialogTitle>
           <DialogDescription>{t("profile.edit.desc")}</DialogDescription>
@@ -208,6 +237,28 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
               placeholder={t("profile.edit.bioPlaceholder")}
             />
             <p className="text-[11px] text-muted-foreground text-right font-mono">{bio.length}/500</p>
+          </div>
+
+          {/* Privacy / visibility settings */}
+          <div className="border-t border-border pt-4 space-y-3">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">{t("profile.edit.privacy.title")}</h3>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{t("profile.edit.privacy.desc")}</p>
+            </div>
+            {[
+              { key: "avatar", label: t("profile.edit.privacy.avatar"), value: showAvatar, set: setShowAvatar },
+              { key: "displayName", label: t("profile.edit.privacy.displayName"), value: showDisplayName, set: setShowDisplayName },
+              { key: "city", label: t("profile.edit.privacy.city"), value: showCity, set: setShowCity },
+              { key: "occupation", label: t("profile.edit.privacy.occupation"), value: showOccupation, set: setShowOccupation },
+              { key: "age", label: t("profile.edit.privacy.age"), value: showAge, set: setShowAge },
+              { key: "bio", label: t("profile.edit.privacy.bio"), value: showBio, set: setShowBio },
+              { key: "linkedAccounts", label: t("profile.edit.privacy.linkedAccounts"), value: showLinkedAccounts, set: setShowLinkedAccounts },
+            ].map((row) => (
+              <div key={row.key} className="flex items-center justify-between gap-3">
+                <Label htmlFor={`pv-${row.key}`} className="text-sm font-normal cursor-pointer">{row.label}</Label>
+                <Switch id={`pv-${row.key}`} checked={row.value} onCheckedChange={row.set} />
+              </div>
+            ))}
           </div>
         </div>
 

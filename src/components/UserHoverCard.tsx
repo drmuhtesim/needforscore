@@ -19,6 +19,8 @@ interface MiniProfile {
   avatar_url: string | null;
   entry_count: number;
   signup_order: number | null;
+  show_avatar: boolean;
+  show_display_name: boolean;
 }
 
 const cache = new Map<string, MiniProfile | null>();
@@ -27,18 +29,19 @@ const UserHoverCard = ({ username, children }: Props) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<MiniProfile | null | undefined>(cache.get(username));
+  const cacheKey = `${user?.id ?? "anon"}:${username}`;
+  const [profile, setProfile] = useState<MiniProfile | null | undefined>(cache.get(cacheKey));
 
   useEffect(() => {
-    if (cache.has(username)) {
-      setProfile(cache.get(username) ?? null);
+    if (cache.has(cacheKey)) {
+      setProfile(cache.get(cacheKey) ?? null);
       return;
     }
     let cancelled = false;
     (async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("user_id, username, display_name, avatar_url, signup_order")
+        .select("user_id, username, display_name, avatar_url, signup_order, show_avatar, show_display_name")
         .eq("username", username)
         .maybeSingle();
       if (!data) {
@@ -51,21 +54,26 @@ const UserHoverCard = ({ username, children }: Props) => {
         .select("id", { count: "exact", head: true })
         .eq("user_id", data.user_id)
         .is("deleted_at", null);
+      const isOwner = !!user && user.id === data.user_id;
+      const showAvatar = !!(data as any).show_avatar;
+      const showDisplayName = !!(data as any).show_display_name;
       const mini: MiniProfile = {
         user_id: data.user_id,
         username: data.username,
-        display_name: data.display_name,
-        avatar_url: data.avatar_url,
+        display_name: isOwner || showDisplayName ? data.display_name : null,
+        avatar_url: isOwner || showAvatar ? data.avatar_url : null,
         entry_count: count ?? 0,
         signup_order: (data as any).signup_order ?? null,
+        show_avatar: showAvatar,
+        show_display_name: showDisplayName,
       };
-      cache.set(username, mini);
+      cache.set(cacheKey, mini);
       if (!cancelled) setProfile(mini);
     })();
     return () => {
       cancelled = true;
     };
-  }, [username]);
+  }, [username, cacheKey, user?.id]);
 
   return (
     <HoverCard openDelay={200}>
