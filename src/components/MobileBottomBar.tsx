@@ -56,10 +56,25 @@ const MobileBottomBar = () => {
           <button
             type="button"
             onClick={() => requireAuth("/messages")}
-            className={`${itemBase} ${pathname.startsWith("/messages") ? "text-primary" : "text-muted-foreground"}`}
+            className={`${itemBase} relative ${
+              pathname.startsWith("/messages")
+                ? "text-primary"
+                : hasUnreadMessages
+                  ? "text-safe"
+                  : "text-muted-foreground"
+            }`}
             aria-label={t("nav.messages") as string}
           >
-            <MessageSquare className="h-5 w-5" />
+            <span className="relative">
+              <MessageSquare
+                className={`h-5 w-5 ${hasUnreadMessages ? "text-safe" : ""}`}
+              />
+              {user && hasUnreadMessages && (
+                <span className="absolute -top-1 -right-2 min-w-[14px] h-3.5 px-1 rounded-full bg-safe text-background text-[9px] font-bold inline-flex items-center justify-center">
+                  {unreadMessages > 9 ? "9+" : unreadMessages}
+                </span>
+              )}
+            </span>
             {t("nav.messages")}
           </button>
         </li>
@@ -80,21 +95,12 @@ const MobileBottomBar = () => {
         <li>
           <button
             type="button"
-            onClick={() => requireAuth("/notifications")}
-            className={`${itemBase} relative ${
-              pathname.startsWith("/notifications") ? "text-primary" : "text-muted-foreground"
-            }`}
-            aria-label={t("nav.notifications") as string}
+            onClick={() => setSearchOpen(true)}
+            className={`${itemBase} text-muted-foreground`}
+            aria-label={t("search.usersTitle") as string}
           >
-            <span className="relative">
-              <Bell className="h-5 w-5" />
-              {user && unreadCount > 0 && (
-                <span className="absolute -top-1 -right-2 min-w-[14px] h-3.5 px-1 rounded-full bg-danger text-white text-[9px] font-bold inline-flex items-center justify-center">
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </span>
-              )}
-            </span>
-            {t("nav.notifications")}
+            <Search className="h-5 w-5" />
+            {t("nav.search")}
           </button>
         </li>
         <li>
