@@ -20,6 +20,7 @@
     "home": "الرئيسية",
     "messages": "الرسائل",
     "notifications": "التنبيهات",
+    "search": "بحث",
     "profile": "الملف الشخصي"
   },
   "notif": {
@@ -92,7 +93,10 @@
   },
   "search": {
     "placeholder": "ابحث باسم المستخدم",
-    "button": "بحث"
+    "button": "بحث",
+    "usersTitle": "بحث عن مستخدم",
+    "usersPlaceholder": "اكتب اسم المستخدم...",
+    "noResults": "لا توجد نتائج"
   },
   "categories": {
     "title": "الفئات",
