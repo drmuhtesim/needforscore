@@ -45,13 +45,15 @@ export const useNotifications = (limit = 20) => {
       const entryIds = Array.from(new Set(list.map((n) => n.entry_id).filter(Boolean))) as string[];
       const [profilesRes, entriesRes] = await Promise.all([
         actorIds.length
-          ? supabase.from("profiles").select("user_id, username, display_name, avatar_url").in("user_id", actorIds)
+          ? supabase.from("profiles").select(PROFILE_PRIVACY_FIELDS).in("user_id", actorIds)
           : Promise.resolve({ data: [] as any[] }),
         entryIds.length
           ? supabase.from("entries").select("id, target, category").in("id", entryIds)
           : Promise.resolve({ data: [] as any[] }),
       ]);
-      const pMap = new Map((profilesRes.data ?? []).map((p: any) => [p.user_id, p]));
+      const pMap = new Map(
+        (profilesRes.data ?? []).map((p: any) => [p.user_id, applyProfilePrivacy(p, user!.id)]),
+      );
       const eMap = new Map((entriesRes.data ?? []).map((e: any) => [e.id, e]));
       return list.map((n) => ({
         ...n,
