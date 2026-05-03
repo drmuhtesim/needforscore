@@ -35,6 +35,19 @@ const Index = () => {
     setPendingOpen(true);
   }, [user, loading]);
 
+  // URL ?q= parametresi değişirse arama kutusunu senkronla (alt bardan gelirken)
+  useEffect(() => {
+    const q = searchParams.get("q") ?? "";
+    setSearchQuery(q);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  const handleSearch = (q: string) => {
+    setSearchQuery(q);
+    if (q) setSearchParams({ q }, { replace: true });
+    else setSearchParams({}, { replace: true });
+  };
+
   const tfRaw = t("filters.timeFilters", { returnObjects: true });
   const timeFilters = Array.isArray(tfRaw) ? (tfRaw as string[]) : ["5m", "1h", "6h", "24h", "7d", "30d"];
 
