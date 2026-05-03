@@ -93,7 +93,10 @@
   },
   "search": {
     "placeholder": "ابحث باسم المستخدم",
-    "button": "بحث"
+    "button": "بحث",
+    "usersTitle": "بحث عن مستخدم",
+    "usersPlaceholder": "اكتب اسم المستخدم...",
+    "noResults": "لا توجد نتائج"
   },
   "categories": {
     "title": "الفئات",
