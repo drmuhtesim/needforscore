@@ -8,25 +8,44 @@ interface Props {
   size?: "sm" | "md";
 }
 
-// Cache: userId -> avg rating (number) or null if no entries
+// Cache: userId -> avg rating (number) or null if no qualifying entries
 const cache = new Map<string, number | null>();
 const inflight = new Map<string, Promise<number | null>>();
 
+/**
+ * Average rating of entries opened by this user, restricted to entries that
+ * have at least one comment from someone OTHER than the entry owner.
+ * If none of the user's entries have such third-party engagement, returns null
+ * so the score chip is hidden in the UI.
+ */
 const fetchAvg = async (userId: string): Promise<number | null> => {
   if (cache.has(userId)) return cache.get(userId)!;
   if (inflight.has(userId)) return inflight.get(userId)!;
   const p = (async () => {
-    const { data } = await supabase
+    const { data: entries } = await supabase
       .from("entries")
-      .select("rating")
+      .select("id, rating")
       .eq("user_id", userId)
       .is("deleted_at", null);
-    const rows = (data ?? []) as { rating: number }[];
+    const rows = (entries ?? []) as { id: string; rating: number }[];
     if (rows.length === 0) {
       cache.set(userId, null);
       return null;
     }
-    const avg = rows.reduce((s, r) => s + (r.rating ?? 0), 0) / rows.length;
+    const ids = rows.map((e) => e.id);
+    const { data: comments } = await supabase
+      .from("comments")
+      .select("entry_id")
+      .in("entry_id", ids)
+      .neq("user_id", userId)
+      .is("deleted_at", null);
+    const engaged = new Set((comments ?? []).map((c: any) => c.entry_id as string));
+    const eligible = rows.filter((e) => engaged.has(e.id));
+    if (eligible.length === 0) {
+      cache.set(userId, null);
+      return null;
+    }
+    const avg = eligible.reduce((s, r) => s + (r.rating ?? 0), 0) / eligible.length;
     cache.set(userId, avg);
     return avg;
   })();
