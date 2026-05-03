@@ -29,11 +29,12 @@ const UserHoverCard = ({ username, children }: Props) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<MiniProfile | null | undefined>(cache.get(username));
+  const cacheKey = `${user?.id ?? "anon"}:${username}`;
+  const [profile, setProfile] = useState<MiniProfile | null | undefined>(cache.get(cacheKey));
 
   useEffect(() => {
-    if (cache.has(username)) {
-      setProfile(cache.get(username) ?? null);
+    if (cache.has(cacheKey)) {
+      setProfile(cache.get(cacheKey) ?? null);
       return;
     }
     let cancelled = false;
