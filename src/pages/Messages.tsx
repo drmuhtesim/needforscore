@@ -338,7 +338,7 @@ const Messages = () => {
                     }}
                     placeholder={t("messages.placeholder") as string}
                     rows={1}
-                    className="resize-none min-h-[44px] max-h-32 rounded-2xl px-4 py-2.5 text-sm flex-1 bg-background"
+                    className="resize-none min-h-[44px] max-h-32 rounded-2xl px-4 py-2.5 text-sm flex-1 min-w-0 bg-background"
                   />
                   <Button
                     onClick={send}
