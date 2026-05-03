@@ -1,19 +1,29 @@
-import { useState } from "react";
-import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
+  value?: string;
 }
 
-const SearchBar = ({ onSearch, placeholder }: SearchBarProps) => {
-  const [query, setQuery] = useState("");
+const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
+  const [query, setQuery] = useState(value ?? "");
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (value !== undefined) setQuery(value);
+  }, [value]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) onSearch(query.trim());
+  };
+
+  const handleClear = () => {
+    setQuery("");
+    onSearch("");
   };
 
   return (
@@ -29,6 +39,16 @@ const SearchBar = ({ onSearch, placeholder }: SearchBarProps) => {
             placeholder={placeholder ?? t("search.placeholder")}
             className="w-full bg-transparent px-4 py-3.5 text-foreground placeholder:text-muted-foreground focus:outline-none font-mono text-sm"
           />
+          {query && (
+            <button
+              type="button"
+              onClick={handleClear}
+              aria-label={t("search.clear") as string}
+              className="mr-1 p-2 text-muted-foreground hover:text-foreground rounded-md transition-colors flex-shrink-0"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
           <button
             type="submit"
             className="px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors flex-shrink-0"
