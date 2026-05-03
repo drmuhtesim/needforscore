@@ -19,6 +19,8 @@ interface MiniProfile {
   avatar_url: string | null;
   entry_count: number;
   signup_order: number | null;
+  show_avatar: boolean;
+  show_display_name: boolean;
 }
 
 const cache = new Map<string, MiniProfile | null>();
