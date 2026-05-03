@@ -98,7 +98,8 @@
     "button": "Search",
     "usersTitle": "Search users",
     "usersPlaceholder": "Type a username...",
-    "noResults": "No results"
+    "noResults": "No results",
+    "clear": "Clear"
   },
   "categories": {
     "title": "Categories",
