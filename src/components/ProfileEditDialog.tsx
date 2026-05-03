@@ -119,6 +119,13 @@ const ProfileEditDialog = ({ open, onOpenChange, initial }: Props) => {
       age: ageNum,
       bio: bio.trim() || null,
       avatar_url: avatarUrl,
+      show_avatar: showAvatar,
+      show_display_name: showDisplayName,
+      show_city: showCity,
+      show_occupation: showOccupation,
+      show_age: showAge,
+      show_bio: showBio,
+      show_linked_accounts: showLinkedAccounts,
     };
     const { error } = await supabase
       .from("profiles")
