@@ -264,6 +264,45 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          actor_id: string | null
+          comment_id: string | null
+          conversation_id: string | null
+          created_at: string
+          entry_id: string | null
+          id: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          message_id: string | null
+          read_at: string | null
+          recipient_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          comment_id?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["notification_kind"]
+          message_id?: string | null
+          read_at?: string | null
+          recipient_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          comment_id?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          entry_id?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["notification_kind"]
+          message_id?: string | null
+          read_at?: string | null
+          recipient_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age: number | null
@@ -443,6 +482,11 @@ export type Database = {
       entry_category: "instagram" | "tiktok" | "twitter" | "phone" | "score"
       entry_status: "safe" | "suspicious" | "danger"
       media_status: "pending" | "approved" | "rejected"
+      notification_kind:
+        | "message"
+        | "entry_comment"
+        | "comment_reply"
+        | "thread_comment"
       social_platform: "instagram" | "x" | "tiktok"
     }
     CompositeTypes: {
@@ -575,6 +619,12 @@ export const Constants = {
       entry_category: ["instagram", "tiktok", "twitter", "phone", "score"],
       entry_status: ["safe", "suspicious", "danger"],
       media_status: ["pending", "approved", "rejected"],
+      notification_kind: [
+        "message",
+        "entry_comment",
+        "comment_reply",
+        "thread_comment",
+      ],
       social_platform: ["instagram", "x", "tiktok"],
     },
   },
