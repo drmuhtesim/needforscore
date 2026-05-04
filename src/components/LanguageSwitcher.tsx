@@ -9,14 +9,10 @@ import {
 
 const LanguageSwitcher = () => {
   const { i18n, t } = useTranslation();
-  const raw = i18n.language ?? "tr";
-  const current: "tr" | "en" | "ar" = raw.startsWith("en")
-    ? "en"
-    : raw.startsWith("ar")
-    ? "ar"
-    : "tr";
+  const raw = i18n.language ?? "en";
+  const current: "tr" | "en" = raw.startsWith("tr") ? "tr" : "en";
 
-  const change = (lng: "tr" | "en" | "ar") => {
+  const change = (lng: "tr" | "en") => {
     i18n.changeLanguage(lng);
   };
 
@@ -37,9 +33,6 @@ const LanguageSwitcher = () => {
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => change("en")} className={current === "en" ? "bg-secondary" : ""}>
           🇬🇧 {t("language.en")}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => change("ar")} className={current === "ar" ? "bg-secondary" : ""}>
-          🇸🇦 {t("language.ar")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
