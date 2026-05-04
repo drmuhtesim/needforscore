@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -11,17 +12,33 @@ import { componentTagger } from "lovable-tagger";
  */
 function swVersionPlugin(): Plugin {
   const buildId = `b${Date.now().toString(36)}`;
+  let outDir = "dist";
+
+  const stampServiceWorker = (filePath: string) => {
+    if (!fs.existsSync(filePath)) return;
+    const source = fs.readFileSync(filePath, "utf8");
+    fs.writeFileSync(filePath, source.replace(/__BUILD_ID__/g, buildId));
+  };
+
   return {
     name: "sw-version",
     apply: "build",
+    configResolved(config) {
+      outDir = config.build.outDir;
+    },
     generateBundle(_options, bundle) {
       for (const fileName of Object.keys(bundle)) {
-        if (fileName !== "sw.js") continue;
+        if (fileName !== "sw.js" && fileName !== "service-worker.js") continue;
         const asset = bundle[fileName];
         if (asset.type === "asset" && typeof asset.source === "string") {
           asset.source = asset.source.replace(/__BUILD_ID__/g, buildId);
         }
       }
+    },
+    closeBundle() {
+      const root = path.resolve(__dirname, outDir);
+      stampServiceWorker(path.join(root, "sw.js"));
+      stampServiceWorker(path.join(root, "service-worker.js"));
     },
   };
 }
