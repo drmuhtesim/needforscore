@@ -1,3 +1,5 @@
+self.__SCORE_SW_CLEANUP_VERSION__ = "__BUILD_ID__";
+
 /**
  * KILL-SWITCH SERVICE WORKER
  *
@@ -53,6 +55,18 @@ self.addEventListener("activate", (event) => {
       } catch {
         // sessizce geç — kötü bir şey olmasın
       }
+    })()
+  );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type !== "SCORE_CLEAR_CACHE") return;
+  event.waitUntil(
+    (async () => {
+      const names = await caches.keys();
+      await Promise.all(names.map((n) => caches.delete(n)));
+      // @ts-ignore
+      await self.registration.unregister();
     })()
   );
 });
