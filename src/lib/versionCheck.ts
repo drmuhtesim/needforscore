@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import i18n from "@/i18n";
+import { clearServiceWorkerCache } from "@/pwa";
 
 /**
  * Yeni deploy tespiti.
@@ -26,7 +27,6 @@ function isPreviewOrIframe(): boolean {
   return (
     h.includes("id-preview--") ||
     h.includes("lovableproject.com") ||
-    h.includes("lovable.app") ||
     h === "localhost" ||
     h === "127.0.0.1"
   );
@@ -63,16 +63,7 @@ function showUpdateToast() {
     action: {
       label: t("update.action", { defaultValue: "Yenile" }),
       onClick: () => {
-        // Service worker varsa eski cache'i temizle, sonra reload
-        if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.getRegistrations().then((regs) => {
-            Promise.all(regs.map((r) => r.update())).finally(() => {
-              window.location.reload();
-            });
-          });
-        } else {
-          window.location.reload();
-        }
+        void clearServiceWorkerCache({ reload: true });
       },
     },
   });
