@@ -50,9 +50,29 @@ async function fetchAppHash(): Promise<string | null> {
   }
 }
 
+function isStandalonePWA(): boolean {
+  try {
+    if (window.matchMedia?.("(display-mode: standalone)").matches) return true;
+    // iOS Safari
+    // @ts-ignore
+    if (window.navigator.standalone === true) return true;
+  } catch {
+    // ignore
+  }
+  return false;
+}
+
 function showUpdateToast() {
   if (notified) return;
   notified = true;
+
+  // Standalone PWA (ana ekrana eklenmiş ikon) modunda kullanıcı toast'u
+  // kaçırabilir ve eski shell ile takılı kalır. Otomatik hard-reload ile
+  // cache'i temizleyip taze sürüme geçiriyoruz.
+  if (isStandalonePWA()) {
+    void clearServiceWorkerCache({ reload: true });
+    return;
+  }
 
   const t = i18n.t.bind(i18n);
   toast(t("update.title", { defaultValue: "Yeni sürüm hazır" }), {
