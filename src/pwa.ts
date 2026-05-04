@@ -15,8 +15,12 @@ export function registerSW() {
   void clearServiceWorkerCache({ reload: false });
 
   if (isPreviewOrIframe()) return;
-  if (localStorage.getItem("score-sw-cleanup-version") === "2026-05-04-v2") return;
-  localStorage.setItem("score-sw-cleanup-version", "2026-05-04-v2");
+  try {
+    if (localStorage.getItem("score-sw-cleanup-version") === "2026-05-04-v2") return;
+    localStorage.setItem("score-sw-cleanup-version", "2026-05-04-v2");
+  } catch {
+    // Safari private/strict modes may block storage; still attempt cleanup.
+  }
 
   // Eski cihazlarda farklı path ile register edilmiş SW olabilir.
   // İki kill-switch dosyasını da kısa süreli register ederek Safari'nin
