@@ -20,6 +20,10 @@
   Cache-Control: no-cache, no-store, must-revalidate
   Service-Worker-Allowed: /
 
+/service-worker.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Service-Worker-Allowed: /
+
 # PWA manifest — short cache so icon/name updates propagate
 /manifest.json
   Cache-Control: public, max-age=300, must-revalidate
