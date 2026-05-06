@@ -13,6 +13,11 @@ const LanguageSwitcher = () => {
   const current: "tr" | "en" = raw.startsWith("tr") ? "tr" : "en";
 
   const change = (lng: "tr" | "en") => {
+    try {
+      localStorage.setItem("lang", lng);
+    } catch {
+      /* ignore storage errors */
+    }
     i18n.changeLanguage(lng);
   };
 
