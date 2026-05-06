@@ -33,7 +33,9 @@ const geoDetector = {
       // Quick synchronous heuristic: timezone.
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
       const isTRTimezone = tz === "Europe/Istanbul" || tz === "Asia/Istanbul" || tz === "Turkey";
-      const initial = isTRTimezone ? "tr" : "en";
+      // Only force TR when we have a strong geo signal. Otherwise return undefined
+      // so the navigator detector (browser language) can run as a fallback.
+      const initial = isTRTimezone ? "tr" : undefined;
 
       // Kick off an async refinement using a free IP geo service; cache for next visit.
       void (async () => {
