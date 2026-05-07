@@ -183,7 +183,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
     if (!user) return;
     const schema = z.object({
       target: z.string().trim().min(1).max(200),
-      about: z.string().trim().min(10).max(60),
+      about: z.string().trim().min(5).max(30),
       description: z.string().trim().min(10).max(2000),
       rating: z.number().int().min(1).max(10),
     });
@@ -408,21 +408,21 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
             <Input
               id="about"
               value={about}
-              onChange={(e) => setAbout(e.target.value.slice(0, 60))}
+              onChange={(e) => setAbout(e.target.value.slice(0, 30))}
               placeholder={t("entry.aboutPlaceholder") as string}
-              maxLength={60}
+              maxLength={30}
             />
             <div className="flex items-center justify-between text-[11px] font-mono">
               <span
                 className={
-                  about.trim().length > 0 && about.trim().length < 10
+                  about.trim().length > 0 && about.trim().length < 5
                     ? "text-danger"
                     : "text-muted-foreground"
                 }
               >
                 {t("entry.aboutHelp")}
               </span>
-              <span className="text-muted-foreground">{about.length}/60</span>
+              <span className="text-muted-foreground">{about.length}/30</span>
             </div>
           </div>
 
@@ -514,7 +514,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
         <div className="px-4 sm:px-6 py-3 border-t border-border/40 bg-background/95 backdrop-blur shrink-0">
           <Button
             onClick={() => setConfirmOpen(true)}
-            disabled={submitting || !formatValid || description.trim().length < 10 || about.trim().length < 10 || about.trim().length > 60}
+            disabled={submitting || !formatValid || description.trim().length < 10 || about.trim().length < 5 || about.trim().length > 30}
             className="w-full bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90"
           >
             {submitting ? t("entry.submitting") : t("entry.publish")}

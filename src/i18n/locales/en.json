@@ -173,7 +173,7 @@
     "descPlaceholder": "Describe your experience in detail (min 10 characters)...",
     "about": "What is this account about?",
     "aboutPlaceholder": "Short summary (e.g. Fake investment advisor)",
-    "aboutHelp": "Enter a short summary between 10 and 60 characters.",
+    "aboutHelp": "Enter a short summary between 5 and 30 characters.",
     "publish": "Publish",
     "confirmTitle": "Confirm publish",
     "confirmDesc": "You're about to open a new entry with the details below. Looks right?",
