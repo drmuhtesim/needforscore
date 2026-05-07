@@ -405,25 +405,52 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
 
           <div className="space-y-2">
             <Label htmlFor="about">{t("entry.about")}</Label>
-            <Input
-              id="about"
-              value={about}
-              onChange={(e) => setAbout(e.target.value.slice(0, 30))}
-              placeholder={t("entry.aboutPlaceholder") as string}
-              maxLength={30}
-            />
-            <div className="flex items-center justify-between text-[11px] font-mono">
-              <span
-                className={
-                  about.trim().length > 0 && about.trim().length < 5
-                    ? "text-danger"
-                    : "text-muted-foreground"
-                }
-              >
-                {t("entry.aboutHelp")}
-              </span>
-              <span className="text-muted-foreground">{about.length}/30</span>
-            </div>
+            {(() => {
+              const len = about.trim().length;
+              const tooShort = len > 0 && len < 5;
+              const tooLong = len > 30;
+              const valid = len >= 5 && len <= 30;
+              const ringClass = tooShort || tooLong
+                ? "border-danger focus-visible:ring-danger"
+                : valid
+                ? "border-safe focus-visible:ring-safe"
+                : "";
+              const helpClass = tooShort || tooLong
+                ? "text-danger"
+                : valid
+                ? "text-safe"
+                : "text-muted-foreground";
+              const counterClass = tooLong
+                ? "text-danger"
+                : valid
+                ? "text-safe"
+                : "text-muted-foreground";
+              return (
+                <>
+                  <Input
+                    id="about"
+                    value={about}
+                    onChange={(e) => setAbout(e.target.value.slice(0, 30))}
+                    placeholder={t("entry.aboutPlaceholder") as string}
+                    maxLength={30}
+                    aria-invalid={tooShort || tooLong}
+                    className={ringClass}
+                  />
+                  <div className="flex items-center justify-between text-[11px] font-mono">
+                    <span className={helpClass}>
+                      {valid
+                        ? (t("entry.aboutOk") as string)
+                        : tooShort
+                        ? (t("entry.aboutTooShort") as string)
+                        : tooLong
+                        ? (t("entry.aboutTooLong") as string)
+                        : (t("entry.aboutHelp") as string)}
+                    </span>
+                    <span className={counterClass}>{about.length}/30</span>
+                  </div>
+                </>
+              );
+            })()}
           </div>
 
           {(() => {
