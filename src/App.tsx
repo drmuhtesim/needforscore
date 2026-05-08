@@ -16,6 +16,7 @@ import Privacy from "./pages/Privacy.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import UsernameOnboarding from "./pages/UsernameOnboarding.tsx";
 import VerifyEmail from "./pages/VerifyEmail.tsx";
+import Unsubscribe from "./pages/Unsubscribe.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,7 @@ const App = () => (
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/unsubscribe" element={<Unsubscribe />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
