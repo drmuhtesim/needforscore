@@ -7,10 +7,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import MobileBottomBar from "@/components/MobileBottomBar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Send, ArrowLeft } from "lucide-react";
+import { Send, ArrowLeft, Check, CheckCheck } from "lucide-react";
 import { getOrCreateConversation } from "@/lib/messaging";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
 
@@ -37,6 +36,29 @@ interface Message {
   read_at: string | null;
 }
 
+const formatTime = (iso: string) => {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } catch {
+    return "";
+  }
+};
+
+const formatDayLabel = (iso: string, t: (k: string) => string) => {
+  const d = new Date(iso);
+  const today = new Date();
+  const yest = new Date();
+  yest.setDate(today.getDate() - 1);
+  const sameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+  if (sameDay(d, today)) return t("messages.today");
+  if (sameDay(d, yest)) return t("messages.yesterday");
+  return d.toLocaleDateString();
+};
+
 const Messages = () => {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
@@ -48,12 +70,10 @@ const Messages = () => {
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auth gate
   useEffect(() => {
     if (!loading && !user) navigate("/auth?mode=signin");
   }, [loading, user, navigate]);
 
-  // ?to=username -> sohbeti aç/oluştur
   useEffect(() => {
     const to = params.get("to");
     if (!to || !user) return;
@@ -82,7 +102,6 @@ const Messages = () => {
     })();
   }, [params, user, qc, setParams, t]);
 
-  // Konuşma listesi
   const { data: conversations = [] } = useQuery({
     queryKey: ["conversations", user?.id],
     enabled: !!user,
@@ -104,7 +123,6 @@ const Messages = () => {
         (profs ?? []).map((p) => [p.user_id, applyProfilePrivacy(p as any, user!.id) as any]),
       );
 
-      // Son mesajları çek
       const { data: lastMsgs } = await supabase
         .from("messages")
         .select("conversation_id, content, created_at")
@@ -123,7 +141,6 @@ const Messages = () => {
     },
   });
 
-  // Aktif konuşma mesajları
   const { data: messages = [] } = useQuery({
     queryKey: ["messages", activeId],
     enabled: !!activeId,
@@ -138,7 +155,6 @@ const Messages = () => {
     },
   });
 
-  // Realtime: yeni mesaj
   useEffect(() => {
     if (!user) return;
     const ch = supabase
@@ -160,7 +176,6 @@ const Messages = () => {
     };
   }, [user, activeId, qc]);
 
-  // Otomatik en alta scroll
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -205,13 +220,13 @@ const Messages = () => {
     <div className="h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1 flex min-h-0 pb-14 lg:pb-0">
-        {/* Konuşma listesi */}
+        {/* Konuşma listesi (WA chat list) */}
         <aside
-          className={`w-full lg:w-80 lg:border-r border-border flex-col ${
+          className={`w-full lg:w-80 lg:border-r border-border flex-col bg-card ${
             activeId ? "hidden lg:flex" : "flex"
           }`}
         >
-          <div className="px-4 py-3 border-b border-border">
+          <div className="px-4 py-3 border-b border-border bg-primary text-primary-foreground">
             <h1 className="text-base font-semibold">{t("messages.title")}</h1>
           </div>
           <div className="flex-1 overflow-y-auto">
@@ -229,19 +244,24 @@ const Messages = () => {
                         setActiveId(conv.id);
                         setParams({ c: conv.id }, { replace: true });
                       }}
-                      className={`w-full text-left px-4 py-3 border-b border-border flex items-center gap-3 hover:bg-secondary/60 transition-colors ${
+                      className={`w-full text-left px-4 py-3 border-b border-border/60 flex items-center gap-3 hover:bg-secondary/60 transition-colors ${
                         activeId === conv.id ? "bg-secondary/60" : ""
                       }`}
                     >
-                      <Avatar className="h-10 w-10 flex-shrink-0">
+                      <Avatar className="h-12 w-12 flex-shrink-0">
                         {other?.avatar_url && <AvatarImage src={other.avatar_url} />}
-                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-mono">
+                        <AvatarFallback className="bg-primary/10 text-primary text-sm font-mono">
                           {(other?.username ?? "??").slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold truncate">
-                          {other?.display_name || other?.username || "..."}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="text-sm font-semibold truncate">
+                            {other?.display_name || other?.username || "..."}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground flex-shrink-0">
+                            {formatTime(conv.last_message_at)}
+                          </div>
                         </div>
                         <div className="text-xs text-muted-foreground truncate">
                           {lastMessage ?? `@${other?.username ?? ""}`}
@@ -255,47 +275,51 @@ const Messages = () => {
           </div>
         </aside>
 
-        {/* Aktif konuşma */}
+        {/* Aktif konuşma (WA chat) */}
         <section
           className={`flex-1 flex-col min-w-0 ${activeId ? "flex" : "hidden lg:flex"}`}
         >
           {!activeId ? (
-            <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground">
+            <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground bg-wa-pattern">
               {t("messages.selectConversation")}
             </div>
           ) : (
             <>
-              {/* Header */}
-              <div className="px-3 sm:px-4 py-3 border-b border-border bg-card/40 backdrop-blur-sm flex items-center gap-3 flex-shrink-0">
+              {/* WA-style green header */}
+              <div className="px-3 sm:px-4 py-2.5 bg-primary text-primary-foreground flex items-center gap-3 flex-shrink-0 shadow-sm">
                 <button
                   type="button"
                   onClick={() => {
                     setActiveId(null);
                     setParams({}, { replace: true });
                   }}
-                  className="lg:hidden h-8 w-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-secondary"
+                  className="lg:hidden h-8 w-8 inline-flex items-center justify-center rounded-md hover:bg-white/10"
                   aria-label="back"
                 >
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-5 w-5" />
                 </button>
-                <Avatar className="h-9 w-9 flex-shrink-0">
+                <Avatar className="h-9 w-9 flex-shrink-0 ring-2 ring-white/20">
                   {activeConv?.other?.avatar_url && <AvatarImage src={activeConv.other.avatar_url} />}
-                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-mono">
+                  <AvatarFallback className="bg-white/15 text-primary-foreground text-xs font-mono">
                     {(activeConv?.other?.username ?? "??").slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="min-w-0 flex-1">
+                <button
+                  type="button"
+                  onClick={() => activeConv?.other?.username && navigate(`/u/${activeConv.other.username}`)}
+                  className="min-w-0 flex-1 text-left hover:opacity-90"
+                >
                   <div className="text-sm font-semibold truncate">
                     {activeConv?.other?.display_name || activeConv?.other?.username || "..."}
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">
+                  <div className="text-[11px] opacity-80 truncate">
                     @{activeConv?.other?.username ?? "..."}
                   </div>
-                </div>
+                </button>
               </div>
 
-              {/* Messages list */}
-              <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 sm:px-4 py-4 space-y-2.5">
+              {/* Messages list with WA wallpaper */}
+              <div ref={scrollRef} className="flex-1 overflow-y-auto px-2 sm:px-4 py-3 bg-wa-pattern">
                 {messages.length === 0 && (
                   <div className="text-xs text-muted-foreground text-center py-8">
                     {t("messages.noMessages")}
@@ -305,27 +329,46 @@ const Messages = () => {
                   const mine = m.sender_id === user.id;
                   const prev = messages[idx - 1];
                   const grouped = prev && prev.sender_id === m.sender_id;
+                  const prevDay = prev ? new Date(prev.created_at).toDateString() : null;
+                  const currDay = new Date(m.created_at).toDateString();
+                  const showDay = prevDay !== currDay;
                   return (
-                    <div
-                      key={m.id}
-                      className={`flex ${mine ? "justify-end" : "justify-start"}`}
-                    >
-                      <div
-                        className={`max-w-[80%] sm:max-w-[70%] px-3.5 py-2 text-sm whitespace-pre-wrap break-words shadow-sm ${
-                          mine
-                            ? "bg-primary text-primary-foreground rounded-2xl rounded-br-sm"
-                            : "bg-secondary text-foreground rounded-2xl rounded-bl-sm"
-                        } ${grouped ? "mt-0.5" : "mt-1.5"}`}
-                      >
-                        {m.content}
+                    <div key={m.id}>
+                      {showDay && (
+                        <div className="flex justify-center my-3">
+                          <span className="text-[10px] uppercase tracking-wide bg-card/90 text-muted-foreground px-2.5 py-1 rounded-md shadow-sm">
+                            {formatDayLabel(m.created_at, t as any)}
+                          </span>
+                        </div>
+                      )}
+                      <div className={`flex ${mine ? "justify-end" : "justify-start"} ${grouped ? "mt-0.5" : "mt-2"}`}>
+                        <div
+                          className={`relative max-w-[82%] sm:max-w-[68%] pl-3 pr-2 pt-1.5 pb-1 text-sm whitespace-pre-wrap break-words shadow-[0_1px_0.5px_rgba(0,0,0,0.13)] ${
+                            mine
+                              ? "bg-[hsl(var(--wa-out))] text-foreground rounded-lg rounded-tr-sm"
+                              : "bg-[hsl(var(--wa-in))] text-foreground rounded-lg rounded-tl-sm"
+                          }`}
+                        >
+                          <span className="pr-12">{m.content}</span>
+                          <span className="float-right ml-2 mt-1 inline-flex items-center gap-0.5 text-[10px] text-muted-foreground/90 leading-none">
+                            {formatTime(m.created_at)}
+                            {mine && (
+                              m.read_at ? (
+                                <CheckCheck className="h-3 w-3 text-primary" />
+                              ) : (
+                                <Check className="h-3 w-3" />
+                              )
+                            )}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   );
                 })}
               </div>
 
-              {/* Composer */}
-              <div className="border-t border-border bg-card/95 backdrop-blur-sm px-4 sm:px-6 py-2.5 flex-shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
+              {/* WA-style composer */}
+              <div className="bg-secondary/40 backdrop-blur-sm px-2 sm:px-3 py-2 flex-shrink-0 pb-[max(env(safe-area-inset-bottom),0.5rem)]">
                 <div className="flex items-end gap-2 max-w-3xl mx-auto w-full">
                   <Textarea
                     value={draft}
@@ -338,17 +381,17 @@ const Messages = () => {
                     }}
                     placeholder={t("messages.placeholder") as string}
                     rows={1}
-                    className="resize-none min-h-[44px] max-h-32 rounded-2xl px-4 py-2.5 text-sm flex-1 min-w-0 bg-background"
+                    className="resize-none min-h-[42px] max-h-32 rounded-3xl px-4 py-2.5 text-sm flex-1 min-w-0 bg-card border border-border shadow-sm"
                   />
-                  <Button
+                  <button
+                    type="button"
                     onClick={send}
                     disabled={sending || !draft.trim()}
-                    size="icon"
-                    className="h-11 w-11 rounded-full flex-shrink-0 bg-gradient-to-br from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90 disabled:opacity-40 shadow-lg"
                     aria-label={t("messages.send") as string}
+                    className="h-11 w-11 rounded-full flex-shrink-0 bg-primary text-primary-foreground inline-flex items-center justify-center shadow-md hover:opacity-90 disabled:opacity-40 transition-opacity"
                   >
-                    <Send className="h-4 w-4" />
-                  </Button>
+                    <Send className="h-5 w-5" />
+                  </button>
                 </div>
               </div>
             </>
