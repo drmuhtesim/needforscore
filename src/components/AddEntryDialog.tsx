@@ -113,6 +113,35 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const formatValid = target.trim() ? validateTarget(target, category) : false;
   const profileUrl = formatValid ? buildProfileUrl(target, category) : null;
 
+  // Live check: when category is "score", verify the username exists in profiles.
+  useEffect(() => {
+    if (category !== "score") {
+      setScoreUserStatus("idle");
+      return;
+    }
+    const trimmed = target.trim();
+    if (!trimmed || !formatValid) {
+      setScoreUserStatus("idle");
+      return;
+    }
+    const normalized = normalizeTarget(trimmed, "score");
+    setScoreUserStatus("checking");
+    let cancelled = false;
+    const handle = setTimeout(async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("user_id")
+        .eq("username", normalized)
+        .maybeSingle();
+      if (cancelled) return;
+      setScoreUserStatus(data ? "exists" : "missing");
+    }, 350);
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
+  }, [category, target, formatValid]);
+
   // Detect what was pasted into the target field and adjust value/category
   // accordingly. Returns the cleaned value to set, or null to keep original.
   const handleTargetPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
