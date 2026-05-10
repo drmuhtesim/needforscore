@@ -357,7 +357,9 @@
     "loginRequired": "Sign in to send messages",
     "cannotMessageSelf": "You can't message yourself",
     "newMessage": "New message",
-    "noMessages": "No messages yet. Send the first one."
+    "noMessages": "No messages yet. Send the first one.",
+    "today": "Today",
+    "yesterday": "Yesterday"
   },
   "onboarding": {
     "welcome": "Welcome",
