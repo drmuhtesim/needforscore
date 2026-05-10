@@ -126,6 +126,14 @@
 }
 
 @layer utilities {
+  .bg-wa-pattern {
+    background-color: hsl(var(--wa-bg));
+    background-image:
+      radial-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px),
+      radial-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+    background-size: 22px 22px, 44px 44px;
+    background-position: 0 0, 11px 11px;
+  }
   .glow-green {
     box-shadow: 0 0 20px hsl(145 80% 42% / 0.15), 0 0 60px hsl(145 80% 42% / 0.05);
   }
