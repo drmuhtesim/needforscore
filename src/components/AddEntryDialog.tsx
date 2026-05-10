@@ -77,6 +77,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const [media, setMedia] = useState<PendingFile[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [scoreUserStatus, setScoreUserStatus] = useState<"idle" | "checking" | "exists" | "missing">("idle");
 
   // When the dialog is opened (controlled or uncontrolled) with an initialTarget,
   // sync the target/category fields so the search query auto-fills.
