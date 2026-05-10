@@ -53,6 +53,11 @@
     --sidebar-border: 220 14% 18%;
     --sidebar-ring: 145 80% 42%;
 
+    /* WhatsApp-style chat bubbles (dark) */
+    --wa-out: 145 35% 22%;
+    --wa-in: 220 16% 16%;
+    --wa-bg: 220 22% 8%;
+
     --font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
@@ -101,6 +106,11 @@
     --sidebar-accent-foreground: 220 25% 18%;
     --sidebar-border: 220 14% 88%;
     --sidebar-ring: 145 70% 36%;
+
+    /* WhatsApp-style chat bubbles (light) */
+    --wa-out: 142 70% 88%;
+    --wa-in: 0 0% 100%;
+    --wa-bg: 60 18% 92%;
   }
 }
 
@@ -116,6 +126,14 @@
 }
 
 @layer utilities {
+  .bg-wa-pattern {
+    background-color: hsl(var(--wa-bg));
+    background-image:
+      radial-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px),
+      radial-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+    background-size: 22px 22px, 44px 44px;
+    background-position: 0 0, 11px 11px;
+  }
   .glow-green {
     box-shadow: 0 0 20px hsl(145 80% 42% / 0.15), 0 0 60px hsl(145 80% 42% / 0.05);
   }
