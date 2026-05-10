@@ -203,6 +203,9 @@
     "duplicateDesc": "You can't open multiple entries for the same target. Add your experience to the existing entry instead.",
     "scoreUserMissingTitle": "No such user on Score",
     "scoreUserMissingDesc": "To open an entry under the Score category, the target user must be a registered Score account.",
+    "scoreUserChecking": "Checking user…",
+    "scoreUserExists": "Score user found",
+    "scoreUserMissingInline": "No Score user with this username exists.",
     "avgRatingTitle": "Average of scores given by commenters",
     "placeholder": {
       "score": "score username (e.g. ahmet)",
