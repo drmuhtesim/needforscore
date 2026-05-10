@@ -431,6 +431,19 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
                 )}
               </div>
             )}
+            {category === "score" && formatValid && scoreUserStatus !== "idle" && (
+              <div className="text-xs font-mono">
+                {scoreUserStatus === "checking" && (
+                  <span className="text-muted-foreground">{t("entry.scoreUserChecking")}</span>
+                )}
+                {scoreUserStatus === "exists" && (
+                  <span className="text-safe">✓ {t("entry.scoreUserExists")}</span>
+                )}
+                {scoreUserStatus === "missing" && (
+                  <span className="text-danger">✗ {t("entry.scoreUserMissingInline")}</span>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
