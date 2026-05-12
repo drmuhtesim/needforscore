@@ -158,6 +158,7 @@ function buildTree(opts: {
   category: string;
   avatarDataUrl: string | null;
   stats: Stats;
+  urlPath: string;
 }) {
   const { display, sub, category, avatarDataUrl, stats } = opts;
   const initial = (display.replace(/^@/, "")[0] ?? "?");
