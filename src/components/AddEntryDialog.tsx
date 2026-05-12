@@ -35,6 +35,7 @@ import PlatformIcon from "./PlatformIcon";
 import MediaUploader, { type PendingFile } from "./comment-media/MediaUploader";
 import type { CategoryType } from "./CategorySidebar";
 import { buildProfileUrl, canonicalizeTarget, formatTargetPreview, normalizeTarget, validateTarget } from "@/lib/platforms";
+import { buildEntityUrl, type EntityCategory } from "@/lib/entitySlugs";
 
 type Cat = Exclude<CategoryType, "all">;
 
@@ -258,7 +259,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
         variant: "destructive",
       });
       setOpen(false);
-      navigate(`/e/${existingEntry.id}`);
+      navigate(await buildEntityUrl(category as EntityCategory, target));
       return;
     }
 
@@ -329,7 +330,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
     qc.invalidateQueries({ queryKey: ["entries"] });
     setOpen(false);
     reset();
-    if (data?.id) navigate(`/e/${data.id}`);
+    if (data?.id) navigate(await buildEntityUrl(category as EntityCategory, target));
   };
 
   return (
