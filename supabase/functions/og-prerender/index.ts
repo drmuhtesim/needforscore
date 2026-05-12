@@ -41,7 +41,11 @@ const CATEGORY_LABEL: Record<string, string> = {
 const htmlEscape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-async function buildEntityMeta(path: string): Promise<{ title: string; desc: string; url: string } | null> {
+const OG_IMAGE_BASE = `${Deno.env.get("SUPABASE_URL")}/functions/v1/og-image`;
+
+async function buildEntityMeta(
+  path: string,
+): Promise<{ title: string; desc: string; url: string; image: string } | null> {
   // /x/:slug, /instagram/:slug, /tiktok/:slug, /phone/:slug, /score/:username
   const m = path.match(/^\/([a-z]+)\/([^/?#]+)/i);
   if (!m) return null;
@@ -55,6 +59,7 @@ async function buildEntityMeta(path: string): Promise<{ title: string; desc: str
       title: `@${handle} — Score profili | ${SITE_NAME}`,
       desc: `@${handle} kullanıcısının Score profili: entry'ler, puanlar ve güvenilirlik analizi.`,
       url,
+      image: `${OG_IMAGE_BASE}?category=score&handle=${encodeURIComponent(handle)}`,
     };
   }
 
@@ -87,7 +92,9 @@ async function buildEntityMeta(path: string): Promise<{ title: string; desc: str
       : `${display} için Score topluluğunun ${label} güvenilirlik analizi. `) +
     "Score'da yorum yap, puanla.";
 
-  return { title, desc: desc.slice(0, 200), url };
+  const image = `${OG_IMAGE_BASE}?category=${encodeURIComponent(category)}&handle=${encodeURIComponent(slug.toLowerCase())}`;
+
+  return { title, desc: desc.slice(0, 200), url, image };
 }
 
 function injectMeta(
