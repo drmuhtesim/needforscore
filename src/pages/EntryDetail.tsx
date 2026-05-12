@@ -281,12 +281,14 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
 
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
-          <ArrowLeft className="h-4 w-4" /> {t("entry.backToList")}
-        </Link>
+    <div className={embedded ? "" : "min-h-screen bg-background"}>
+      {!embedded && <Header />}
+      <div className={embedded ? "" : "max-w-4xl mx-auto px-4 py-6"}>
+        {!embedded && (
+          <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
+            <ArrowLeft className="h-4 w-4" /> {t("entry.backToList")}
+          </Link>
+        )}
 
         {/* Entry card — başlık */}
         <div className={`relative border rounded-xl p-6 bg-card ${entryDeleted ? "border-danger/40 bg-danger/5" : "border-border"}`}>
