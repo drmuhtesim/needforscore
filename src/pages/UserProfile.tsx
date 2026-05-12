@@ -49,9 +49,32 @@ const UserProfile = () => {
         .eq("username", username!)
         .maybeSingle();
       if (!profile) return null;
+      // Entity reputation: entries ABOUT this Score user (category=score, target=username),
+      // not entries authored by them. This matches the Yelp/IMDB-style reputation page model.
       const [{ data: entries }, { count: commentCount }] = await Promise.all([
-        supabase.from("entries").select("*").eq("user_id", profile.user_id).is("deleted_at", null).order("created_at", { ascending: false }).limit(50),
-        supabase.from("comments").select("id", { count: "exact", head: true }).eq("user_id", profile.user_id).is("deleted_at", null),
+        supabase
+          .from("entries")
+          .select("*")
+          .eq("category", "score")
+          .eq("target_normalized", profile.username)
+          .is("deleted_at", null)
+          .order("created_at", { ascending: false })
+          .limit(50),
+        supabase
+          .from("comments")
+          .select("id", { count: "exact", head: true })
+          .in(
+            "entry_id",
+            (
+              await supabase
+                .from("entries")
+                .select("id")
+                .eq("category", "score")
+                .eq("target_normalized", profile.username)
+                .is("deleted_at", null)
+            ).data?.map((e: any) => e.id) ?? ["00000000-0000-0000-0000-000000000000"],
+          )
+          .is("deleted_at", null),
       ]);
       return { profile, entries: entries ?? [], commentCount: commentCount ?? 0 };
     },
