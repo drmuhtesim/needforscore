@@ -78,6 +78,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-14 lg:pb-0">
+      <SEO
+        title="Score — Dolandırıcılığa karşı topluluk puanlaması | NeedForScore"
+        description="Instagram, TikTok, X, telefon ve Score kullanıcılarını puanla; dolandırıcıları ifşa et, güvenilir hesapları keşfet. Topluluk tabanlı OSINT platformu."
+        canonical="/"
+        image={DEFAULT_OG_IMAGE}
+        jsonLd={HOME_JSONLD}
+      />
       <Header />
 
       {pendingTarget && (
