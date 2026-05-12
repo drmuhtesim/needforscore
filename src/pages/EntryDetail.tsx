@@ -311,7 +311,7 @@ const EntryDetail = () => {
 
               {/* Profile meta block under the title — platform + link */}
               <div className="mt-2 space-y-1 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground/70">
                     {platformLabel[entry.category] ?? entry.category}
                   </span>
@@ -325,6 +325,11 @@ const EntryDetail = () => {
                       {t("entry.openProfile")} <ExternalLink className="h-3 w-3" />
                     </a>
                   )}
+                  <EntityLink
+                    category={entry.category as any}
+                    target={entry.target}
+                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  />
                 </div>
               </div>
 
