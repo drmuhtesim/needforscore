@@ -4,6 +4,7 @@ import { MessageSquare, BadgeCheck, Star, ShieldAlert, ShieldCheck, ShieldQuesti
 import PlatformIcon from "./PlatformIcon";
 import VoteButtons from "./VoteButtons";
 import { formatTargetDisplay } from "@/lib/platforms";
+import { entryHrefSync } from "@/lib/entitySlugs";
 import type { EntryRow as EntryT } from "@/hooks/useEntries";
 
 interface Props {
@@ -73,7 +74,7 @@ const EntryCard = ({ entry, index }: Props) => {
       {/* Sol risk şeridi */}
       <div className={`w-1 shrink-0 ${r.bar}`} aria-hidden />
 
-      <Link to={`/e/${entry.id}`} className="relative flex-1 min-w-0 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_auto_auto] items-center gap-3 px-3 py-2.5">
+      <Link to={entryHrefSync(entry)} className="relative flex-1 min-w-0 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_auto_auto] items-center gap-3 px-3 py-2.5">
         {/* Index + ikon */}
         <div className="flex items-center gap-2 shrink-0">
           <span className="text-[10px] font-mono text-muted-foreground w-6 text-right">#{index + 1}</span>

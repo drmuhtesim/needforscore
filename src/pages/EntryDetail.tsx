@@ -55,8 +55,16 @@ const platformLabel: Record<string, string> = {
   phone: "Telefon",
 };
 
-const EntryDetail = () => {
-  const { id } = useParams();
+interface EntryDetailProps {
+  /** When provided, use this entry id instead of the URL :id param. */
+  idOverride?: string;
+  /** When true, suppress chrome (header, back link) — used when embedded. */
+  embedded?: boolean;
+}
+
+const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
+  const params = useParams();
+  const id = idOverride ?? params.id;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user, profile } = useAuth();
@@ -73,7 +81,8 @@ const EntryDetail = () => {
   const [sendingReply, setSendingReply] = useState(false);
 
   const shareComment = async (commentId: string) => {
-    const url = `${window.location.origin}/e/${id}#c-${commentId}`;
+    // Share the current URL (entity URL when embedded, /e/:id otherwise) with comment anchor
+    const url = `${window.location.origin}${window.location.pathname}#c-${commentId}`;
     try {
       if (navigator.share) {
         await navigator.share({ url });
@@ -185,11 +194,15 @@ const EntryDetail = () => {
     return m;
   }, [mediaQ.data]);
 
-  if (isLoading) return (
+  if (isLoading) return embedded ? (
+    <div className="p-4 text-muted-foreground text-sm">{t("table.loading")}</div>
+  ) : (
     <div className="min-h-screen bg-background"><Header /><div className="p-8 text-muted-foreground text-sm">{t("table.loading")}</div></div>
   );
 
-  if (!entry) return (
+  if (!entry) return embedded ? (
+    <div className="p-4 text-muted-foreground text-sm">{t("table.noResults")}</div>
+  ) : (
     <div className="min-h-screen bg-background"><Header /><div className="p-8 text-muted-foreground text-sm">{t("table.noResults")}</div></div>
   );
 
@@ -272,12 +285,14 @@ const EntryDetail = () => {
 
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
-          <ArrowLeft className="h-4 w-4" /> {t("entry.backToList")}
-        </Link>
+    <div className={embedded ? "" : "min-h-screen bg-background"}>
+      {!embedded && <Header />}
+      <div className={embedded ? "" : "max-w-4xl mx-auto px-4 py-6"}>
+        {!embedded && (
+          <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
+            <ArrowLeft className="h-4 w-4" /> {t("entry.backToList")}
+          </Link>
+        )}
 
         {/* Entry card — başlık */}
         <div className={`relative border rounded-xl p-6 bg-card ${entryDeleted ? "border-danger/40 bg-danger/5" : "border-border"}`}>

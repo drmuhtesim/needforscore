@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { formatTargetDisplay } from "@/lib/platforms";
+import { entryHrefSync } from "@/lib/entitySlugs";
 import { useAuth } from "@/contexts/AuthContext";
 import type { CategoryType } from "@/components/CategorySidebar";
 
@@ -260,7 +261,7 @@ const UserProfile = () => {
             const StatusIcon = s.Icon;
             return (
               <Link
-                to={`/e/${e.id}`}
+                to={entryHrefSync(e)}
                 key={e.id}
                 className="flex items-center gap-3 p-3 border border-border rounded-md hover:bg-secondary/40 transition-colors"
               >
