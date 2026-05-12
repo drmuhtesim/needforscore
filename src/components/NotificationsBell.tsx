@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { buildEntityUrl, type EntityCategory } from "@/lib/entitySlugs";
 
 const iconFor = (k: AppNotification["kind"]) => {
   switch (k) {
@@ -31,6 +32,9 @@ const NotificationsBell = () => {
     if (!n.read_at) await markRead(n.id);
     if (n.kind === "message" && n.conversation_id) {
       navigate(`/messages?c=${n.conversation_id}`);
+    } else if (n.entry?.category && n.entry?.target) {
+      const base = await buildEntityUrl(n.entry.category as EntityCategory, n.entry.target);
+      navigate(`${base}${n.comment_id ? `#c-${n.comment_id}` : ""}`);
     } else if (n.entry_id) {
       navigate(`/e/${n.entry_id}${n.comment_id ? `#c-${n.comment_id}` : ""}`);
     }
