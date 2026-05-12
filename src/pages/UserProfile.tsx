@@ -2,21 +2,18 @@ import { useState } from "react";
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star, MessageSquare, Pencil, MapPin, Briefcase, Cake } from "lucide-react";
+import { ArrowLeft, MessageSquare, Pencil, MapPin, Briefcase, Cake } from "lucide-react";
 import Header from "@/components/Header";
-import PlatformIcon from "@/components/PlatformIcon";
 import UserScore from "@/components/UserScore";
 import LinkedAccountsPanel from "@/components/LinkedAccountsPanel";
 import ProfileEditDialog from "@/components/ProfileEditDialog";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import SEO, { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from "@/components/SEO";
+import EntryDetail from "@/pages/EntryDetail";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { formatTargetDisplay } from "@/lib/platforms";
-import { entryHrefSync } from "@/lib/entitySlugs";
 import { useAuth } from "@/contexts/AuthContext";
-import type { CategoryType } from "@/components/CategorySidebar";
 
 const statusMeta = {
   safe: { Icon: ShieldCheck, color: "text-safe", bg: "bg-safe/10" },
