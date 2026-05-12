@@ -158,6 +158,7 @@ function buildTree(opts: {
   category: string;
   avatarDataUrl: string | null;
   stats: Stats;
+  urlPath: string;
 }) {
   const { display, sub, category, avatarDataUrl, stats } = opts;
   const initial = (display.replace(/^@/, "")[0] ?? "?");
@@ -268,7 +269,22 @@ function buildTree(opts: {
                   children: "S",
                 },
               },
-              `${SITE_NAME} · needforscore.com`,
+              `${SITE_NAME}`,
+              {
+                type: "div",
+                props: {
+                  style: {
+                    marginLeft: "auto",
+                    color: FG,
+                    fontSize: 28,
+                    fontWeight: 400,
+                    letterSpacing: 0,
+                    fontFamily: "Inter",
+                    display: "flex",
+                  },
+                  children: opts.urlPath,
+                },
+              },
             ],
           },
         },
@@ -300,12 +316,15 @@ Deno.serve(async (req) => {
   try {
     const [meta] = await Promise.all([lookup(category, handle)]);
     const avatarDataUrl = meta.avatarUrl ? await imageToDataUrl(meta.avatarUrl) : null;
+    const segment = category === "twitter" ? "x" : category;
+    const urlPath = `needforscore.com/${segment}/${handle.toLowerCase()}`;
     const tree = buildTree({
       display: meta.display,
       sub: meta.sub,
       category,
       avatarDataUrl,
       stats: meta.stats,
+      urlPath,
     });
 
     const [bold, regular] = await getFonts();
