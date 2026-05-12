@@ -74,4 +74,4 @@ Disallow: /unsubscribe
 Disallow: /messages
 Disallow: /notifications
 
-Sitemap: https://needforscore.com/sitemap.xml
+Sitemap: https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/sitemap
