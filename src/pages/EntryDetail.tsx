@@ -194,11 +194,15 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
     return m;
   }, [mediaQ.data]);
 
-  if (isLoading) return (
+  if (isLoading) return embedded ? (
+    <div className="p-4 text-muted-foreground text-sm">{t("table.loading")}</div>
+  ) : (
     <div className="min-h-screen bg-background"><Header /><div className="p-8 text-muted-foreground text-sm">{t("table.loading")}</div></div>
   );
 
-  if (!entry) return (
+  if (!entry) return embedded ? (
+    <div className="p-4 text-muted-foreground text-sm">{t("table.noResults")}</div>
+  ) : (
     <div className="min-h-screen bg-background"><Header /><div className="p-8 text-muted-foreground text-sm">{t("table.noResults")}</div></div>
   );
 
