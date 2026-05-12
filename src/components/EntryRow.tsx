@@ -4,6 +4,7 @@ import { MessageSquare, BadgeCheck, Star } from "lucide-react";
 import PlatformIcon from "./PlatformIcon";
 import VoteButtons from "./VoteButtons";
 import { formatTargetDisplay } from "@/lib/platforms";
+import { entryHrefSync } from "@/lib/entitySlugs";
 import type { EntryRow as EntryT } from "@/hooks/useEntries";
 
 interface Props {
@@ -20,7 +21,7 @@ const EntryRow = ({ entry, index }: Props) => {
       style={{ animationDelay: `${index * 20}ms` }}
     >
       <td className="py-3 px-4">
-        <Link to={`/e/${entry.id}`} className="flex items-center gap-3 group">
+        <Link to={entryHrefSync(entry)} className="flex items-center gap-3 group">
           <span className="text-xs text-muted-foreground font-mono w-5">#{index + 1}</span>
           <PlatformIcon category={entry.category} withBg />
           <div className="min-w-0 flex-1">
