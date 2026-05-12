@@ -133,7 +133,7 @@ const UserProfile = () => {
       <SEO
         title={seoTitle}
         description={seoDesc}
-        canonical={`/u/${profile.username}`}
+        canonical={`/score/${profile.username}`}
         image={ogImage}
         type="profile"
         jsonLd={[personLd, breadcrumbLd]}
