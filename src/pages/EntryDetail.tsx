@@ -80,9 +80,9 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
   const [replyContent, setReplyContent] = useState("");
   const [sendingReply, setSendingReply] = useState(false);
 
-  const shareComment = async (commentId: string) => {
-    // Share the current URL (entity URL when embedded, /e/:id otherwise) with comment anchor
-    const url = `${window.location.origin}${window.location.pathname}#c-${commentId}`;
+  const shareComment = async (_commentId: string) => {
+    // Always share the clean canonical entity URL (e.g. /x/heathleyeth) — no comment anchor, no query.
+    const url = `${window.location.origin}${window.location.pathname}`;
     try {
       if (navigator.share) {
         await navigator.share({ url });
