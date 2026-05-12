@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import EntryDetail from "./pages/EntryDetail.tsx";
+import LegacyEntryRedirect from "./pages/LegacyEntryRedirect.tsx";
 import UserProfile from "./pages/UserProfile.tsx";
 import Messages from "./pages/Messages.tsx";
 import NotificationsPage from "./pages/NotificationsPage.tsx";
@@ -57,7 +58,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/onboarding/username" element={<UsernameOnboarding />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
-              <Route path="/e/:id" element={<EntryDetail />} />
+              <Route path="/e/:id" element={<LegacyEntryRedirect />} />
               <Route path="/u/:username" element={<LegacyUserRedirect />} />
               <Route path="/score/:username" element={<UserProfile />} />
               <Route path="/instagram/:slug" element={<EntityProfile segment="instagram" />} />
