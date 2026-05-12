@@ -212,7 +212,7 @@ const UserProfile = () => {
             )}
 
             <div className="flex items-center gap-4 mt-3 text-xs font-mono text-muted-foreground">
-              <span><span className="text-foreground">{entries.length}</span> {t("profile.entries")}</span>
+              <span><span className="text-foreground">{entries.length}</span> {t("profile.entries")} (hakkında)</span>
               <span><span className="text-foreground">{commentCount}</span> {t("profile.comments")}</span>
               <span>{t("profile.joined")} {new Date(profile.created_at).toLocaleDateString()}</span>
             </div>
