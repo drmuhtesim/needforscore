@@ -1,38 +1,22 @@
 import { useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft, ShieldAlert, ShieldCheck, ShieldQuestion, Star, MessageSquare, Pencil, MapPin, Briefcase, Cake } from "lucide-react";
+import { ArrowLeft, MessageSquare, Pencil, MapPin, Briefcase, Cake } from "lucide-react";
 import Header from "@/components/Header";
-import PlatformIcon from "@/components/PlatformIcon";
 import UserScore from "@/components/UserScore";
 import LinkedAccountsPanel from "@/components/LinkedAccountsPanel";
 import ProfileEditDialog from "@/components/ProfileEditDialog";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import SEO, { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from "@/components/SEO";
+import EntryDetail from "@/pages/EntryDetail";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { formatTargetDisplay } from "@/lib/platforms";
-import { entryHrefSync } from "@/lib/entitySlugs";
 import { useAuth } from "@/contexts/AuthContext";
-import type { CategoryType } from "@/components/CategorySidebar";
-
-const statusMeta = {
-  safe: { Icon: ShieldCheck, color: "text-safe", bg: "bg-safe/10" },
-  suspicious: { Icon: ShieldQuestion, color: "text-suspicious", bg: "bg-suspicious/10" },
-  danger: { Icon: ShieldAlert, color: "text-danger", bg: "bg-danger/10" },
-  neutral: { Icon: ShieldQuestion, color: "text-muted-foreground", bg: "bg-muted" },
-} as const;
-
-const riskFromRating = (r: number | null | undefined): keyof typeof statusMeta => {
-  if (r == null) return "neutral";
-  if (r >= 7) return "safe";
-  if (r >= 4) return "suspicious";
-  return "danger";
-};
 
 const UserProfile = () => {
+  const [sp, setSp] = useSearchParams();
   const { username } = useParams();
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -274,38 +258,49 @@ const UserProfile = () => {
           </div>
         )}
 
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mt-6 mb-3">
-          @{profile.username} hakkındaki entry'ler
-        </h2>
-        <div className="space-y-2">
-          {entries.map((e: any) => {
-            const tone = riskFromRating(e.rating);
-            const s = statusMeta[tone];
-            const StatusIcon = s.Icon;
+        {entries.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-10 mt-6 border border-border rounded-md">
+            {t("entry.noEntries")}
+          </p>
+        ) : (
+          (() => {
+            const selectedId = sp.get("e");
+            const selected = (selectedId && (entries as any[]).find((x) => x.id === selectedId)) || (entries as any[])[0];
             return (
-              <Link
-                to={entryHrefSync(e)}
-                key={e.id}
-                className="flex items-center gap-3 p-3 border border-border rounded-md hover:bg-secondary/40 transition-colors"
-              >
-                <PlatformIcon category={e.category as CategoryType} withBg />
-                <div className="flex-1 min-w-0">
-                  <p className="font-mono text-sm truncate">{formatTargetDisplay(e.target, e.category)}</p>
-                  <p className="text-xs text-muted-foreground truncate">{e.description}</p>
-                </div>
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${s.bg} ${s.color}`}>
-                  <StatusIcon className="h-3 w-3" /> {t(`status.${tone}`)}
-                </span>
-                <span className="text-xs font-mono text-suspicious flex items-center gap-1">
-                  <Star className="h-3 w-3 fill-current" />{e.rating ?? "—"}
-                </span>
-              </Link>
+              <div className="mt-6">
+                {entries.length > 1 && (
+                  <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
+                    <span className="text-muted-foreground uppercase tracking-wider">
+                      {entries.length} entry
+                    </span>
+                    {(entries as any[]).map((e, i) => {
+                      const active = e.id === selected.id;
+                      return (
+                        <button
+                          key={e.id}
+                          onClick={() => {
+                            const next = new URLSearchParams(sp);
+                            if (i === 0) next.delete("e");
+                            else next.set("e", e.id);
+                            setSp(next, { replace: true });
+                          }}
+                          className={`px-2 py-1 rounded font-mono border transition-colors ${
+                            active
+                              ? "border-primary text-primary bg-primary/10"
+                              : "border-border text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          #{i + 1} · {new Date(e.created_at).toLocaleDateString()}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                <EntryDetail idOverride={selected.id} embedded />
+              </div>
             );
-          })}
-          {entries.length === 0 && (
-            <p className="text-sm text-muted-foreground text-center py-6">{t("entry.noEntries")}</p>
-          )}
-        </div>
+          })()
+        )}
       </div>
     </div>
   );
