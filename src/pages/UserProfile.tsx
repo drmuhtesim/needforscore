@@ -275,7 +275,7 @@ const UserProfile = () => {
         )}
 
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mt-6 mb-3">
-          {t("profile.entries")}
+          @{profile.username} hakkındaki entry'ler
         </h2>
         <div className="space-y-2">
           {entries.map((e: any) => {
