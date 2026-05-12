@@ -11,6 +11,31 @@ import AddEntryDialog from "@/components/AddEntryDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { consumePendingAddEntry } from "@/lib/pendingAddEntry";
 import { TrendingUp, Clock } from "lucide-react";
+import SEO, { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from "@/components/SEO";
+
+const HOME_JSONLD = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${SITE_URL}/?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/favicon.png`,
+    sameAs: [],
+    description:
+      "Score (NeedForScore): Instagram, TikTok, X, telefon ve Score kullanıcılarına yönelik topluluk tabanlı puanlama ve dolandırıcılık ifşa platformu.",
+  },
+];
 
 const Index = () => {
   const { t } = useTranslation();
@@ -53,6 +78,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-14 lg:pb-0">
+      <SEO
+        title="Score — Dolandırıcılığa karşı topluluk puanlaması | NeedForScore"
+        description="Instagram, TikTok, X, telefon ve Score kullanıcılarını puanla; dolandırıcıları ifşa et, güvenilir hesapları keşfet. Topluluk tabanlı OSINT platformu."
+        canonical="/"
+        image={DEFAULT_OG_IMAGE}
+        jsonLd={HOME_JSONLD}
+      />
       <Header />
 
       {pendingTarget && (

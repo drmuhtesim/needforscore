@@ -9,6 +9,7 @@ import UserScore from "@/components/UserScore";
 import LinkedAccountsPanel from "@/components/LinkedAccountsPanel";
 import ProfileEditDialog from "@/components/ProfileEditDialog";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import SEO, { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from "@/components/SEO";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -72,8 +73,71 @@ const UserProfile = () => {
 
   const { profile, entries, commentCount } = data;
 
+  // SEO derivations
+  const ratedEntries = (entries as any[]).filter((e) => typeof e.rating === "number");
+  const avgRating =
+    ratedEntries.length > 0
+      ? ratedEntries.reduce((s, e) => s + (e.rating ?? 0), 0) / ratedEntries.length
+      : null;
+  const categories = Array.from(new Set((entries as any[]).map((e) => e.category))).filter(Boolean);
+  const profileUrl = `${SITE_URL}/u/${profile.username}`;
+  const displayName = (profile as any).show_display_name && profile.display_name ? profile.display_name : profile.username;
+  const seoTitle = `@${profile.username} — ${displayName} | ${SITE_NAME}`;
+  const bio = (profile as any).show_bio ? (profile as any).bio : null;
+  const seoDesc = bio
+    ? String(bio).slice(0, 155)
+    : `@${profile.username} kullanıcısının Score profili: ${entries.length} entry, ${commentCount} deneyim${
+        avgRating != null ? `, ortalama puan ${avgRating.toFixed(1)}/10` : ""
+      }. ${categories.length ? `Kategoriler: ${categories.join(", ")}.` : ""}`.slice(0, 155);
+  const ogImage = ((profile as any).show_avatar && profile.avatar_url) || DEFAULT_OG_IMAGE;
+
+  const personLd: Record<string, any> = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: displayName,
+    alternateName: profile.username,
+    url: profileUrl,
+    identifier: profile.username,
+  };
+  if ((profile as any).show_avatar && profile.avatar_url) personLd.image = profile.avatar_url;
+  if (bio) personLd.description = bio;
+  if ((profile as any).show_city && (profile as any).city) {
+    personLd.address = { "@type": "PostalAddress", addressLocality: (profile as any).city };
+  }
+  if ((profile as any).show_occupation && (profile as any).occupation) {
+    personLd.jobTitle = (profile as any).occupation;
+  }
+  if (avgRating != null && ratedEntries.length > 0) {
+    personLd.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: avgRating.toFixed(2),
+      bestRating: "10",
+      worstRating: "1",
+      ratingCount: ratedEntries.length,
+      reviewCount: commentCount,
+    };
+  }
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Kullanıcılar", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 3, name: `@${profile.username}`, item: profileUrl },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={seoTitle}
+        description={seoDesc}
+        canonical={`/u/${profile.username}`}
+        image={ogImage}
+        type="profile"
+        jsonLd={[personLd, breadcrumbLd]}
+      />
       <Header />
       <div className="max-w-3xl mx-auto px-4 py-6">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
