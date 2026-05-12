@@ -7,7 +7,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
-import EntryDetail from "./pages/EntryDetail.tsx";
 import LegacyEntryRedirect from "./pages/LegacyEntryRedirect.tsx";
 import UserProfile from "./pages/UserProfile.tsx";
 import Messages from "./pages/Messages.tsx";
