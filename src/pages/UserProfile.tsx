@@ -15,21 +15,8 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-const statusMeta = {
-  safe: { Icon: ShieldCheck, color: "text-safe", bg: "bg-safe/10" },
-  suspicious: { Icon: ShieldQuestion, color: "text-suspicious", bg: "bg-suspicious/10" },
-  danger: { Icon: ShieldAlert, color: "text-danger", bg: "bg-danger/10" },
-  neutral: { Icon: ShieldQuestion, color: "text-muted-foreground", bg: "bg-muted" },
-} as const;
-
-const riskFromRating = (r: number | null | undefined): keyof typeof statusMeta => {
-  if (r == null) return "neutral";
-  if (r >= 7) return "safe";
-  if (r >= 4) return "suspicious";
-  return "danger";
-};
-
 const UserProfile = () => {
+  const [sp, setSp] = useSearchParams();
   const { username } = useParams();
   const { t } = useTranslation();
   const { user } = useAuth();
