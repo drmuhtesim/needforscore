@@ -1,0 +1,42 @@
+# Crawler/bot User-Agents → prerender edge function (dynamic OG meta).
+# Real browsers fall through to the SPA (index.html) untouched.
+
+/x/*          https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/x/:splat          200!  User-Agent=*facebookexternalhit*
+/x/*          https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/x/:splat          200!  User-Agent=*WhatsApp*
+/x/*          https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/x/:splat          200!  User-Agent=*Twitterbot*
+/x/*          https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/x/:splat          200!  User-Agent=*TelegramBot*
+/x/*          https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/x/:splat          200!  User-Agent=*Slackbot*
+/x/*          https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/x/:splat          200!  User-Agent=*Discordbot*
+/x/*          https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/x/:splat          200!  User-Agent=*LinkedInBot*
+
+/instagram/*  https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/instagram/:splat  200!  User-Agent=*facebookexternalhit*
+/instagram/*  https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/instagram/:splat  200!  User-Agent=*WhatsApp*
+/instagram/*  https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/instagram/:splat  200!  User-Agent=*Twitterbot*
+/instagram/*  https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/instagram/:splat  200!  User-Agent=*TelegramBot*
+/instagram/*  https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/instagram/:splat  200!  User-Agent=*Slackbot*
+/instagram/*  https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/instagram/:splat  200!  User-Agent=*Discordbot*
+/instagram/*  https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/instagram/:splat  200!  User-Agent=*LinkedInBot*
+
+/tiktok/*     https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/tiktok/:splat     200!  User-Agent=*facebookexternalhit*
+/tiktok/*     https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/tiktok/:splat     200!  User-Agent=*WhatsApp*
+/tiktok/*     https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/tiktok/:splat     200!  User-Agent=*Twitterbot*
+/tiktok/*     https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/tiktok/:splat     200!  User-Agent=*TelegramBot*
+/tiktok/*     https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/tiktok/:splat     200!  User-Agent=*Slackbot*
+/tiktok/*     https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/tiktok/:splat     200!  User-Agent=*Discordbot*
+/tiktok/*     https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/tiktok/:splat     200!  User-Agent=*LinkedInBot*
+
+/phone/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/phone/:splat      200!  User-Agent=*facebookexternalhit*
+/phone/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/phone/:splat      200!  User-Agent=*WhatsApp*
+/phone/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/phone/:splat      200!  User-Agent=*Twitterbot*
+/phone/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/phone/:splat      200!  User-Agent=*TelegramBot*
+/phone/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/phone/:splat      200!  User-Agent=*Slackbot*
+/phone/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/phone/:splat      200!  User-Agent=*Discordbot*
+/phone/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/phone/:splat      200!  User-Agent=*LinkedInBot*
+
+/score/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/score/:splat      200!  User-Agent=*facebookexternalhit*
+/score/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/score/:splat      200!  User-Agent=*WhatsApp*
+/score/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/score/:splat      200!  User-Agent=*Twitterbot*
+/score/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/score/:splat      200!  User-Agent=*TelegramBot*
+/score/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/score/:splat      200!  User-Agent=*Slackbot*
+/score/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/score/:splat      200!  User-Agent=*Discordbot*
+/score/*      https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/og-prerender?path=/score/:splat      200!  User-Agent=*LinkedInBot*
