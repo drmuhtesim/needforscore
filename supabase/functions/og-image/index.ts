@@ -316,12 +316,15 @@ Deno.serve(async (req) => {
   try {
     const [meta] = await Promise.all([lookup(category, handle)]);
     const avatarDataUrl = meta.avatarUrl ? await imageToDataUrl(meta.avatarUrl) : null;
+    const segment = category === "twitter" ? "x" : category;
+    const urlPath = `needforscore.com/${segment}/${handle.toLowerCase()}`;
     const tree = buildTree({
       display: meta.display,
       sub: meta.sub,
       category,
       avatarDataUrl,
       stats: meta.stats,
+      urlPath,
     });
 
     const [bold, regular] = await getFonts();
