@@ -17,7 +17,9 @@ import NotFound from "./pages/NotFound.tsx";
 import UsernameOnboarding from "./pages/UsernameOnboarding.tsx";
 import VerifyEmail from "./pages/VerifyEmail.tsx";
 import Unsubscribe from "./pages/Unsubscribe.tsx";
+import EntityProfile from "./pages/EntityProfile.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
+import { HelmetProvider } from "react-helmet-async";
 
 const queryClient = new QueryClient();
 
