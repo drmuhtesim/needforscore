@@ -35,7 +35,7 @@ export const buildProfileUrl = (raw: string, category: Exclude<CategoryType, "al
   const handle = cleanTarget(raw);
   switch (category) {
     case "score":
-      return `/u/${handle.toLowerCase()}`;
+      return `/score/${handle.toLowerCase()}`;
     case "instagram":
       return `https://instagram.com/${handle}`;
     case "tiktok":

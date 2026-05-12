@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { parsePhoneNumberFromString } from "https://esm.sh/libphonenumber-js@1.11.7";
 
 const SITE_URL = "https://needforscore.com";
 
@@ -29,7 +30,31 @@ const renderUrl = (e: UrlEntry) =>
     .filter(Boolean)
     .join("\n");
 
-const CATEGORIES = ["instagram", "tiktok", "twitter", "score", "phone"];
+const CATEGORY_SEGMENTS: Record<string, string> = {
+  instagram: "instagram",
+  tiktok: "tiktok",
+  twitter: "x",
+  phone: "phone",
+};
+
+const CATEGORY_FILTERS = ["instagram", "tiktok", "twitter", "score", "phone"];
+
+const sha256Hex = async (input: string): Promise<string> => {
+  const data = new TextEncoder().encode(input);
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+};
+
+const buildPhoneSlug = async (rawE164: string): Promise<string> => {
+  const parsed = parsePhoneNumberFromString(rawE164);
+  const cc = parsed?.country?.toLowerCase() ?? "intl";
+  const national = (parsed?.nationalNumber ?? rawE164).toString().replace(/\D/g, "");
+  const last2 = national.slice(-2).padStart(2, "x");
+  const hash = (await sha256Hex(rawE164)).slice(0, 8);
+  return `${cc}-xx-${last2}-${hash}`;
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -45,7 +70,7 @@ Deno.serve(async (req) => {
     { loc: `${SITE_URL}/privacy`, changefreq: "monthly", priority: "0.3" },
   ];
 
-  for (const cat of CATEGORIES) {
+  for (const cat of CATEGORY_FILTERS) {
     entries.push({
       loc: `${SITE_URL}/?category=${cat}`,
       changefreq: "daily",
@@ -53,8 +78,9 @@ Deno.serve(async (req) => {
     });
   }
 
-  // All public profiles (paginate to bypass 1000-row default)
   const PAGE = 1000;
+
+  // Score user profiles → /score/:username (canonical)
   let from = 0;
   while (true) {
     const { data, error } = await supabase
@@ -65,7 +91,7 @@ Deno.serve(async (req) => {
     if (error || !data || data.length === 0) break;
     for (const p of data) {
       entries.push({
-        loc: `${SITE_URL}/u/${encodeURIComponent(p.username)}`,
+        loc: `${SITE_URL}/score/${encodeURIComponent(p.username)}`,
         lastmod: p.updated_at ? new Date(p.updated_at).toISOString().slice(0, 10) : undefined,
         changefreq: "weekly",
         priority: "0.8",
@@ -75,26 +101,59 @@ Deno.serve(async (req) => {
     from += PAGE;
   }
 
-  // All public entries (review pages)
+  // Aggregate entity pages: one URL per (category, target_normalized).
+  // Track latest updated_at per group.
+  const seen = new Map<string, string>(); // key: `${cat}|${target}` → lastmod
   from = 0;
   while (true) {
     const { data, error } = await supabase
       .from("entries")
-      .select("id, updated_at")
+      .select("id, category, target_normalized, updated_at")
       .is("deleted_at", null)
       .order("created_at", { ascending: false })
       .range(from, from + PAGE - 1);
     if (error || !data || data.length === 0) break;
     for (const e of data) {
+      // Individual entry detail (kept for backwards compatibility + deep linking)
       entries.push({
         loc: `${SITE_URL}/e/${e.id}`,
         lastmod: e.updated_at ? new Date(e.updated_at).toISOString().slice(0, 10) : undefined,
         changefreq: "weekly",
-        priority: "0.6",
+        priority: "0.5",
       });
+      const cat = e.category as string;
+      const tgt = e.target_normalized as string | null;
+      if (!tgt || cat === "score") continue;
+      const seg = CATEGORY_SEGMENTS[cat];
+      if (!seg) continue;
+      const key = `${seg}|${tgt}`;
+      const lm = e.updated_at ? new Date(e.updated_at).toISOString().slice(0, 10) : "";
+      if (!seen.has(key) || (lm && lm > (seen.get(key) ?? ""))) {
+        seen.set(key, lm);
+      }
     }
     if (data.length < PAGE) break;
     from += PAGE;
+  }
+
+  for (const [key, lastmod] of seen.entries()) {
+    const [seg, target] = key.split("|");
+    let slug: string;
+    if (seg === "phone") {
+      try {
+        slug = await buildPhoneSlug(target);
+      } catch {
+        continue;
+      }
+    } else {
+      slug = encodeURIComponent(target);
+    }
+    entries.push({
+      loc: `${SITE_URL}/${seg}/${slug}`,
+      lastmod: lastmod || undefined,
+      changefreq: "weekly",
+      priority: "0.7",
+    });
   }
 
   const xml =

@@ -17,7 +17,9 @@ import NotFound from "./pages/NotFound.tsx";
 import UsernameOnboarding from "./pages/UsernameOnboarding.tsx";
 import VerifyEmail from "./pages/VerifyEmail.tsx";
 import Unsubscribe from "./pages/Unsubscribe.tsx";
+import EntityProfile from "./pages/EntityProfile.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
+
 
 const queryClient = new QueryClient();
 
@@ -56,6 +58,12 @@ const App = () => (
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/e/:id" element={<EntryDetail />} />
               <Route path="/u/:username" element={<UserProfile />} />
+              <Route path="/score/:username" element={<UserProfile />} />
+              <Route path="/instagram/:slug" element={<EntityProfile segment="instagram" />} />
+              <Route path="/tiktok/:slug" element={<EntityProfile segment="tiktok" />} />
+              <Route path="/x/:slug" element={<EntityProfile segment="x" />} />
+              <Route path="/twitter/:slug" element={<EntityProfile segment="twitter" />} />
+              <Route path="/phone/:slug" element={<EntityProfile segment="phone" />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/terms" element={<Terms />} />
