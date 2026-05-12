@@ -80,7 +80,7 @@ const UserProfile = () => {
       ? ratedEntries.reduce((s, e) => s + (e.rating ?? 0), 0) / ratedEntries.length
       : null;
   const categories = Array.from(new Set((entries as any[]).map((e) => e.category))).filter(Boolean);
-  const profileUrl = `${SITE_URL}/u/${profile.username}`;
+  const profileUrl = `${SITE_URL}/score/${profile.username}`;
   const displayName = (profile as any).show_display_name && profile.display_name ? profile.display_name : profile.username;
   const seoTitle = `@${profile.username} — ${displayName} | ${SITE_NAME}`;
   const bio = (profile as any).show_bio ? (profile as any).bio : null;
