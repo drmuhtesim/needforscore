@@ -81,7 +81,8 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
   const [sendingReply, setSendingReply] = useState(false);
 
   const shareComment = async (commentId: string) => {
-    const url = `${window.location.origin}/e/${id}#c-${commentId}`;
+    // Share the current URL (entity URL when embedded, /e/:id otherwise) with comment anchor
+    const url = `${window.location.origin}${window.location.pathname}#c-${commentId}`;
     try {
       if (navigator.share) {
         await navigator.share({ url });
