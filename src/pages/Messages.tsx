@@ -306,7 +306,7 @@ const Messages = () => {
                 </Avatar>
                 <button
                   type="button"
-                  onClick={() => activeConv?.other?.username && navigate(`/u/${activeConv.other.username}`)}
+                  onClick={() => activeConv?.other?.username && navigate(`/score/${activeConv.other.username}`)}
                   className="min-w-0 flex-1 text-left hover:opacity-90"
                 >
                   <div className="text-sm font-semibold truncate">

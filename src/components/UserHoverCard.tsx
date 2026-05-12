@@ -78,7 +78,7 @@ const UserHoverCard = ({ username, children }: Props) => {
   return (
     <HoverCard openDelay={200}>
       <HoverCardTrigger asChild>
-        <Link to={`/u/${username}`} className="hover:text-primary transition-colors" onClick={(e) => e.stopPropagation()}>
+        <Link to={`/score/${username}`} className="hover:text-primary transition-colors" onClick={(e) => e.stopPropagation()}>
           {children}
         </Link>
       </HoverCardTrigger>
@@ -107,7 +107,7 @@ const UserHoverCard = ({ username, children }: Props) => {
               </p>
               <div className="mt-2 flex items-center gap-3">
                 <Link
-                  to={`/u/${profile.username}`}
+                  to={`/score/${profile.username}`}
                   className="text-xs text-primary hover:underline"
                 >
                   {t("profile.viewProfile")} →

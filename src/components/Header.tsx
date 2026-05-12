@@ -86,7 +86,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 {profile?.username && (
-                  <DropdownMenuItem onClick={() => navigate(`/u/${profile.username}`)}>
+                  <DropdownMenuItem onClick={() => navigate(`/score/${profile.username}`)}>
                     <UserIcon className="h-4 w-4 mr-2" />
                     {t("header.myProfile")}
                   </DropdownMenuItem>
@@ -126,7 +126,7 @@ const Header = () => {
             <>
               <div className="text-xs text-muted-foreground font-mono px-1">@{profile?.username}</div>
               {profile?.username && (
-                <Link to={`/u/${profile.username}`} className="block text-sm text-foreground hover:text-primary">
+                <Link to={`/score/${profile.username}`} className="block text-sm text-foreground hover:text-primary">
                   {t("header.myProfile")}
                 </Link>
               )}
