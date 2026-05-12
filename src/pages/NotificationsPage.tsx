@@ -6,6 +6,7 @@ import MobileBottomBar from "@/components/MobileBottomBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications, type AppNotification } from "@/hooks/useNotifications";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { buildEntityUrl, type EntityCategory } from "@/lib/entitySlugs";
 
 const NotificationsPage = () => {
   const { t } = useTranslation();
@@ -21,6 +22,9 @@ const NotificationsPage = () => {
     if (!n.read_at) await markRead(n.id);
     if (n.kind === "message" && n.conversation_id) {
       navigate(`/messages?c=${n.conversation_id}`);
+    } else if (n.entry?.category && n.entry?.target) {
+      const base = await buildEntityUrl(n.entry.category as EntityCategory, n.entry.target);
+      navigate(`${base}${n.comment_id ? `#c-${n.comment_id}` : ""}`);
     } else if (n.entry_id) {
       navigate(`/e/${n.entry_id}${n.comment_id ? `#c-${n.comment_id}` : ""}`);
     }
