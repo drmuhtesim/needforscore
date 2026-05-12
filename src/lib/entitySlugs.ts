@@ -93,6 +93,20 @@ export function buildEntityUrlSync(
   return `/${seg}/${encodeURIComponent(handle)}`;
 }
 
+/**
+ * Synchronous "best-effort" canonical URL for a single entry.
+ * Returns the entity URL when computable without crypto (handles), else
+ * `/e/:id` which is always a permanent redirect to the canonical entity URL.
+ */
+export function entryHrefSync(entry: {
+  id: string;
+  category: EntityCategory;
+  target: string;
+}): string {
+  const sync = buildEntityUrlSync(entry.category, entry.target);
+  return sync ?? `/e/${entry.id}`;
+}
+
 /** Human-readable label for a category. */
 export const categoryLabel: Record<EntityCategory, string> = {
   score: "Score",
