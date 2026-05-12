@@ -55,8 +55,16 @@ const platformLabel: Record<string, string> = {
   phone: "Telefon",
 };
 
-const EntryDetail = () => {
-  const { id } = useParams();
+interface EntryDetailProps {
+  /** When provided, use this entry id instead of the URL :id param. */
+  idOverride?: string;
+  /** When true, suppress chrome (header, back link) — used when embedded. */
+  embedded?: boolean;
+}
+
+const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
+  const params = useParams();
+  const id = idOverride ?? params.id;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user, profile } = useAuth();
