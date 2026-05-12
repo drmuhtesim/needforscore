@@ -99,25 +99,22 @@ async function buildEntityMeta(
 
 function injectMeta(
   html: string,
-  meta: { title: string; desc: string; url: string },
+  meta: { title: string; desc: string; url: string; image: string },
 ): string {
   const t = htmlEscape(meta.title);
   const d = htmlEscape(meta.desc);
   const u = htmlEscape(meta.url);
+  const img = htmlEscape(meta.image);
 
-  // Replace <title>
   let out = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${t}</title>`);
-  // Replace <meta name="description">
   out = out.replace(
     /<meta\s+name="description"[^>]*>/i,
     `<meta name="description" content="${d}">`,
   );
-  // Replace canonical
   out = out.replace(
     /<link\s+rel="canonical"[^>]*>/i,
     `<link rel="canonical" href="${u}" />`,
   );
-  // Replace OG title/desc (any existing)
   out = out.replace(
     /<meta\s+property="og:title"[^>]*>/gi,
     `<meta property="og:title" content="${t}">`,
@@ -126,7 +123,6 @@ function injectMeta(
     /<meta\s+property="og:description"[^>]*>/gi,
     `<meta property="og:description" content="${d}">`,
   );
-  // Twitter
   out = out.replace(
     /<meta\s+name="twitter:title"[^>]*>/gi,
     `<meta name="twitter:title" content="${t}">`,
@@ -135,7 +131,14 @@ function injectMeta(
     /<meta\s+name="twitter:description"[^>]*>/gi,
     `<meta name="twitter:description" content="${d}">`,
   );
-  // Inject og:url right before </head> (since index.html has it removed/varies)
+  out = out.replace(
+    /<meta\s+property="og:image"[^>]*>/gi,
+    `<meta property="og:image" content="${img}">`,
+  );
+  out = out.replace(
+    /<meta\s+name="twitter:image"[^>]*>/gi,
+    `<meta name="twitter:image" content="${img}">`,
+  );
   const ogUrlTag = `<meta property="og:url" content="${u}" />`;
   if (/<meta\s+property="og:url"[^>]*>/i.test(out)) {
     out = out.replace(/<meta\s+property="og:url"[^>]*>/i, ogUrlTag);
