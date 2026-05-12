@@ -106,9 +106,9 @@ const MobileBottomBar = () => {
         <li>
           {user && profile?.username ? (
             <Link
-              to={`/u/${profile.username}`}
+              to={`/score/${profile.username}`}
               className={`${itemBase} ${
-                pathname.startsWith("/u/") ? "text-primary" : "text-muted-foreground"
+                pathname.startsWith("/score/") ? "text-primary" : "text-muted-foreground"
               }`}
             >
               <UserIcon className="h-5 w-5" />

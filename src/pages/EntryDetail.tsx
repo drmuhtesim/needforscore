@@ -431,7 +431,7 @@ const EntryDetail = () => {
                     {/* Avatar */}
                     <UserHoverCard username={username}>
                       <Link
-                        to={`/u/${username}`}
+                        to={`/score/${username}`}
                         className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-border flex items-center justify-center text-sm font-semibold text-foreground/80 hover:opacity-90"
                       >
                         {c.profiles?.avatar_url ? (
@@ -452,7 +452,7 @@ const EntryDetail = () => {
                         <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0 min-w-0 text-sm">
                           <UserHoverCard username={username}>
                             <Link
-                              to={`/u/${username}`}
+                              to={`/score/${username}`}
                               className="font-semibold text-foreground hover:underline truncate"
                             >
                               @{username}
@@ -586,7 +586,7 @@ const EntryDetail = () => {
                               <div key={r.id} className="text-sm bg-primary/5 rounded-md p-2.5">
                                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                   <UserHoverCard username={rUsername}>
-                                    <Link to={`/u/${rUsername}`} className="font-semibold text-foreground hover:underline">
+                                    <Link to={`/score/${rUsername}`} className="font-semibold text-foreground hover:underline">
                                       @{rUsername}
                                     </Link>
                                   </UserHoverCard>

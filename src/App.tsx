@@ -18,6 +18,7 @@ import UsernameOnboarding from "./pages/UsernameOnboarding.tsx";
 import VerifyEmail from "./pages/VerifyEmail.tsx";
 import Unsubscribe from "./pages/Unsubscribe.tsx";
 import EntityProfile from "./pages/EntityProfile.tsx";
+import LegacyUserRedirect from "./pages/LegacyUserRedirect.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 
 
@@ -57,7 +58,7 @@ const App = () => (
               <Route path="/onboarding/username" element={<UsernameOnboarding />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/e/:id" element={<EntryDetail />} />
-              <Route path="/u/:username" element={<UserProfile />} />
+              <Route path="/u/:username" element={<LegacyUserRedirect />} />
               <Route path="/score/:username" element={<UserProfile />} />
               <Route path="/instagram/:slug" element={<EntityProfile segment="instagram" />} />
               <Route path="/tiktok/:slug" element={<EntityProfile segment="tiktok" />} />
