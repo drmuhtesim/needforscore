@@ -268,7 +268,22 @@ function buildTree(opts: {
                   children: "S",
                 },
               },
-              `${SITE_NAME} · needforscore.com`,
+              `${SITE_NAME}`,
+              {
+                type: "div",
+                props: {
+                  style: {
+                    marginLeft: "auto",
+                    color: FG,
+                    fontSize: 28,
+                    fontWeight: 400,
+                    letterSpacing: 0,
+                    fontFamily: "Inter",
+                    display: "flex",
+                  },
+                  children: opts.urlPath,
+                },
+              },
             ],
           },
         },
