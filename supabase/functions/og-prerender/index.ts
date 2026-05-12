@@ -41,7 +41,11 @@ const CATEGORY_LABEL: Record<string, string> = {
 const htmlEscape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-async function buildEntityMeta(path: string): Promise<{ title: string; desc: string; url: string } | null> {
+const OG_IMAGE_BASE = `${Deno.env.get("SUPABASE_URL")}/functions/v1/og-image`;
+
+async function buildEntityMeta(
+  path: string,
+): Promise<{ title: string; desc: string; url: string; image: string } | null> {
   // /x/:slug, /instagram/:slug, /tiktok/:slug, /phone/:slug, /score/:username
   const m = path.match(/^\/([a-z]+)\/([^/?#]+)/i);
   if (!m) return null;
@@ -55,6 +59,7 @@ async function buildEntityMeta(path: string): Promise<{ title: string; desc: str
       title: `@${handle} — Score profili | ${SITE_NAME}`,
       desc: `@${handle} kullanıcısının Score profili: entry'ler, puanlar ve güvenilirlik analizi.`,
       url,
+      image: `${OG_IMAGE_BASE}?category=score&handle=${encodeURIComponent(handle)}`,
     };
   }
 
@@ -87,30 +92,29 @@ async function buildEntityMeta(path: string): Promise<{ title: string; desc: str
       : `${display} için Score topluluğunun ${label} güvenilirlik analizi. `) +
     "Score'da yorum yap, puanla.";
 
-  return { title, desc: desc.slice(0, 200), url };
+  const image = `${OG_IMAGE_BASE}?category=${encodeURIComponent(category)}&handle=${encodeURIComponent(slug.toLowerCase())}`;
+
+  return { title, desc: desc.slice(0, 200), url, image };
 }
 
 function injectMeta(
   html: string,
-  meta: { title: string; desc: string; url: string },
+  meta: { title: string; desc: string; url: string; image: string },
 ): string {
   const t = htmlEscape(meta.title);
   const d = htmlEscape(meta.desc);
   const u = htmlEscape(meta.url);
+  const img = htmlEscape(meta.image);
 
-  // Replace <title>
   let out = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${t}</title>`);
-  // Replace <meta name="description">
   out = out.replace(
     /<meta\s+name="description"[^>]*>/i,
     `<meta name="description" content="${d}">`,
   );
-  // Replace canonical
   out = out.replace(
     /<link\s+rel="canonical"[^>]*>/i,
     `<link rel="canonical" href="${u}" />`,
   );
-  // Replace OG title/desc (any existing)
   out = out.replace(
     /<meta\s+property="og:title"[^>]*>/gi,
     `<meta property="og:title" content="${t}">`,
@@ -119,7 +123,6 @@ function injectMeta(
     /<meta\s+property="og:description"[^>]*>/gi,
     `<meta property="og:description" content="${d}">`,
   );
-  // Twitter
   out = out.replace(
     /<meta\s+name="twitter:title"[^>]*>/gi,
     `<meta name="twitter:title" content="${t}">`,
@@ -128,7 +131,14 @@ function injectMeta(
     /<meta\s+name="twitter:description"[^>]*>/gi,
     `<meta name="twitter:description" content="${d}">`,
   );
-  // Inject og:url right before </head> (since index.html has it removed/varies)
+  out = out.replace(
+    /<meta\s+property="og:image"[^>]*>/gi,
+    `<meta property="og:image" content="${img}">`,
+  );
+  out = out.replace(
+    /<meta\s+name="twitter:image"[^>]*>/gi,
+    `<meta name="twitter:image" content="${img}">`,
+  );
   const ogUrlTag = `<meta property="og:url" content="${u}" />`;
   if (/<meta\s+property="og:url"[^>]*>/i.test(out)) {
     out = out.replace(/<meta\s+property="og:url"[^>]*>/i, ogUrlTag);
