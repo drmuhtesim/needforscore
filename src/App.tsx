@@ -21,6 +21,7 @@ import EntityProfile from "./pages/EntityProfile.tsx";
 import LegacyUserRedirect from "./pages/LegacyUserRedirect.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 import ModDashboard from "./pages/ModDashboard.tsx";
+import ModLogin from "./pages/ModLogin.tsx";
 
 
 const queryClient = new QueryClient();
