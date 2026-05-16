@@ -1,4 +1,5 @@
-import { Menu, X, LogOut, User as UserIcon, MessageSquare } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, MessageSquare, ShieldAlert } from "lucide-react";
+import { useUserRoles } from "@/hooks/useUserRole";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -21,6 +22,7 @@ const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const { t } = useTranslation();
   const { user, profile, signOut } = useAuth();
+  const { isModerator } = useUserRoles();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -66,6 +68,17 @@ const Header = () => {
               >
                 <MessageSquare className="h-4 w-4" />
               </Link>
+              {isModerator && (
+                <Link
+                  to="/mod"
+                  aria-label="Moderasyon"
+                  title="Moderasyon paneli"
+                  className="hidden md:inline-flex h-9 px-2 items-center justify-center gap-1 rounded-md border border-suspicious/40 text-suspicious hover:bg-suspicious/10 transition-colors text-xs font-bold"
+                >
+                  <ShieldAlert className="h-4 w-4" />
+                  MOD
+                </Link>
+              )}
               <NotificationsBell />
             </>
           )}
@@ -89,6 +102,12 @@ const Header = () => {
                   <DropdownMenuItem onClick={() => navigate(`/score/${profile.username}`)}>
                     <UserIcon className="h-4 w-4 mr-2" />
                     {t("header.myProfile")}
+                  </DropdownMenuItem>
+                )}
+                {isModerator && (
+                  <DropdownMenuItem onClick={() => navigate("/mod")} className="text-suspicious">
+                    <ShieldAlert className="h-4 w-4 mr-2" />
+                    Moderasyon
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={handleSignOut} className="text-danger">
@@ -128,6 +147,11 @@ const Header = () => {
               {profile?.username && (
                 <Link to={`/score/${profile.username}`} className="block text-sm text-foreground hover:text-primary">
                   {t("header.myProfile")}
+                </Link>
+              )}
+              {isModerator && (
+                <Link to="/mod" className="block text-sm font-bold text-suspicious">
+                  🛡 Moderasyon paneli
                 </Link>
               )}
               <button onClick={handleSignOut} className="w-full px-4 py-2 border border-border text-danger text-sm font-semibold rounded-md">

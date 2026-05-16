@@ -20,6 +20,7 @@ import Unsubscribe from "./pages/Unsubscribe.tsx";
 import EntityProfile from "./pages/EntityProfile.tsx";
 import LegacyUserRedirect from "./pages/LegacyUserRedirect.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
+import ModDashboard from "./pages/ModDashboard.tsx";
 
 
 const queryClient = new QueryClient();
@@ -67,6 +68,7 @@ const App = () => (
               <Route path="/phone/:slug" element={<EntityProfile segment="phone" />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/mod" element={<ModDashboard />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/unsubscribe" element={<Unsubscribe />} />
