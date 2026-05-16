@@ -394,6 +394,9 @@ export type Database = {
         Row: {
           age: number | null
           avatar_url: string | null
+          ban_reason: string | null
+          banned_at: string | null
+          banned_by: string | null
           bio: string | null
           city: string | null
           created_at: string
@@ -401,6 +404,7 @@ export type Database = {
           email_verification_token: string | null
           email_verified: boolean
           id: string
+          is_banned: boolean
           occupation: string | null
           show_age: boolean
           show_avatar: boolean
@@ -418,6 +422,9 @@ export type Database = {
         Insert: {
           age?: number | null
           avatar_url?: string | null
+          ban_reason?: string | null
+          banned_at?: string | null
+          banned_by?: string | null
           bio?: string | null
           city?: string | null
           created_at?: string
@@ -425,6 +432,7 @@ export type Database = {
           email_verification_token?: string | null
           email_verified?: boolean
           id?: string
+          is_banned?: boolean
           occupation?: string | null
           show_age?: boolean
           show_avatar?: boolean
@@ -442,6 +450,9 @@ export type Database = {
         Update: {
           age?: number | null
           avatar_url?: string | null
+          ban_reason?: string | null
+          banned_at?: string | null
+          banned_by?: string | null
           bio?: string | null
           city?: string | null
           created_at?: string
@@ -449,6 +460,7 @@ export type Database = {
           email_verification_token?: string | null
           email_verified?: boolean
           id?: string
+          is_banned?: boolean
           occupation?: string | null
           show_age?: boolean
           show_avatar?: boolean
@@ -602,6 +614,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_banned: { Args: { _user_id: string }; Returns: boolean }
       is_conversation_member: {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
