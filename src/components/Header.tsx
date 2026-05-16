@@ -104,6 +104,12 @@ const Header = () => {
                     {t("header.myProfile")}
                   </DropdownMenuItem>
                 )}
+                {isModerator && (
+                  <DropdownMenuItem onClick={() => navigate("/mod")} className="text-suspicious">
+                    <ShieldAlert className="h-4 w-4 mr-2" />
+                    Moderasyon
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={handleSignOut} className="text-danger">
                   <LogOut className="h-4 w-4 mr-2" />
                   {t("header.signOut")}
