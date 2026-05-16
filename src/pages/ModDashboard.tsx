@@ -59,8 +59,8 @@ const ModDashboard = () => {
       </div>
     );
   }
-  if (!user) return <Navigate to="/auth?mode=signin" replace />;
-  if (!isModerator) return <Navigate to="/" replace />;
+  if (!user) return <Navigate to="/mod/login" replace />;
+  if (!isModerator) return <Navigate to="/mod/login" replace />;
 
   return (
     <div className="min-h-screen bg-background">
