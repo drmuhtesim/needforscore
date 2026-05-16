@@ -149,6 +149,11 @@ const Header = () => {
                   {t("header.myProfile")}
                 </Link>
               )}
+              {isModerator && (
+                <Link to="/mod" className="block text-sm font-bold text-suspicious">
+                  🛡 Moderasyon paneli
+                </Link>
+              )}
               <button onClick={handleSignOut} className="w-full px-4 py-2 border border-border text-danger text-sm font-semibold rounded-md">
                 {t("header.signOut")}
               </button>
