@@ -69,6 +69,7 @@ const App = () => (
               <Route path="/phone/:slug" element={<EntityProfile segment="phone" />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/mod/login" element={<ModLogin />} />
               <Route path="/mod" element={<ModDashboard />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
