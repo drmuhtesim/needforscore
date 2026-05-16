@@ -1,4 +1,5 @@
-import { Menu, X, LogOut, User as UserIcon, MessageSquare } from "lucide-react";
+import { Menu, X, LogOut, User as UserIcon, MessageSquare, ShieldAlert } from "lucide-react";
+import { useUserRoles } from "@/hooks/useUserRole";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
