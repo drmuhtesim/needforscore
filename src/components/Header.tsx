@@ -22,6 +22,7 @@ const Header = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const { t } = useTranslation();
   const { user, profile, signOut } = useAuth();
+  const { isModerator } = useUserRoles();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -67,6 +68,17 @@ const Header = () => {
               >
                 <MessageSquare className="h-4 w-4" />
               </Link>
+              {isModerator && (
+                <Link
+                  to="/mod"
+                  aria-label="Moderasyon"
+                  title="Moderasyon paneli"
+                  className="hidden md:inline-flex h-9 px-2 items-center justify-center gap-1 rounded-md border border-suspicious/40 text-suspicious hover:bg-suspicious/10 transition-colors text-xs font-bold"
+                >
+                  <ShieldAlert className="h-4 w-4" />
+                  MOD
+                </Link>
+              )}
               <NotificationsBell />
             </>
           )}
