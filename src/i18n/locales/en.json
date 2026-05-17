@@ -94,12 +94,13 @@
     "mottoLine2": "Sign up in one click, rate and comment!"
   },
   "search": {
-    "placeholder": "search username",
+    "placeholder": "Search username or paste profile/post link...",
     "button": "Search",
     "usersTitle": "Search users",
     "usersPlaceholder": "Type a username...",
     "noResults": "No results",
-    "clear": "Clear"
+    "clear": "Clear",
+    "parseError": "Could not detect valid social media username"
   },
   "categories": {
     "title": "Categories",
