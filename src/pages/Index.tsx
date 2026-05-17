@@ -40,9 +40,10 @@ const HOME_JSONLD = [
 const Index = () => {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
-  const [category, setCategory] = useState<CategoryType>("all");
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQ = searchParams.get("q") ?? "";
+  const initialCat = (searchParams.get("cat") ?? "all") as CategoryType;
+  const [category, setCategory] = useState<CategoryType>(initialCat);
   const [searchQuery, setSearchQuery] = useState(initialQ);
   const [timeFilter, setTimeFilter] = useState<string>("24h");
   const [pendingTarget, setPendingTarget] = useState<string | null>(null);
