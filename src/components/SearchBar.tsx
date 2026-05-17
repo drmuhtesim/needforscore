@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { toast } from "@/hooks/use-toast";
+import { parseSocialUrl, looksLikeUrl } from "@/lib/socialUrlParser";
+import { categoryToSegment } from "@/lib/entitySlugs";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -11,14 +15,51 @@ interface SearchBarProps {
 const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
   const [query, setQuery] = useState(value ?? "");
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (value !== undefined) setQuery(value);
   }, [value]);
 
+  // Try to interpret the input as a social media URL. Returns true if we
+  // handled it (navigated or showed an error toast).
+  const tryHandleSocialUrl = (raw: string): boolean => {
+    if (!looksLikeUrl(raw)) return false;
+    const parsed = parseSocialUrl(raw);
+    if (!parsed) {
+      toast({
+        title: t("search.parseError") as string,
+        variant: "destructive",
+      });
+      return true;
+    }
+    if (parsed.category) {
+      // Send to home with the username pre-filled + category locked so the
+      // existing "create page" flow fires when nothing matches.
+      const seg = categoryToSegment[parsed.category];
+      navigate(`/?q=${encodeURIComponent(parsed.username)}&cat=${seg}`);
+    } else {
+      navigate(`/?q=${encodeURIComponent(parsed.username)}`);
+    }
+    setQuery(parsed.username);
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) onSearch(query.trim());
+    const v = query.trim();
+    if (!v) return;
+    if (tryHandleSocialUrl(v)) return;
+    onSearch(v);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData("text").trim();
+    if (!pasted || !looksLikeUrl(pasted)) return;
+    e.preventDefault();
+    setQuery(pasted);
+    // Defer so React commits the input value before navigating.
+    setTimeout(() => tryHandleSocialUrl(pasted), 0);
   };
 
   const handleClear = () => {
@@ -34,10 +75,16 @@ const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
           <Search className="ml-4 h-5 w-5 text-muted-foreground flex-shrink-0" />
           <input
             type="text"
+            inputMode="url"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder ?? t("search.placeholder")}
-            className="w-full bg-transparent px-4 py-3.5 text-foreground placeholder:text-muted-foreground focus:outline-none font-mono text-sm"
+            onPaste={handlePaste}
+            placeholder={placeholder ?? (t("search.placeholder") as string)}
+            className="w-full bg-transparent px-4 py-3.5 text-foreground placeholder:text-muted-foreground focus:outline-none font-mono text-sm min-w-0"
           />
           {query && (
             <button

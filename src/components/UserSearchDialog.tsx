@@ -9,6 +9,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
+import { parseSocialUrl, looksLikeUrl } from "@/lib/socialUrlParser";
+import { categoryToSegment } from "@/lib/entitySlugs";
 
 interface Props {
   open: boolean;
@@ -19,7 +22,8 @@ interface Props {
  * Mobil alt bardan açılan arama diyaloğu.
  * Üstteki SearchBar ile aynı davranır: sorguyu ana sayfaya yönlendirir,
  * orada tüm başlıklar içinde arama yapılır ve sonuç bulunamazsa
- * "bununla ilgili bir sonuç bulunamadı" CTA'sı gösterilir.
+ * "bununla ilgili bir sonuç bulunamadı" CTA'sı gösterilir. Yapıştırılan
+ * sosyal medya bağlantıları otomatik olarak ayrıştırılır.
  */
 const UserSearchDialog = ({ open, onOpenChange }: Props) => {
   const { t } = useTranslation();
@@ -30,10 +34,28 @@ const UserSearchDialog = ({ open, onOpenChange }: Props) => {
     if (!open) setQ("");
   }, [open]);
 
+  const handlePastedOrSubmitted = (raw: string): boolean => {
+    if (!looksLikeUrl(raw)) return false;
+    const parsed = parseSocialUrl(raw);
+    if (!parsed) {
+      toast({ title: t("search.parseError") as string, variant: "destructive" });
+      return true;
+    }
+    onOpenChange(false);
+    if (parsed.category) {
+      const seg = categoryToSegment[parsed.category];
+      navigate(`/?q=${encodeURIComponent(parsed.username)}&cat=${seg}`);
+    } else {
+      navigate(`/?q=${encodeURIComponent(parsed.username)}`);
+    }
+    return true;
+  };
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const term = q.trim();
     if (!term) return;
+    if (handlePastedOrSubmitted(term)) return;
     onOpenChange(false);
     navigate(`/?q=${encodeURIComponent(term)}`);
   };
@@ -49,8 +71,20 @@ const UserSearchDialog = ({ open, onOpenChange }: Props) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               autoFocus
+              inputMode="url"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
               value={q}
               onChange={(e) => setQ(e.target.value)}
+              onPaste={(e) => {
+                const pasted = e.clipboardData.getData("text").trim();
+                if (!pasted || !looksLikeUrl(pasted)) return;
+                e.preventDefault();
+                setQ(pasted);
+                setTimeout(() => handlePastedOrSubmitted(pasted), 0);
+              }}
               placeholder={t("search.placeholder") as string}
               className="pl-9 font-mono"
             />

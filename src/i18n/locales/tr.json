@@ -94,12 +94,13 @@
     "mottoLine2": "Tek tıkla üye ol, puan ver, yorum yap!"
   },
   "search": {
-    "placeholder": "kullanıcı adı ara",
+    "placeholder": "Kullanıcı adı ara veya profil/post bağlantısı yapıştır...",
     "button": "Ara",
     "usersTitle": "Kullanıcı ara",
     "usersPlaceholder": "Kullanıcı adı yaz...",
     "noResults": "Sonuç bulunamadı",
-    "clear": "Temizle"
+    "clear": "Temizle",
+    "parseError": "Geçerli bir sosyal medya kullanıcı adı algılanamadı"
   },
   "categories": {
     "title": "Kategoriler",
