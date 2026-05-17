@@ -61,17 +61,21 @@ const Index = () => {
     setPendingOpen(true);
   }, [user, loading]);
 
-  // URL ?q= parametresi değişirse arama kutusunu senkronla (alt bardan gelirken)
+  // URL ?q= / ?cat= parametreleri değişirse arama kutusunu ve kategoriyi senkronla
   useEffect(() => {
     const q = searchParams.get("q") ?? "";
+    const cat = (searchParams.get("cat") ?? "all") as CategoryType;
     setSearchQuery(q);
+    setCategory(cat);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const handleSearch = (q: string) => {
     setSearchQuery(q);
-    if (q) setSearchParams({ q }, { replace: true });
-    else setSearchParams({}, { replace: true });
+    const next: Record<string, string> = {};
+    if (q) next.q = q;
+    if (category && category !== "all") next.cat = category;
+    setSearchParams(next, { replace: true });
   };
 
   const tfRaw = t("filters.timeFilters", { returnObjects: true });
