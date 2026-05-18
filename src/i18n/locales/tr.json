@@ -100,7 +100,9 @@
     "usersPlaceholder": "Kullanıcı adı yaz...",
     "noResults": "Sonuç bulunamadı",
     "clear": "Temizle",
-    "parseError": "Geçerli bir sosyal medya kullanıcı adı algılanamadı"
+    "parseError": "Geçerli bir sosyal medya kullanıcı adı algılanamadı",
+    "platformDetected": "{{platform}} bağlantısı algılandı",
+    "enterUsername": "İçerik sahibinin kullanıcı adını yazın"
   },
   "categories": {
     "title": "Kategoriler",
