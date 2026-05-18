@@ -44,8 +44,7 @@ const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
         return true;
       }
       if (result.category) {
-        const seg = categoryToSegment[result.category];
-        navigate(`/?q=${encodeURIComponent(result.username)}&cat=${seg}`);
+        navigate(`/?q=${encodeURIComponent(result.username)}&cat=${result.category}`);
       } else {
         navigate(`/?q=${encodeURIComponent(result.username)}`);
       }
