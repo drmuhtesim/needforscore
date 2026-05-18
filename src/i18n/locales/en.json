@@ -100,7 +100,9 @@
     "usersPlaceholder": "Type a username...",
     "noResults": "No results",
     "clear": "Clear",
-    "parseError": "Could not detect valid social media username"
+    "parseError": "Could not detect valid social media username",
+    "platformDetected": "{{platform}} link detected",
+    "enterUsername": "Enter the content creator's username"
   },
   "categories": {
     "title": "Categories",
