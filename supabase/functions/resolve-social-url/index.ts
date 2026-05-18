@@ -188,6 +188,14 @@ function extractUsername(html: string, platform: Platform): string | null {
     // JSON-LD author
     const ld = /"author"\s*:\s*\{[^}]*"alternateName"\s*:\s*"@?([A-Za-z0-9_.]+)"/i.exec(html);
     if (ld) return ld[1].toLowerCase();
+    // embed/captioned exposes the username inside a <a class="Username">…</a>
+    // and inside JSON: "owner":{"username":"<u>"}
+    const owner = /"owner"\s*:\s*\{[^}]*"username"\s*:\s*"([A-Za-z0-9_.]+)"/i.exec(html)
+      ?? /"username"\s*:\s*"([A-Za-z0-9_.]+)"/i.exec(html);
+    if (owner) return owner[1].toLowerCase();
+    const captioned = /class=["'][^"']*Username[^"']*["'][^>]*>\s*([A-Za-z0-9_.]+)\s*</i.exec(html)
+      ?? /<span[^>]+class=["'][^"']*UsernameText[^"']*["'][^>]*>\s*([A-Za-z0-9_.]+)/i.exec(html);
+    if (captioned) return captioned[1].toLowerCase();
   }
 
   if (platform === "tiktok") {
