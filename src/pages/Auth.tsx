@@ -217,6 +217,15 @@ const Auth = () => {
               </svg>
               {t("auth.continueWithApple")}
             </button>
+            {mode === "signup" && (
+              <p className="text-[11px] text-muted-foreground text-center px-1 leading-snug">
+                {t("terms.agreeIntro")}{" "}
+                <Link to="/terms" target="_blank" className="text-primary hover:underline">{t("terms.termsLink")}</Link>{" "}
+                {t("terms.and")}{" "}
+                <Link to="/privacy" target="_blank" className="text-primary hover:underline">{t("terms.privacyLink")}</Link>{" "}
+                {t("terms.agreeOutro")}
+              </p>
+            )}
           </div>
 
           <div className="relative">
