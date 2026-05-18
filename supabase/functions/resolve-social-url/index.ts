@@ -41,9 +41,26 @@ function quickParse(input: string): ResolveResult | null {
   const parts = u.pathname.split("/").map((p) => p.trim()).filter(Boolean);
   const seg0 = parts[0] ? decodeURIComponent(parts[0]) : null;
 
-  // Instagram
+  // Instagram (covers instagram.com, www., m., l.)
   if (host === "instagram.com" || host.endsWith(".instagram.com")) {
     if (!seg0) return null;
+    if (seg0 === "share" && parts[1]) {
+      const sub = parts[1];
+      if (["reel", "reels", "p", "tv"].includes(sub)) {
+        return { platform: "instagram", category: "instagram", username: null,
+          contentType: sub === "p" ? "post" : sub === "tv" ? "video" : "reel", source: "none" };
+      }
+      const username = stripHandle(sub);
+      if (username && !RESERVED.has(username)) {
+        return { platform: "instagram", category: "instagram", username, contentType: "profile", source: "url" };
+      }
+    }
+    if (seg0 === "stories" && parts[1]) {
+      const username = stripHandle(decodeURIComponent(parts[1]));
+      if (username && !RESERVED.has(username)) {
+        return { platform: "instagram", category: "instagram", username, contentType: "profile", source: "url" };
+      }
+    }
     if (["reel", "reels", "p", "tv"].includes(seg0)) {
       return { platform: "instagram", category: "instagram", username: null,
         contentType: seg0 === "p" ? "post" : seg0 === "tv" ? "video" : "reel", source: "none" };
