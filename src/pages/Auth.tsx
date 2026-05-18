@@ -143,10 +143,8 @@ const Auth = () => {
   };
 
   const handleOAuth = async (provider: "google" | "apple") => {
-    if (mode === "signup" && !acceptedTerms) {
-      toast({ title: t("auth.invalidInput"), description: t("terms.mustAccept"), variant: "destructive" });
-      return;
-    }
+    // OAuth akışı: mevcut kullanıcılar tekrar sözleşme kabul etmek zorunda kalmasın.
+    // Yeni kullanıcılar onboarding ekranında zaten kullanıcı adı + sözleşmeyi onaylıyor.
     setSubmitting(true);
     try {
       const result = await lovable.auth.signInWithOAuth(provider, {
@@ -219,6 +217,15 @@ const Auth = () => {
               </svg>
               {t("auth.continueWithApple")}
             </button>
+            {mode === "signup" && (
+              <p className="text-[11px] text-muted-foreground text-center px-1 leading-snug">
+                {t("terms.agreeIntro")}{" "}
+                <Link to="/terms" target="_blank" className="text-primary hover:underline">{t("terms.termsLink")}</Link>{" "}
+                {t("terms.and")}{" "}
+                <Link to="/privacy" target="_blank" className="text-primary hover:underline">{t("terms.privacyLink")}</Link>{" "}
+                {t("terms.agreeOutro")}
+              </p>
+            )}
           </div>
 
           <div className="relative">
