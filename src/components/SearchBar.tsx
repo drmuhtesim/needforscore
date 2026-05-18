@@ -34,8 +34,18 @@ const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
         return true;
       }
       if (!result.username) {
-        // Recognized platform but metadata fetch failed — let user know
-        // they can search/create manually.
+        // Recognized platform but the owner couldn't be auto-detected
+        // (Instagram serves only a SPA shell to unauthenticated clients).
+        // Open the "create entry" flow with the platform preselected so the
+        // user just types the creator's handle.
+        if (result.category) {
+          toast({
+            title: t("search.platformDetected", { platform: result.platform }) as string,
+            description: t("search.enterUsername") as string,
+          });
+          navigate(`/?cat=${result.category}&newEntry=1`);
+          return true;
+        }
         toast({
           title: t("search.parseError") as string,
           description: result.platform,
