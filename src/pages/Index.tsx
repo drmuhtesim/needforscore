@@ -107,7 +107,7 @@ const Index = () => {
       />
       <Header />
 
-      {pendingTarget && (
+      {pendingTarget !== null && (
         <AddEntryDialog
           initialTarget={pendingTarget}
           initialCategory={pendingCategory}
