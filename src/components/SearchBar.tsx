@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "@/hooks/use-toast";
 import { looksLikeUrl } from "@/lib/socialUrlParser";
 import { resolveSocialUrl } from "@/lib/resolveSocialUrl";
-import { categoryToSegment } from "@/lib/entitySlugs";
+
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -44,8 +44,7 @@ const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
         return true;
       }
       if (result.category) {
-        const seg = categoryToSegment[result.category];
-        navigate(`/?q=${encodeURIComponent(result.username)}&cat=${seg}`);
+        navigate(`/?q=${encodeURIComponent(result.username)}&cat=${result.category}`);
       } else {
         navigate(`/?q=${encodeURIComponent(result.username)}`);
       }
