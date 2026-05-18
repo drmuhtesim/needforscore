@@ -68,9 +68,30 @@ export const parseSocialUrl = (input: string): ParsedSocialUrl | null => {
   const parts = url.pathname.split("/").map((p) => p.trim()).filter(Boolean);
   const seg = parts[0] ? decodeURIComponent(parts[0]) : null;
 
-  // Instagram
+  // Instagram (covers instagram.com, www., m., l. and ddinstagram variants)
   if (host === "instagram.com" || host.endsWith(".instagram.com")) {
     if (!seg) return null;
+    // /share/reel/<id> or /share/p/<id> — mobile share links
+    if (seg === "share" && parts[1]) {
+      const sub = parts[1];
+      if (["reel", "reels", "p", "tv"].includes(sub)) {
+        const ct: SocialContentType = sub === "p" ? "post" : sub === "tv" ? "video" : "reel";
+        return { category: "instagram", platform: "instagram", username: null, contentType: ct, needsResolve: true };
+      }
+      // /share/<username>
+      const username = stripHandle(sub);
+      if (username && !RESERVED.has(username)) {
+        return { category: "instagram", platform: "instagram", username, contentType: "profile", needsResolve: false };
+      }
+      return { category: "instagram", platform: "instagram", username: null, contentType: "unknown", needsResolve: true };
+    }
+    // /stories/<username>/<id> — username is right there in the URL
+    if (seg === "stories" && parts[1]) {
+      const username = stripHandle(decodeURIComponent(parts[1]));
+      if (username && !RESERVED.has(username)) {
+        return { category: "instagram", platform: "instagram", username, contentType: "profile", needsResolve: false };
+      }
+    }
     if (["reel", "reels", "p", "tv"].includes(seg)) {
       const ct: SocialContentType = seg === "p" ? "post" : seg === "tv" ? "video" : "reel";
       return { category: "instagram", platform: "instagram", username: null, contentType: ct, needsResolve: true };
