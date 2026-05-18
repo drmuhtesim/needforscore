@@ -366,8 +366,9 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
                     key={c}
                     type="button"
                     onClick={() => {
+                      if (category === c) return; // aynı platforma tekrar tıklamak hedefi silmesin
                       setCategory(c);
-                      setTarget("");
+                      setTarget(""); // farklı platforma geçildi → eski kullanıcı adı bağlantısı temizlenir
                     }}
                     aria-label={t(`categories.${c}`)}
                     title={t(`categories.${c}`) as string}
