@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "@/hooks/use-toast";
 import { looksLikeUrl } from "@/lib/socialUrlParser";
 import { resolveSocialUrl } from "@/lib/resolveSocialUrl";
-import { categoryToSegment } from "@/lib/entitySlugs";
+
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
