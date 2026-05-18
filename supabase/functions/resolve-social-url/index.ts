@@ -243,14 +243,31 @@ Deno.serve(async (req) => {
       }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Need to resolve via metadata
-    const html = await fetchMetadata(ensureProtocol(url));
-    if (!html) {
-      return new Response(JSON.stringify(initial), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // Need to resolve via metadata.
+    // For Instagram we additionally try a couple of bot-friendly mirror
+    // endpoints (embed/captioned + the third-party kkinstagram OG proxy)
+    // because IG's main page only serves the SPA shell to unauthenticated
+    // clients and Firecrawl refuses Instagram URLs.
+    const candidates: string[] = [ensureProtocol(url) ];
+    if (initial.platform === "instagram") {
+      const u = new URL(ensureProtocol(url));
+      const parts = u.pathname.split("/").filter(Boolean);
+      // /reel/<id>, /reels/<id>, /p/<id>, /tv/<id>
+      if (parts.length >= 2 && ["reel", "reels", "p", "tv"].includes(parts[0])) {
+        const kind = parts[0] === "reels" ? "reel" : parts[0];
+        const id = parts[1];
+        candidates.unshift(`https://www.instagram.com/${kind}/${id}/embed/captioned/`);
+        candidates.push(`https://kkinstagram.com/${kind}/${id}`);
+      }
     }
-    const username = extractUsername(html, initial.platform);
+
+    let username: string | null = null;
+    for (const candidate of candidates) {
+      const html = await fetchMetadata(candidate);
+      if (!html) continue;
+      username = extractUsername(html, initial.platform);
+      if (username) break;
+    }
     const result: ResolveResult = {
       ...initial,
       username,
