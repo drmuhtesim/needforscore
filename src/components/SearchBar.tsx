@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Search, X, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/hooks/use-toast";
-import { parseSocialUrl, looksLikeUrl } from "@/lib/socialUrlParser";
+import { looksLikeUrl } from "@/lib/socialUrlParser";
+import { resolveSocialUrl } from "@/lib/resolveSocialUrl";
 import { categoryToSegment } from "@/lib/entitySlugs";
 
 interface SearchBarProps {
@@ -14,6 +15,7 @@ interface SearchBarProps {
 
 const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
   const [query, setQuery] = useState(value ?? "");
+  const [resolving, setResolving] = useState(false);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -21,35 +23,44 @@ const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
     if (value !== undefined) setQuery(value);
   }, [value]);
 
-  // Try to interpret the input as a social media URL. Returns true if we
-  // handled it (navigated or showed an error toast).
-  const tryHandleSocialUrl = (raw: string): boolean => {
+  // Try to interpret the input as a social URL. Returns true when handled.
+  const tryHandleSocialUrl = async (raw: string): Promise<boolean> => {
     if (!looksLikeUrl(raw)) return false;
-    const parsed = parseSocialUrl(raw);
-    if (!parsed) {
-      toast({
-        title: t("search.parseError") as string,
-        variant: "destructive",
-      });
+    setResolving(true);
+    try {
+      const { result } = await resolveSocialUrl(raw);
+      if (!result) {
+        toast({ title: t("search.parseError") as string, variant: "destructive" });
+        return true;
+      }
+      if (!result.username) {
+        // Recognized platform but metadata fetch failed — let user know
+        // they can search/create manually.
+        toast({
+          title: t("search.parseError") as string,
+          description: result.platform,
+          variant: "destructive",
+        });
+        return true;
+      }
+      if (result.category) {
+        const seg = categoryToSegment[result.category];
+        navigate(`/?q=${encodeURIComponent(result.username)}&cat=${seg}`);
+      } else {
+        navigate(`/?q=${encodeURIComponent(result.username)}`);
+      }
+      setQuery(result.username);
       return true;
+    } finally {
+      setResolving(false);
     }
-    if (parsed.category) {
-      // Send to home with the username pre-filled + category locked so the
-      // existing "create page" flow fires when nothing matches.
-      const seg = categoryToSegment[parsed.category];
-      navigate(`/?q=${encodeURIComponent(parsed.username)}&cat=${seg}`);
-    } else {
-      navigate(`/?q=${encodeURIComponent(parsed.username)}`);
-    }
-    setQuery(parsed.username);
-    return true;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const v = query.trim();
     if (!v) return;
-    if (tryHandleSocialUrl(v)) return;
+    if (await tryHandleSocialUrl(v)) return;
     onSearch(v);
   };
 
@@ -58,8 +69,7 @@ const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
     if (!pasted || !looksLikeUrl(pasted)) return;
     e.preventDefault();
     setQuery(pasted);
-    // Defer so React commits the input value before navigating.
-    setTimeout(() => tryHandleSocialUrl(pasted), 0);
+    setTimeout(() => { void tryHandleSocialUrl(pasted); }, 0);
   };
 
   const handleClear = () => {
@@ -86,7 +96,7 @@ const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
             placeholder={placeholder ?? (t("search.placeholder") as string)}
             className="w-full bg-transparent px-4 py-3.5 text-foreground placeholder:text-muted-foreground focus:outline-none font-mono text-sm min-w-0"
           />
-          {query && (
+          {query && !resolving && (
             <button
               type="button"
               onClick={handleClear}
@@ -96,9 +106,13 @@ const SearchBar = ({ onSearch, placeholder, value }: SearchBarProps) => {
               <X className="h-4 w-4" />
             </button>
           )}
+          {resolving && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin text-muted-foreground flex-shrink-0" />
+          )}
           <button
             type="submit"
-            className="px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors flex-shrink-0"
+            disabled={resolving}
+            className="px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors flex-shrink-0 disabled:opacity-60"
           >
             {t("search.button")}
           </button>
