@@ -41,9 +41,26 @@ function quickParse(input: string): ResolveResult | null {
   const parts = u.pathname.split("/").map((p) => p.trim()).filter(Boolean);
   const seg0 = parts[0] ? decodeURIComponent(parts[0]) : null;
 
-  // Instagram
+  // Instagram (covers instagram.com, www., m., l.)
   if (host === "instagram.com" || host.endsWith(".instagram.com")) {
     if (!seg0) return null;
+    if (seg0 === "share" && parts[1]) {
+      const sub = parts[1];
+      if (["reel", "reels", "p", "tv"].includes(sub)) {
+        return { platform: "instagram", category: "instagram", username: null,
+          contentType: sub === "p" ? "post" : sub === "tv" ? "video" : "reel", source: "none" };
+      }
+      const username = stripHandle(sub);
+      if (username && !RESERVED.has(username)) {
+        return { platform: "instagram", category: "instagram", username, contentType: "profile", source: "url" };
+      }
+    }
+    if (seg0 === "stories" && parts[1]) {
+      const username = stripHandle(decodeURIComponent(parts[1]));
+      if (username && !RESERVED.has(username)) {
+        return { platform: "instagram", category: "instagram", username, contentType: "profile", source: "url" };
+      }
+    }
     if (["reel", "reels", "p", "tv"].includes(seg0)) {
       return { platform: "instagram", category: "instagram", username: null,
         contentType: seg0 === "p" ? "post" : seg0 === "tv" ? "video" : "reel", source: "none" };
@@ -171,6 +188,14 @@ function extractUsername(html: string, platform: Platform): string | null {
     // JSON-LD author
     const ld = /"author"\s*:\s*\{[^}]*"alternateName"\s*:\s*"@?([A-Za-z0-9_.]+)"/i.exec(html);
     if (ld) return ld[1].toLowerCase();
+    // embed/captioned exposes the username inside a <a class="Username">…</a>
+    // and inside JSON: "owner":{"username":"<u>"}
+    const owner = /"owner"\s*:\s*\{[^}]*"username"\s*:\s*"([A-Za-z0-9_.]+)"/i.exec(html)
+      ?? /"username"\s*:\s*"([A-Za-z0-9_.]+)"/i.exec(html);
+    if (owner) return owner[1].toLowerCase();
+    const captioned = /class=["'][^"']*Username[^"']*["'][^>]*>\s*([A-Za-z0-9_.]+)\s*</i.exec(html)
+      ?? /<span[^>]+class=["'][^"']*UsernameText[^"']*["'][^>]*>\s*([A-Za-z0-9_.]+)/i.exec(html);
+    if (captioned) return captioned[1].toLowerCase();
   }
 
   if (platform === "tiktok") {
@@ -226,14 +251,31 @@ Deno.serve(async (req) => {
       }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Need to resolve via metadata
-    const html = await fetchMetadata(ensureProtocol(url));
-    if (!html) {
-      return new Response(JSON.stringify(initial), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    // Need to resolve via metadata.
+    // For Instagram we additionally try a couple of bot-friendly mirror
+    // endpoints (embed/captioned + the third-party kkinstagram OG proxy)
+    // because IG's main page only serves the SPA shell to unauthenticated
+    // clients and Firecrawl refuses Instagram URLs.
+    const candidates: string[] = [ensureProtocol(url) ];
+    if (initial.platform === "instagram") {
+      const u = new URL(ensureProtocol(url));
+      const parts = u.pathname.split("/").filter(Boolean);
+      // /reel/<id>, /reels/<id>, /p/<id>, /tv/<id>
+      if (parts.length >= 2 && ["reel", "reels", "p", "tv"].includes(parts[0])) {
+        const kind = parts[0] === "reels" ? "reel" : parts[0];
+        const id = parts[1];
+        candidates.unshift(`https://www.instagram.com/${kind}/${id}/embed/captioned/`);
+        candidates.push(`https://kkinstagram.com/${kind}/${id}`);
+      }
     }
-    const username = extractUsername(html, initial.platform);
+
+    let username: string | null = null;
+    for (const candidate of candidates) {
+      const html = await fetchMetadata(candidate);
+      if (!html) continue;
+      username = extractUsername(html, initial.platform);
+      if (username) break;
+    }
     const result: ResolveResult = {
       ...initial,
       username,

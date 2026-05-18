@@ -61,6 +61,21 @@ const Index = () => {
     setPendingOpen(true);
   }, [user, loading]);
 
+  // Pasted a social URL whose owner we couldn't auto-resolve (e.g. an
+  // Instagram reel) — open AddEntry with the platform preselected so the
+  // user just types the creator username.
+  useEffect(() => {
+    if (searchParams.get("newEntry") !== "1") return;
+    const cat = searchParams.get("cat") as Exclude<CategoryType, "all"> | null;
+    setPendingTarget("");
+    setPendingCategory(cat ?? undefined);
+    setPendingOpen(true);
+    const next = new URLSearchParams(searchParams);
+    next.delete("newEntry");
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   // URL ?q= / ?cat= parametreleri değişirse arama kutusunu ve kategoriyi senkronla
   useEffect(() => {
     const q = searchParams.get("q") ?? "";
@@ -92,7 +107,7 @@ const Index = () => {
       />
       <Header />
 
-      {pendingTarget && (
+      {pendingTarget !== null && (
         <AddEntryDialog
           initialTarget={pendingTarget}
           initialCategory={pendingCategory}

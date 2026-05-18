@@ -34,8 +34,21 @@ const UserSearchDialog = ({ open, onOpenChange }: Props) => {
     setResolving(true);
     try {
       const { result } = await resolveSocialUrl(raw);
-      if (!result || !result.username) {
+      if (!result) {
         toast({ title: t("search.parseError") as string, variant: "destructive" });
+        return true;
+      }
+      if (!result.username) {
+        onOpenChange(false);
+        if (result.category) {
+          toast({
+            title: t("search.platformDetected", { platform: result.platform }) as string,
+            description: t("search.enterUsername") as string,
+          });
+          navigate(`/?cat=${result.category}&newEntry=1`);
+        } else {
+          toast({ title: t("search.parseError") as string, variant: "destructive" });
+        }
         return true;
       }
       onOpenChange(false);
