@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { looksLikeUrl } from "@/lib/socialUrlParser";
 import { resolveSocialUrl } from "@/lib/resolveSocialUrl";
-import { categoryToSegment } from "@/lib/entitySlugs";
+
 
 interface Props {
   open: boolean;
