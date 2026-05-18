@@ -30,7 +30,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { buildProfileUrl, cleanTarget, formatTargetDisplay } from "@/lib/platforms";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
-import EntityLink from "@/components/EntityLink";
+
 
 interface CommentRow {
   id: string;
@@ -341,11 +341,6 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
                       {t("entry.openProfile")} <ExternalLink className="h-3 w-3" />
                     </a>
                   )}
-                  <EntityLink
-                    category={entry.category as any}
-                    target={entry.target}
-                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                  />
                 </div>
               </div>
 
