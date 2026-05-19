@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
+import AuthCallback from "./pages/AuthCallback.tsx";
 import LegacyEntryRedirect from "./pages/LegacyEntryRedirect.tsx";
 import UserProfile from "./pages/UserProfile.tsx";
 import Messages from "./pages/Messages.tsx";
@@ -57,6 +58,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/onboarding/username" element={<UsernameOnboarding />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/e/:id" element={<LegacyEntryRedirect />} />
