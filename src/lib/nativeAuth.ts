@@ -29,6 +29,10 @@ import { Browser } from "@capacitor/browser";
 import { supabase } from "@/integrations/supabase/client";
 
 export const NATIVE_REDIRECT_URL = "needforscore://auth/callback";
+export const UNIVERSAL_LINK_CALLBACK = "https://needforscore.com/auth/callback";
+
+const isOAuthCallbackUrl = (url: string): boolean =>
+  url.startsWith(NATIVE_REDIRECT_URL) || url.startsWith(UNIVERSAL_LINK_CALLBACK);
 
 export const isNativePlatform = (): boolean => {
   try {
@@ -74,7 +78,7 @@ export const registerOAuthDeepLinkHandler = (
 
   App.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
     const url = event.url;
-    if (!url || !url.startsWith(NATIVE_REDIRECT_URL)) return;
+    if (!url || !isOAuthCallbackUrl(url)) return;
     try {
       // PKCE flow: ?code=...&state=...
       // Implicit flow fallback: #access_token=...&refresh_token=...
