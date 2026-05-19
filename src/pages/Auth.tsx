@@ -147,8 +147,33 @@ const Auth = () => {
     // Yeni kullanıcılar onboarding ekranında zaten kullanıcı adı + sözleşmeyi onaylıyor.
     setSubmitting(true);
     try {
+      // Detect Capacitor native runtime (iOS/Android WebView). The Lovable
+      // managed OAuth broker (`/~oauth/initiate`) is only available on
+      // Lovable hosting and 404s inside the native WebView, so we fall
+      // back to Supabase's direct OAuth flow there.
+      const isNative =
+        typeof (window as any).Capacitor !== "undefined" &&
+        ((window as any).Capacitor.isNativePlatform?.() === true ||
+          (window as any).Capacitor.getPlatform?.() !== "web");
+
+      const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext)}`;
+
+      if (isNative) {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: { redirectTo: callbackUrl },
+        });
+        if (error) {
+          toast({ title: t("auth.signInFailed"), description: error.message, variant: "destructive" });
+          setSubmitting(false);
+          return;
+        }
+        // Browser/WebView will navigate away — nothing else to do.
+        return;
+      }
+
       const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: `${window.location.origin}${safeNext}`,
+        redirect_uri: callbackUrl,
       });
       if (result.error) {
         toast({ title: t("auth.signInFailed"), description: String(result.error.message ?? result.error), variant: "destructive" });
