@@ -1,0 +1,22 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAMID.app.lovable.d837bd22b5d7491295127dd5a4e6fc83"],
+        "components": [
+          {
+            "/": "/auth/callback",
+            "comment": "Open OAuth callback in the native app"
+          },
+          {
+            "/": "/auth/callback/*",
+            "comment": "Open OAuth callback (with subpaths) in the native app"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["TEAMID.app.lovable.d837bd22b5d7491295127dd5a4e6fc83"]
+  }
+}
