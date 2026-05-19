@@ -147,31 +147,23 @@ const Auth = () => {
     // Yeni kullanıcılar onboarding ekranında zaten kullanıcı adı + sözleşmeyi onaylıyor.
     setSubmitting(true);
     try {
-      // Detect Capacitor native runtime (iOS/Android WebView). The Lovable
-      // managed OAuth broker (`/~oauth/initiate`) is only available on
-      // Lovable hosting and 404s inside the native WebView, so we fall
-      // back to Supabase's direct OAuth flow there.
-      const isNative =
-        typeof (window as any).Capacitor !== "undefined" &&
-        ((window as any).Capacitor.isNativePlatform?.() === true ||
-          (window as any).Capacitor.getPlatform?.() !== "web");
-
-      const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext)}`;
-
-      if (isNative) {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider,
-          options: { redirectTo: callbackUrl },
-        });
+      // On Capacitor (iOS/Android), the Lovable broker (`/~oauth/initiate`)
+      // is unavailable and a web redirect would bounce out to Safari. Use the
+      // custom `needforscore://auth/callback` scheme + in-app browser instead.
+      const { isNativePlatform, signInWithOAuthNative } = await import("@/lib/nativeAuth");
+      if (isNativePlatform()) {
+        const { error } = await signInWithOAuthNative(provider);
         if (error) {
           toast({ title: t("auth.signInFailed"), description: error.message, variant: "destructive" });
           setSubmitting(false);
           return;
         }
-        // Browser/WebView will navigate away — nothing else to do.
+        // The global deep-link handler in main.tsx finalises the session and
+        // navigates the app, so we just leave the spinner state alone here.
         return;
       }
 
+      const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeNext)}`;
       const result = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: callbackUrl,
       });
