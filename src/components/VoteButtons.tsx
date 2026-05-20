@@ -10,19 +10,30 @@ interface Props {
   commentId?: string;
   /** Optional initial computed score; component still fetches own vote. */
   initialScore?: number;
+  /**
+   * Optional viewer's own vote (-1|0|1). When provided, the component skips
+   * its own fetch — used by the entry list where votes are batched in
+   * `useEntries`. Reduces 25× redundant `select` calls per page load.
+   */
+  initialMyVote?: -1 | 0 | 1;
   size?: "sm" | "md";
 }
 
-const VoteButtons = ({ entryId, commentId, initialScore = 0, size = "sm" }: Props) => {
+const VoteButtons = ({ entryId, commentId, initialScore = 0, initialMyVote, size = "sm" }: Props) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [score, setScore] = useState(initialScore);
-  const [my, setMy] = useState<-1 | 0 | 1>(0);
+  const [my, setMy] = useState<-1 | 0 | 1>(initialMyVote ?? 0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => setScore(initialScore), [initialScore]);
+  useEffect(() => {
+    if (initialMyVote !== undefined) setMy(initialMyVote);
+  }, [initialMyVote]);
 
   useEffect(() => {
+    // Skip the per-row vote lookup when the parent already provided it.
+    if (initialMyVote !== undefined) return;
     if (!user) {
       setMy(0);
       return;
@@ -37,7 +48,7 @@ const VoteButtons = ({ entryId, commentId, initialScore = 0, size = "sm" }: Prop
     return () => {
       cancelled = true;
     };
-  }, [user, entryId, commentId]);
+  }, [user, entryId, commentId, initialMyVote]);
 
   const cast = async (value: 1 | -1) => {
     if (!user) {
