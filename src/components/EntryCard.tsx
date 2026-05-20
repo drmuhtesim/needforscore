@@ -146,7 +146,7 @@ const EntryCard = ({ entry, index }: Props) => {
 
         {/* Oylama — desktop */}
         <div className="hidden sm:flex items-center justify-center min-w-[80px] pl-2 border-l border-border/60" onClick={(e) => e.preventDefault()}>
-          <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} />
+          <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} initialMyVote={entry.my_vote ?? 0} />
         </div>
       </Link>
     </div>
