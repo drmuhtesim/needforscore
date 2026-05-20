@@ -48,7 +48,7 @@ const EntryRow = ({ entry, index }: Props) => {
         </span>
       </td>
       <td className="py-3 px-4 text-center hidden md:table-cell">
-        <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} />
+        <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} initialMyVote={entry.my_vote ?? 0} />
       </td>
       <td className="py-3 px-4 text-center hidden md:table-cell">
         <span className="inline-flex items-center justify-center gap-1 text-xs font-mono text-muted-foreground">
