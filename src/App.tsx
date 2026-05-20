@@ -25,7 +25,24 @@ import ModDashboard from "./pages/ModDashboard.tsx";
 import ModLogin from "./pages/ModLogin.tsx";
 
 
-const queryClient = new QueryClient();
+// Global react-query defaults:
+// - staleTime 60s avoids re-running every entry/comment/profile query on
+//   focus/remount (huge backend-load reduction).
+// - refetchOnWindowFocus off (mobile tab switches were re-hitting Supabase).
+// - retry capped at 1 — original default of 3 multiplies failures during
+//   incidents and blocks UI for many seconds.
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      gcTime: 5 * 60_000,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: 1,
+    },
+    mutations: { retry: 0 },
+  },
+});
 
 /**
  * Global gate: any signed-in user whose profile.username_chosen === false

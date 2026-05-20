@@ -43,6 +43,7 @@ interface CommentRow {
   deleted_by: string | null;
   profiles?: { username: string; display_name: string | null; avatar_url: string | null; signup_order?: number | null } | null;
   vote_score: number;
+  my_vote?: -1 | 0 | 1;
 }
 
 const PAGE_SIZE = 25;
@@ -131,9 +132,12 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
       if (rows.length === 0) return rows;
       const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
       const ids = rows.map((r) => r.id);
-      const [{ data: profiles }, { data: votes }] = await Promise.all([
+      const [{ data: profiles }, { data: votes }, { data: myVotes }] = await Promise.all([
         supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).in("user_id", userIds),
         supabase.from("votes").select("comment_id, value").in("comment_id", ids),
+        user?.id
+          ? supabase.from("votes").select("comment_id, value").in("comment_id", ids).eq("user_id", user.id)
+          : Promise.resolve({ data: [] as { comment_id: string; value: number }[] }),
       ]);
       const pm = new Map(
         (profiles ?? []).map((p) => [p.user_id, applyProfilePrivacy(p as any, user?.id) as any]),
@@ -143,10 +147,15 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
         if (!v.comment_id) return;
         vm.set(v.comment_id, (vm.get(v.comment_id) ?? 0) + v.value);
       });
+      const myvm = new Map<string, -1 | 0 | 1>();
+      (myVotes ?? []).forEach((v: any) => {
+        if (v.comment_id) myvm.set(v.comment_id, v.value as -1 | 0 | 1);
+      });
       return rows.map((r) => ({
         ...r,
         profiles: (pm.get(r.user_id) as any) ?? null,
         vote_score: vm.get(r.id) ?? 0,
+        my_vote: (myvm.get(r.id) ?? 0) as -1 | 0 | 1,
       }));
     },
   });
@@ -528,7 +537,7 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
                       {/* Footer: votes + share + reply */}
                       {!cDeleted && (
                         <div className="mt-2 flex items-center gap-1 text-muted-foreground">
-                          <VoteButtons commentId={c.id} initialScore={c.vote_score} />
+                          <VoteButtons commentId={c.id} initialScore={c.vote_score} initialMyVote={c.my_vote ?? 0} />
                           <button
                             onClick={() => shareComment(c.id)}
                             className="inline-flex items-center gap-1 px-2 py-1 rounded hover:bg-secondary hover:text-foreground transition-colors text-xs"
