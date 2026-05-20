@@ -10,7 +10,7 @@ import { clearServiceWorkerCache } from "@/pwa";
  * İlk değer baseline olur; sonraki check'te farklıysa yeni deploy var demektir.
  */
 
-const CHECK_INTERVAL_MS = 60_000; // 1 dakikada bir
+const CHECK_INTERVAL_MS = 5 * 60_000; // 5 dakikada bir — eski 60s aşırı yüklüydü
 const HTML_URL = "/index.html";
 
 let baselineHash: string | null = null;
