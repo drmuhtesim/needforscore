@@ -43,6 +43,7 @@ interface CommentRow {
   deleted_by: string | null;
   profiles?: { username: string; display_name: string | null; avatar_url: string | null; signup_order?: number | null } | null;
   vote_score: number;
+  my_vote?: -1 | 0 | 1;
 }
 
 const PAGE_SIZE = 25;
