@@ -105,6 +105,7 @@ export const useEntries = (category: CategoryType, search: string) => {
         vote_score: voteMap.get(e.id) ?? 0,
         comment_count: commentMap.get(e.id) ?? 0,
         avg_rating: averageRating(commentContentMap.get(e.id) ?? []),
+        my_vote: (myVoteMap.get(e.id) ?? 0) as -1 | 0 | 1,
         last_comment_excerpt: lastCommentMap.has(e.id) ? firstLine(lastCommentMap.get(e.id)!) : null,
       }));
 
