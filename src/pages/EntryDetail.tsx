@@ -537,7 +537,7 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
                       {/* Footer: votes + share + reply */}
                       {!cDeleted && (
                         <div className="mt-2 flex items-center gap-1 text-muted-foreground">
-                          <VoteButtons commentId={c.id} initialScore={c.vote_score} />
+                          <VoteButtons commentId={c.id} initialScore={c.vote_score} initialMyVote={c.my_vote ?? 0} />
                           <button
                             onClick={() => shareComment(c.id)}
                             className="inline-flex items-center gap-1 px-2 py-1 rounded hover:bg-secondary hover:text-foreground transition-colors text-xs"
