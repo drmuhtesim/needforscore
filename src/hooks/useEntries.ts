@@ -21,6 +21,8 @@ export interface EntryRow {
   comment_count?: number;
   /** Yorumların içeriğindeki skorlardan hesaplanan aritmetik ortalama; yorum yoksa null. */
   avg_rating?: number | null;
+  /** Viewer's own vote on this entry, batched into the list query. */
+  my_vote?: -1 | 0 | 1;
   /** Son eklenen yorumun (deneyimin) ilk satırı (rating ve about temizlenmiş). */
   last_comment_excerpt?: string | null;
 }
