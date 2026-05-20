@@ -54,11 +54,18 @@ export const useEntries = (category: CategoryType, search: string) => {
       const { data: authData } = await supabase.auth.getUser();
       const viewerId = authData.user?.id ?? null;
 
-      const [{ data: profiles }, { data: votes }, { data: comments }] = await Promise.all([
+      const [{ data: profiles }, { data: votes }, { data: comments }, { data: myVotes }] = await Promise.all([
         supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).in("user_id", userIds),
         supabase.from("votes").select("entry_id, value").in("entry_id", ids),
         supabase.from("comments").select("entry_id, content, created_at").in("entry_id", ids).is("deleted_at", null).order("created_at", { ascending: false }),
+        viewerId
+          ? supabase.from("votes").select("entry_id, value").in("entry_id", ids).eq("user_id", viewerId)
+          : Promise.resolve({ data: [] as { entry_id: string; value: number }[] }),
       ]);
+      const myVoteMap = new Map<string, -1 | 0 | 1>();
+      (myVotes ?? []).forEach((v: any) => {
+        if (v.entry_id) myVoteMap.set(v.entry_id, v.value as -1 | 0 | 1);
+      });
 
       const profileMap = new Map(
         (profiles ?? []).map((p) => [p.user_id, applyProfilePrivacy(p as any, viewerId) as any]),
