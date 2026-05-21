@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { CategoryType } from "@/components/CategorySidebar";
-import { averageRating, cleanCommentContent } from "@/lib/commentRating";
+import { averageRating } from "@/lib/commentRating";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -34,7 +34,7 @@ export const useEntries = (category: CategoryType, search: string) => {
   return useQuery({
     queryKey: ["entries", user?.id ?? "anon", category, search],
     queryFn: async (): Promise<EntryRow[]> => {
-      const { data, error } = await supabase.rpc("get_entries_feed" as any, {
+      const { data, error } = await (supabase as any).rpc("get_entries_feed", {
         _category: category,
         _search: search.trim(),
         _limit: 100,
