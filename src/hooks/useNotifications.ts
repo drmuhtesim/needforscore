@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -32,6 +32,10 @@ export const useNotifications = (limit = 20) => {
   const query = useQuery({
     queryKey: ["notifications", user?.id, limit],
     enabled: !!user,
+    // Polling instead of realtime: notifications table was removed from the
+    // realtime publication to cut DB CPU. 60s is plenty for a bell badge.
+    refetchInterval: user ? 60_000 : false,
+    refetchIntervalInBackground: false,
     queryFn: async (): Promise<AppNotification[]> => {
       const { data, error } = await supabase
         .from("notifications")
@@ -62,24 +66,6 @@ export const useNotifications = (limit = 20) => {
       }));
     },
   });
-
-  // Realtime
-  useEffect(() => {
-    if (!user) return;
-    const ch = supabase
-      .channel(`notifications-rt-${user.id}-${Math.random().toString(36).slice(2, 8)}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "notifications", filter: `recipient_id=eq.${user.id}` },
-        () => {
-          qc.invalidateQueries({ queryKey: ["notifications"] });
-        }
-      )
-      .subscribe();
-    return () => {
-      supabase.removeChannel(ch);
-    };
-  }, [user, qc]);
 
   const unreadCount = useMemo(
     () => (query.data ?? []).filter((n) => !n.read_at).length,
