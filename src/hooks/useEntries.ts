@@ -95,25 +95,29 @@ export const useEntries = (category: CategoryType, search: string) => {
 };
 
 export const useEntry = (id: string | undefined) => {
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ["entry", id],
+    queryKey: ["entry", id, user?.id ?? "anon"],
     enabled: !!id,
     queryFn: async (): Promise<EntryRow | null> => {
       if (!id) return null;
       const { data, error } = await supabase.from("entries").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!data) return null;
-      const [{ data: authData2 }] = await Promise.all([supabase.auth.getUser()]);
-      const viewerId = authData2.user?.id ?? null;
+      const viewerId = user?.id ?? null;
       const [{ data: profile }, { data: votes }, { data: comments }] = await Promise.all([
         supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).eq("user_id", data.user_id).maybeSingle(),
-        supabase.from("votes").select("value").eq("entry_id", id),
+        supabase.from("votes").select("user_id, value").eq("entry_id", id),
         supabase.from("comments").select("content").eq("entry_id", id).is("deleted_at", null),
       ]);
       const score = (votes ?? []).reduce((acc, v) => acc + v.value, 0);
+      const myVote = viewerId
+        ? ((votes ?? []).find((v: any) => v.user_id === viewerId)?.value ?? 0)
+        : 0;
       const avg = averageRating((comments ?? []).map((c) => c.content));
       const safeProfile = applyProfilePrivacy(profile as any, viewerId);
-      return { ...(data as EntryRow), profiles: safeProfile as any, vote_score: score, avg_rating: avg };
+      return { ...(data as EntryRow), profiles: safeProfile as any, vote_score: score, avg_rating: avg, my_vote: myVote as -1 | 0 | 1 };
     },
   });
 };
