@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { CategoryType } from "@/components/CategorySidebar";
-import { averageRating, cleanCommentContent } from "@/lib/commentRating";
+import { averageRating } from "@/lib/commentRating";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface EntryRow {
   id: string;
@@ -28,119 +29,95 @@ export interface EntryRow {
 }
 
 export const useEntries = (category: CategoryType, search: string) => {
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ["entries", category, search],
+    queryKey: ["entries", user?.id ?? "anon", category, search],
     queryFn: async (): Promise<EntryRow[]> => {
-      let q = supabase
-        .from("entries")
-        .select("*")
-        .is("deleted_at", null)
-        .order("created_at", { ascending: false })
-        .limit(100);
-
-      if (category !== "all") q = q.eq("category", category);
-      if (search.trim()) {
-        const s = search.trim().toLowerCase();
-        q = q.ilike("target_normalized", `%${s}%`);
-      }
-      const { data, error } = await q;
+      const { data, error } = await (supabase as any).rpc("get_entries_feed", {
+        _category: category,
+        _search: search.trim(),
+        _limit: 100,
+      });
       if (error) throw error;
-      const entries = (data ?? []) as EntryRow[];
-      if (entries.length === 0) return entries;
 
-      const userIds = Array.from(new Set(entries.map((e) => e.user_id)));
-      const ids = entries.map((e) => e.id);
+      const viewerId = user?.id ?? null;
+      return ((data ?? []) as any[]).map((row) => {
+        const profile = row.profile_user_id
+          ? applyProfilePrivacy(
+              {
+                user_id: row.profile_user_id,
+                username: row.profile_username,
+                display_name: row.profile_display_name,
+                avatar_url: row.profile_avatar_url,
+                city: row.profile_city,
+                occupation: row.profile_occupation,
+                age: row.profile_age,
+                bio: row.profile_bio,
+                show_avatar: row.profile_show_avatar,
+                show_display_name: row.profile_show_display_name,
+                show_city: row.profile_show_city,
+                show_occupation: row.profile_show_occupation,
+                show_age: row.profile_show_age,
+                show_bio: row.profile_show_bio,
+                show_linked_accounts: row.profile_show_linked_accounts,
+                signup_order: row.profile_signup_order,
+              },
+              viewerId,
+            )
+          : null;
 
-      const { data: authData } = await supabase.auth.getUser();
-      const viewerId = authData.user?.id ?? null;
-
-      const [{ data: profiles }, { data: votes }, { data: comments }, { data: myVotes }] = await Promise.all([
-        supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).in("user_id", userIds),
-        supabase.from("votes").select("entry_id, value").in("entry_id", ids),
-        supabase.from("comments").select("entry_id, content, created_at").in("entry_id", ids).is("deleted_at", null).order("created_at", { ascending: false }),
-        viewerId
-          ? supabase.from("votes").select("entry_id, value").in("entry_id", ids).eq("user_id", viewerId)
-          : Promise.resolve({ data: [] as { entry_id: string; value: number }[] }),
-      ]);
-      const myVoteMap = new Map<string, -1 | 0 | 1>();
-      (myVotes ?? []).forEach((v: any) => {
-        if (v.entry_id) myVoteMap.set(v.entry_id, v.value as -1 | 0 | 1);
+        return {
+          id: row.id,
+          user_id: row.user_id,
+          target: row.target,
+          target_normalized: row.target_normalized,
+          category: row.category,
+          description: row.description,
+          rating: row.rating,
+          verified_target: row.verified_target,
+          created_at: row.created_at,
+          deleted_at: row.deleted_at,
+          deleted_by: row.deleted_by,
+          profiles: profile as any,
+          vote_score: row.vote_score ?? 0,
+          comment_count: row.comment_count ?? 0,
+          avg_rating: row.avg_rating == null ? null : Number(row.avg_rating),
+          my_vote: (row.my_vote ?? 0) as -1 | 0 | 1,
+          last_comment_excerpt: row.last_comment_excerpt
+            ?.split(/\r?\n/)
+            .map((s: string) => s.trim())
+            .find((s: string) => s.length > 0) ?? null,
+        } satisfies EntryRow;
       });
-
-      const profileMap = new Map(
-        (profiles ?? []).map((p) => [p.user_id, applyProfilePrivacy(p as any, viewerId) as any]),
-      );
-      const voteMap = new Map<string, number>();
-      (votes ?? []).forEach((v) => {
-        if (!v.entry_id) return;
-        voteMap.set(v.entry_id, (voteMap.get(v.entry_id) ?? 0) + v.value);
-      });
-      const commentMap = new Map<string, number>();
-      const commentContentMap = new Map<string, string[]>();
-      const lastActivityMap = new Map<string, number>();
-      const lastCommentMap = new Map<string, string>();
-      (comments ?? []).forEach((c) => {
-        commentMap.set(c.entry_id, (commentMap.get(c.entry_id) ?? 0) + 1);
-        const arr = commentContentMap.get(c.entry_id) ?? [];
-        arr.push(c.content);
-        commentContentMap.set(c.entry_id, arr);
-        const ts = c.created_at ? new Date(c.created_at).getTime() : 0;
-        const prev = lastActivityMap.get(c.entry_id) ?? 0;
-        if (ts > prev) {
-          lastActivityMap.set(c.entry_id, ts);
-          lastCommentMap.set(c.entry_id, c.content);
-        }
-      });
-
-      const firstLine = (text: string): string => {
-        const cleaned = cleanCommentContent(text);
-        if (!cleaned) return "";
-        const line = cleaned.split(/\r?\n/).map((s) => s.trim()).find((s) => s.length > 0) ?? "";
-        return line;
-      };
-
-      const enriched = entries.map((e) => ({
-        ...e,
-        profiles: (profileMap.get(e.user_id) as any) ?? null,
-        vote_score: voteMap.get(e.id) ?? 0,
-        comment_count: commentMap.get(e.id) ?? 0,
-        avg_rating: averageRating(commentContentMap.get(e.id) ?? []),
-        my_vote: (myVoteMap.get(e.id) ?? 0) as -1 | 0 | 1,
-        last_comment_excerpt: lastCommentMap.has(e.id) ? firstLine(lastCommentMap.get(e.id)!) : null,
-      }));
-
-      // En son yorum/deneyim eklenen başlık en üstte; yorumu olmayanlar için entry'nin oluşturulma tarihi kullanılır.
-      enriched.sort((a, b) => {
-        const aTs = lastActivityMap.get(a.id) ?? new Date(a.created_at).getTime();
-        const bTs = lastActivityMap.get(b.id) ?? new Date(b.created_at).getTime();
-        return bTs - aTs;
-      });
-
-      return enriched;
     },
   });
 };
 
 export const useEntry = (id: string | undefined) => {
+  const { user } = useAuth();
+
   return useQuery({
-    queryKey: ["entry", id],
+    queryKey: ["entry", id, user?.id ?? "anon"],
     enabled: !!id,
     queryFn: async (): Promise<EntryRow | null> => {
       if (!id) return null;
       const { data, error } = await supabase.from("entries").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!data) return null;
-      const [{ data: authData2 }] = await Promise.all([supabase.auth.getUser()]);
-      const viewerId = authData2.user?.id ?? null;
+      const viewerId = user?.id ?? null;
       const [{ data: profile }, { data: votes }, { data: comments }] = await Promise.all([
         supabase.from("profiles").select(`${PROFILE_PRIVACY_FIELDS}, signup_order`).eq("user_id", data.user_id).maybeSingle(),
-        supabase.from("votes").select("value").eq("entry_id", id),
+        supabase.from("votes").select("user_id, value").eq("entry_id", id),
         supabase.from("comments").select("content").eq("entry_id", id).is("deleted_at", null),
       ]);
       const score = (votes ?? []).reduce((acc, v) => acc + v.value, 0);
+      const myVote = viewerId
+        ? ((votes ?? []).find((v: any) => v.user_id === viewerId)?.value ?? 0)
+        : 0;
       const avg = averageRating((comments ?? []).map((c) => c.content));
       const safeProfile = applyProfilePrivacy(profile as any, viewerId);
-      return { ...(data as EntryRow), profiles: safeProfile as any, vote_score: score, avg_rating: avg };
+      return { ...(data as EntryRow), profiles: safeProfile as any, vote_score: score, avg_rating: avg, my_vote: myVote as -1 | 0 | 1 };
     },
   });
 };

@@ -387,7 +387,7 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
                   })()}
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
-                  <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} size="md" />
+                  <VoteButtons entryId={entry.id} initialScore={entry.vote_score ?? 0} initialMyVote={entry.my_vote ?? 0} size="md" />
                   {canClaim && (
                     <Button size="sm" variant="outline" onClick={claimAsTarget} disabled={verifying}>
                       <BadgeCheck className="h-4 w-4 mr-1" />

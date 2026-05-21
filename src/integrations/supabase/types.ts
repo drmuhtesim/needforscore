@@ -607,6 +607,43 @@ export type Database = {
         Returns: number
       }
       get_email_by_username: { Args: { _username: string }; Returns: string }
+      get_entries_feed: {
+        Args: { _category?: string; _limit?: number; _search?: string }
+        Returns: {
+          avg_rating: number
+          category: Database["public"]["Enums"]["entry_category"]
+          comment_count: number
+          created_at: string
+          deleted_at: string
+          deleted_by: string
+          description: string
+          id: string
+          last_comment_excerpt: string
+          my_vote: number
+          profile_age: number
+          profile_avatar_url: string
+          profile_bio: string
+          profile_city: string
+          profile_display_name: string
+          profile_occupation: string
+          profile_show_age: boolean
+          profile_show_avatar: boolean
+          profile_show_bio: boolean
+          profile_show_city: boolean
+          profile_show_display_name: boolean
+          profile_show_linked_accounts: boolean
+          profile_show_occupation: boolean
+          profile_signup_order: number
+          profile_user_id: string
+          profile_username: string
+          rating: number
+          target: string
+          target_normalized: string
+          user_id: string
+          verified_target: boolean
+          vote_score: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
