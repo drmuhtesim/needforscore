@@ -108,7 +108,7 @@ const EntryCard = ({ entry, index }: Props) => {
             </p>
           )}
           {lastExcerpt && (
-            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 italic">
+            <p className="sm:hidden text-xs text-muted-foreground mt-0.5 line-clamp-2 italic">
               “{lastExcerpt}”
             </p>
           )}
