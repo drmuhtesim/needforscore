@@ -247,9 +247,23 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
           <p className="text-sm">{t("table.noResults")}</p>
         </div>
       )}
-      {isLoading && (
-        <div className="flex items-center justify-center py-16 text-muted-foreground text-sm">
-          {t("table.loading")}
+      {isLoading && entries.length === 0 && (
+        <div className="flex flex-col gap-2 mt-2" aria-label={t("table.loading")}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-3"
+            >
+              <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-3 w-1/3" />
+                <Skeleton className="h-3 w-2/3" />
+              </div>
+              <Skeleton className="h-3 w-10 hidden sm:block" />
+              <Skeleton className="h-3 w-10 hidden sm:block" />
+              <Skeleton className="h-3 w-12 hidden sm:block" />
+            </div>
+          ))}
         </div>
       )}
       <Pagination page={page} pageCount={pageCount} onChange={setPage} />
