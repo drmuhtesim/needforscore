@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/hooks/useNotifications";
-import AddEntryDialog from "./AddEntryDialog";
+import AddEntryDialog from "./LazyAddEntryDialog";
 import UserSearchDialog from "./UserSearchDialog";
 import scoreLogo from "@/assets/score-logo.jpeg";
 
