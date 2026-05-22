@@ -7,7 +7,7 @@ import type { CategoryType } from "./CategorySidebar";
 import { useEntries } from "@/hooks/useEntries";
 import EntryCard from "./EntryCard";
 import Pagination from "./Pagination";
-import AddEntryDialog from "./AddEntryDialog";
+import AddEntryDialog from "./LazyAddEntryDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Dialog,

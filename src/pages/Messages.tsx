@@ -105,6 +105,8 @@ const Messages = () => {
   const { data: conversations = [] } = useQuery({
     queryKey: ["conversations", user?.id],
     enabled: !!user,
+    refetchInterval: activeId ? false : 30_000,
+    refetchIntervalInBackground: false,
     queryFn: async (): Promise<{ conv: ConversationRow; other: Profile | null; lastMessage: string | null }[]> => {
       const { data: convs, error } = await supabase
         .from("conversations")
@@ -144,6 +146,8 @@ const Messages = () => {
   const { data: messages = [] } = useQuery({
     queryKey: ["messages", activeId],
     enabled: !!activeId,
+    refetchInterval: activeId ? 10_000 : false,
+    refetchIntervalInBackground: false,
     queryFn: async (): Promise<Message[]> => {
       const { data, error } = await supabase
         .from("messages")
@@ -154,27 +158,6 @@ const Messages = () => {
       return data ?? [];
     },
   });
-
-  useEffect(() => {
-    if (!user) return;
-    const ch = supabase
-      .channel("messages-rt")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
-        (payload) => {
-          const msg = payload.new as Message;
-          qc.invalidateQueries({ queryKey: ["conversations"] });
-          if (msg.conversation_id === activeId) {
-            qc.invalidateQueries({ queryKey: ["messages", activeId] });
-          }
-        }
-      )
-      .subscribe();
-    return () => {
-      supabase.removeChannel(ch);
-    };
-  }, [user, activeId, qc]);
 
   useEffect(() => {
     if (scrollRef.current) {

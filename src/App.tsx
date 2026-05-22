@@ -1,28 +1,29 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import Index from "./pages/Index.tsx";
-import Auth from "./pages/Auth.tsx";
-import AuthCallback from "./pages/AuthCallback.tsx";
-import LegacyEntryRedirect from "./pages/LegacyEntryRedirect.tsx";
-import UserProfile from "./pages/UserProfile.tsx";
-import Messages from "./pages/Messages.tsx";
-import NotificationsPage from "./pages/NotificationsPage.tsx";
-import Terms from "./pages/Terms.tsx";
-import Privacy from "./pages/Privacy.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import UsernameOnboarding from "./pages/UsernameOnboarding.tsx";
-import VerifyEmail from "./pages/VerifyEmail.tsx";
-import Unsubscribe from "./pages/Unsubscribe.tsx";
-import EntityProfile from "./pages/EntityProfile.tsx";
-import LegacyUserRedirect from "./pages/LegacyUserRedirect.tsx";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
-import ModDashboard from "./pages/ModDashboard.tsx";
-import ModLogin from "./pages/ModLogin.tsx";
+
+const Index = lazy(() => import("./pages/Index.tsx"));
+const Auth = lazy(() => import("./pages/Auth.tsx"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback.tsx"));
+const LegacyEntryRedirect = lazy(() => import("./pages/LegacyEntryRedirect.tsx"));
+const UserProfile = lazy(() => import("./pages/UserProfile.tsx"));
+const Messages = lazy(() => import("./pages/Messages.tsx"));
+const NotificationsPage = lazy(() => import("./pages/NotificationsPage.tsx"));
+const Terms = lazy(() => import("./pages/Terms.tsx"));
+const Privacy = lazy(() => import("./pages/Privacy.tsx"));
+const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const UsernameOnboarding = lazy(() => import("./pages/UsernameOnboarding.tsx"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail.tsx"));
+const Unsubscribe = lazy(() => import("./pages/Unsubscribe.tsx"));
+const EntityProfile = lazy(() => import("./pages/EntityProfile.tsx"));
+const LegacyUserRedirect = lazy(() => import("./pages/LegacyUserRedirect.tsx"));
+const ModDashboard = lazy(() => import("./pages/ModDashboard.tsx"));
+const ModLogin = lazy(() => import("./pages/ModLogin.tsx"));
 
 
 // Global react-query defaults:
@@ -72,30 +73,32 @@ const App = () => (
         <AuthProvider>
           <OnboardingGate />
           <ErrorBoundary label="App">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/auth/callback" element={<AuthCallback />} />
-              <Route path="/onboarding/username" element={<UsernameOnboarding />} />
-              <Route path="/verify-email" element={<VerifyEmail />} />
-              <Route path="/e/:id" element={<LegacyEntryRedirect />} />
-              <Route path="/u/:username" element={<LegacyUserRedirect />} />
-              <Route path="/score/:username" element={<UserProfile />} />
-              <Route path="/instagram/:slug" element={<EntityProfile segment="instagram" />} />
-              <Route path="/tiktok/:slug" element={<EntityProfile segment="tiktok" />} />
-              <Route path="/x/:slug" element={<EntityProfile segment="x" />} />
-              <Route path="/twitter/:slug" element={<EntityProfile segment="twitter" />} />
-              <Route path="/phone/:slug" element={<EntityProfile segment="phone" />} />
-              <Route path="/messages" element={<Messages />} />
-              <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="/mod/login" element={<ModLogin />} />
-              <Route path="/mod" element={<ModDashboard />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/unsubscribe" element={<Unsubscribe />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Suspense fallback={<div className="min-h-screen bg-background" />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
+                <Route path="/onboarding/username" element={<UsernameOnboarding />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/e/:id" element={<LegacyEntryRedirect />} />
+                <Route path="/u/:username" element={<LegacyUserRedirect />} />
+                <Route path="/score/:username" element={<UserProfile />} />
+                <Route path="/instagram/:slug" element={<EntityProfile segment="instagram" />} />
+                <Route path="/tiktok/:slug" element={<EntityProfile segment="tiktok" />} />
+                <Route path="/x/:slug" element={<EntityProfile segment="x" />} />
+                <Route path="/twitter/:slug" element={<EntityProfile segment="twitter" />} />
+                <Route path="/phone/:slug" element={<EntityProfile segment="phone" />} />
+                <Route path="/messages" element={<Messages />} />
+                <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/mod/login" element={<ModLogin />} />
+                <Route path="/mod" element={<ModDashboard />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/unsubscribe" element={<Unsubscribe />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </ErrorBoundary>
         </AuthProvider>
       </BrowserRouter>
