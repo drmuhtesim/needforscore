@@ -10,7 +10,6 @@ interface Profile {
   avatar_url: string | null;
   username_chosen: boolean;
   email_verified: boolean;
-  email_verification_token: string | null;
 }
 
 interface AuthContextValue {
@@ -33,11 +32,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchProfile = async (uid: string) => {
     const { data } = await supabase
       .from("profiles")
-      .select("id, user_id, username, display_name, avatar_url, username_chosen, email_verified, email_verification_token")
+      .select("id, user_id, username, display_name, avatar_url, username_chosen, email_verified")
       .eq("user_id", uid)
       .maybeSingle();
     setProfile((data as Profile | null) ?? null);
   };
+
 
   useEffect(() => {
     // Set up auth listener FIRST
