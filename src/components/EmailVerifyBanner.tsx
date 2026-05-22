@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Mail, Copy, Check, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
 /**
@@ -14,13 +15,30 @@ const EmailVerifyBanner = () => {
   const { user, profile } = useAuth();
   const [dismissed, setDismissed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user || !profile || profile.email_verified) {
+      setToken(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data } = await (supabase as any).rpc("get_my_email_verification_token");
+      if (!cancelled) setToken((data as string | null) ?? null);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user, profile]);
 
   if (!user || !profile) return null;
   if (profile.email_verified) return null;
-  if (!profile.email_verification_token) return null;
+  if (!token) return null;
   if (dismissed) return null;
 
-  const link = `${window.location.origin}/verify-email?token=${profile.email_verification_token}`;
+  const link = `${window.location.origin}/verify-email?token=${token}`;
+
 
   const copy = async () => {
     try {
