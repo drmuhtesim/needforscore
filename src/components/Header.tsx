@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
-import AddEntryDialog from "./AddEntryDialog";
+import AddEntryDialog from "./LazyAddEntryDialog";
 import EmailVerifyBanner from "./EmailVerifyBanner";
 import NotificationsBell from "./NotificationsBell";
 import { useAuth } from "@/contexts/AuthContext";
