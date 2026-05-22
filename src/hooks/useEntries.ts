@@ -29,9 +29,11 @@ export interface EntryRow {
 }
 
 export const useEntries = (category: CategoryType, search: string) => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   return useQuery({
+    enabled: !authLoading,
+    placeholderData: (prev) => prev,
     queryKey: ["entries", user?.id ?? "anon", category, search],
     queryFn: async (): Promise<EntryRow[]> => {
       const { data, error } = await (supabase as any).rpc("get_entries_feed", {
