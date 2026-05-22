@@ -8,6 +8,7 @@ import { useEntries } from "@/hooks/useEntries";
 import EntryCard from "./EntryCard";
 import Pagination from "./Pagination";
 import AddEntryDialog from "./LazyAddEntryDialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Dialog,
