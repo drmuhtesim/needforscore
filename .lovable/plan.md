@@ -1,52 +1,63 @@
-## Amaç
+# İlk Açılış / "Refresh Atınca Düzeliyor" Sorununun Düzeltilmesi
 
-Twitter/X paylaşımlarında OG kartı tek bir tıklanabilir resimdir; ayrı linkler veremeyiz. Bunun yerine **görsel dilde** iki net "buton/zone" ayırıp kullanıcıya iki tıklanabilir alan varmış hissi vereceğiz: solda **Score amblemi (marka düğmesi)**, sağda **URL düğmesi**. İkisi de gerçek butonlar gibi gölgeli/çerçeveli, hover-iz bırakan kapsüller olarak çizilecek.
+## Tespit edilen kök nedenler
 
-Sadece `supabase/functions/og-image/index.ts` dosyasındaki Satori ağacı değişecek; başka kod, RLS, route veya frontend dokunulmayacak.
+Kodu inceledim. Sorunun gerçek nedeni Next.js hydration değil (proje Vite/React SPA) — birden fazla küçük problem üst üste binmiş durumda:
 
-## Tasarım yönü
+### 1) Auth race condition (asıl neden)
+`src/hooks/useEntries.ts` queryKey'i `user?.id ?? "anon"` içeriyor ama `enabled` yok. Akış şu:
 
-Üst şerit (header) iki belirgin "chip/buton" olarak yeniden kurulur:
+1. Sayfa yüklenir → `AuthContext.loading = true`, `user = null`
+2. `useEntries` hemen "anon" queryKey ile RPC'yi çağırır (henüz JWT yok, header'sız gider)
+3. `supabase.auth.getSession()` localStorage'dan session'ı geri yükler → `user` set olur
+4. queryKey değişir → ikinci RPC çağrısı (bu sefer JWT ile)
+5. İlk cevap "anon" cache'inde kalır, ikinci cevap gelene kadar UI ilkini gösterir — DB yükü %99 olduğunda ikincisi çok geç gelir ve kullanıcı boş/yarım liste görür. Refresh'te session anında hazır olduğu için tek istek gider ve sayfa açılır.
 
-```text
-┌──────────────────────────────────────────────────────────────────────┐
-│  ╔═══════════════╗                          ╔════════════════════╗   │
-│  ║ ▣  S  Score   ║                          ║ 🔗 needforscore... ║   │
-│  ╚═══════════════╝                          ╚════════════════════╝   │
-│                                                                      │
-│   [ avatar ]    KATEGORİ                                             │
-│                 @handle                                              │
-│                 12 entry · ortalama 4.2/10                           │
-│                                                                      │
-│   Her türlü sanal dolandırıcılığa dur de — yorum yap, puanla.        │
-└──────────────────────────────────────────────────────────────────────┘
-```
+Lovable Stack Overflow notundaki "useAuthReady" pattern'ı tam bu durum için. Kod halihazırda `AuthContext.loading` expose ediyor ama kullanılmıyor.
 
-İki chip de aynı görsel dilde (yuvarlatılmış köşe, ince accent çerçeve, hafif iç parlaklık, alt-sağ küçük gölge) → kullanıcıya "iki ayrı tıklanabilir hedef" hissi verir, ama tek görsel olduğundan tüm kart yine post linkine gider.
+### 2) Boş Suspense fallback
+`src/App.tsx`'te lazy route'lar var ama fallback `<div className="min-h-screen bg-background" />` — yani tamamen boş. Chunk yavaş yüklenirken kullanıcı bembeyaz/siyah ekran görüyor ve "açılmıyor" sanıyor.
 
-## Detay (teknik)
+### 3) Service worker kill-switch reload davranışı
+`public/sw.js` activate sırasında **tüm açık sekmelerde** `client.navigate(url + ?sw-cleanup=...)` çağırıyor. Eski SW'si olan ziyaretçilerde bu, ilk ziyarette otomatik bir reload demek. Çoğu kullanıcı için bir kez çalıştı (localStorage `score-sw-cleanup-version` set edildi) — ama ilk seferki o reload "ilk açılışta yüklenmiyor, refresh düzeltiyor" hissini birebir yaratıyor.
 
-`buildTree` içindeki header `div`'i şu hale getirilir:
+### 4) ReportTable loading state'i çıplak metin
+Veri beklerken sadece "yükleniyor..." text'i var. Skeleton yok, kullanıcı boş ekran sanıyor.
 
-- **Brand chip (sol)**: mevcut `S` kutucuğu + `Score` yazısı, etrafına accent border + `rgba(34,197,94,0.12)` arka plan + `borderRadius: 9999` (pill) + sağ-alt yumuşak gölge taklidi (ikinci bir absolute-ish layer veya `boxShadow`-benzeri ofsetli arka katman; Satori `boxShadow`'u sınırlı, gerekiyorsa overlay div'le simüle).
-- **URL chip (sağ)**: mevcut yeşil rozet aynı pill formuna çevrilir, başına küçük bir "link" glifi (Satori `img` veya inline SVG `data:` URI, küçük zincir/ok ikonu, 28×28 px) eklenir; metin `needforscore.com/<seg>/<handle>`. Sayısal handle'lar uzunsa `maxWidth` + `overflow: hidden` + `textOverflow: ellipsis` ile kart dışına taşmayı engelleriz (1200 px sabit, padding 64).
-- **Hover izi simülasyonu**: her iki chip'in altına 4-6 px aşağı/sağa kaydırılmış, accent rengin %25 opaklığında ikinci bir aynı şekil yerleştirilir (drop shadow taklidi). Bu, statik PNG'de "kalkık buton" hissi verir.
-- **Aralık ve hizalama**: header `justifyContent: "space-between"`, dikey `alignItems: "center"`, padding 64. URL chip için `maxWidth: 720` + iç `overflow: hidden` ki uzun handle'lar logoya çarpmasın.
-- Avatar + display + stats bloğu aynen kalır; en alt slogan rengi yumuşatılır (kontrast yine korunur).
+## Yapılacaklar
 
-Tipografi ve renk paleti değişmez (`BG`, `FG`, `MUTED`, `ACCENT`); semantik tokenlar yok zaten — bu dosya Deno edge function, Tailwind kullanmıyor.
+### A. Auth-ready gating (`src/hooks/useEntries.ts` ve `useEntry`)
+- `useAuth()`'tan `loading` değerini de al
+- `useQuery({ enabled: !loading, ... })` ekle
+- queryKey'i `loading ? "loading" : (user?.id ?? "anon")` yap → loading sırasında query hiç çalışmasın, tek seferde doğru kullanıcıyla atılsın
+- Aynı pattern'ı race açısından kritik diğer hook'lara da uygula: `useNotifications`, mesaj listesi, profil sayfası query'leri (kısa audit yapacağım, sadece auth.uid()'ye bağımlı olanlara)
 
-## Doğrulama
+### B. App.tsx Suspense fallback'i görünür yap
+Boş `<div>` yerine merkezde küçük bir spinner + arka planda Header iskeleti. Eski tasarımla uyumlu, jank yaratmayacak şekilde.
 
-1. `og-image` edge function deploy edilir.
-2. `?category=twitter&handle=heathleyeth`, `?category=instagram&handle=erkanntaylan`, `?category=score&handle=kijujan`, `?category=phone&handle=tr-xx-12-abcdef12` örnekleri için PNG indirilir, görsel olarak incelenir:
-   - İki chip de kart içinde mi, kenara dayanmış mı?
-   - URL uzun handle'da taşıyor mu? (ellipsis devrede mi?)
-   - Brand chip ile URL chip eş yükseklikte mi?
-   - Kontrast OK mi (light avatar üstünde değil, üst şeritte).
-3. Twitter Card Validator + Facebook Sharing Debugger ile fresh-scrape yapılması kullanıcıya hatırlatılır.
+### C. ReportTable skeleton
+`isLoading` dalında 6-8 adet `<Skeleton />` satırı (zaten `src/components/ui/skeleton.tsx` mevcut) — kullanıcı veri geldiğini hissetsin.
 
-## Dokunulmayacaklar
+### D. Service worker reload davranışını yumuşat
+`public/sw.js` ve `public/service-worker.js` activate handler'ında `client.navigate(...)` kısmını kaldır. Cache silme + `clients.claim()` + `unregister()` yeterli — yeni asset zaten ağdan gelecek. Bu, eski SW'si olan kullanıcılarda gereksiz reload'u yok eder.
+(İki dosya da içerik olarak aynı; ikisini de güncelleyeceğim.)
 
-- `og-prerender/index.ts`, route'lar, `_redirects`, `index.html`, frontend bileşenler.
-- Meta tag içerikleri (title/desc) aynı kalır — yalnızca üretilen PNG değişir.
+### E. (Opsiyonel ama önerilen) `staleTime` arttırma yerine `placeholderData`
+Auth değiştiğinde queryKey değişiyor — React Query yeni anahtarda eski veriyi göstermiyor. `placeholderData: (prev) => prev` ekleyerek auth resolve olurken UI'ın bomboş kalmasını engelle. Sadece feed/entries için.
+
+## Yapmayacaklarım
+- DB tarafına ek migration **yok**. Bu loop bir frontend timing meselesi, DB yükü meselesi değil.
+- Realtime / cron / RPC değişikliği **yok** (zaten önceki turlarda optimize edildi).
+- Tema, içerik, layout değişikliği **yok**.
+
+## Etkilenecek dosyalar
+- `src/hooks/useEntries.ts` (auth gating + placeholderData)
+- `src/hooks/useNotifications.ts` (auth gating)
+- `src/App.tsx` (Suspense fallback)
+- `src/components/ReportTable.tsx` (skeleton loading state)
+- `public/sw.js`, `public/service-worker.js` (reload davranışını kaldır)
+
+## Beklenen sonuç
+Soğuk başlatmada (incognito / hard reload) feed tek RPC çağrısıyla doğru kullanıcı kimliğiyle yüklenir; lazy chunk yüklenirken kullanıcı görsel feedback alır; eski SW'li cihazlarda istenmeyen otomatik reload olmaz.
+
+Onaylarsan implement edebilirim.
