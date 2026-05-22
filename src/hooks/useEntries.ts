@@ -97,11 +97,11 @@ export const useEntries = (category: CategoryType, search: string) => {
 };
 
 export const useEntry = (id: string | undefined) => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   return useQuery({
     queryKey: ["entry", id, user?.id ?? "anon"],
-    enabled: !!id,
+    enabled: !!id && !authLoading,
     queryFn: async (): Promise<EntryRow | null> => {
       if (!id) return null;
       const { data, error } = await supabase.from("entries").select("*").eq("id", id).maybeSingle();
