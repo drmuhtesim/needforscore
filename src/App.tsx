@@ -73,7 +73,12 @@ const App = () => (
         <AuthProvider>
           <OnboardingGate />
           <ErrorBoundary label="App">
-            <Suspense fallback={<div className="min-h-screen bg-background" />}>
+            <Suspense fallback={
+              <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="h-8 w-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin" aria-label="Yükleniyor" />
+              </div>
+            }>
+
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
