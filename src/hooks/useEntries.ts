@@ -29,9 +29,11 @@ export interface EntryRow {
 }
 
 export const useEntries = (category: CategoryType, search: string) => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   return useQuery({
+    enabled: !authLoading,
+    placeholderData: (prev) => prev,
     queryKey: ["entries", user?.id ?? "anon", category, search],
     queryFn: async (): Promise<EntryRow[]> => {
       const { data, error } = await (supabase as any).rpc("get_entries_feed", {
@@ -95,11 +97,11 @@ export const useEntries = (category: CategoryType, search: string) => {
 };
 
 export const useEntry = (id: string | undefined) => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   return useQuery({
     queryKey: ["entry", id, user?.id ?? "anon"],
-    enabled: !!id,
+    enabled: !!id && !authLoading,
     queryFn: async (): Promise<EntryRow | null> => {
       if (!id) return null;
       const { data, error } = await supabase.from("entries").select("*").eq("id", id).maybeSingle();

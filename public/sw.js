@@ -3,14 +3,13 @@ self.__SCORE_SW_CLEANUP_VERSION__ = "__BUILD_ID__";
 /**
  * KILL-SWITCH SERVICE WORKER
  *
- * Bu dosya, daha önce kayıtlı olan eski service worker'ları
- * cihazlardan temizlemek için var. Yaptıkları:
+ * Eski SW kayıtlarını temizler:
  *   1) Tüm cache'leri siler
- *   2) Açık tüm sekmeleri cache-bust query ile yeniden yükler
- *   3) Kendini unregister eder
+ *   2) Kendini unregister eder
  *
- * Yeni cache YAPMAZ, fetch'leri INTERCEPT etmez.
- * Safari dahil tüm tarayıcılar artık her zaman ağdan taze HTML/asset alır.
+ * Açık sekmeleri YENİDEN YÜKLEMEZ — bu, "ilk açılışta sayfa açılmıyor,
+ * refresh atınca düzeliyor" hissi yaratıyordu. Yeni asset'ler zaten
+ * sonraki navigation'da ağdan gelecek.
  */
 
 self.addEventListener("install", (event) => {
@@ -22,38 +21,14 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       try {
-        // 1) Tüm cache'leri sil
         const names = await caches.keys();
         await Promise.all(names.map((n) => caches.delete(n)));
-
-        // 2) Tüm istemcileri ele al
         // @ts-ignore
         await self.clients.claim();
-
-        // 3) Açık sekmeleri taze URL ile yeniden yükle
-        // @ts-ignore
-        const clients = await self.clients.matchAll({
-          type: "window",
-          includeUncontrolled: true,
-        });
-        await Promise.all(
-          clients.map((c) => {
-            try {
-              const url = new URL(c.url);
-              url.searchParams.set("sw-cleanup", Date.now().toString());
-              // @ts-ignore
-              return c.navigate(url.toString());
-            } catch {
-              return Promise.resolve();
-            }
-          })
-        );
-
-        // 4) Kendini unregister et — bir daha bu cihazda SW olmayacak
         // @ts-ignore
         await self.registration.unregister();
       } catch {
-        // sessizce geç — kötü bir şey olmasın
+        // sessizce geç
       }
     })()
   );
