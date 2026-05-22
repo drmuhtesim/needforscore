@@ -644,6 +644,7 @@ export type Database = {
           vote_score: number
         }[]
       }
+      get_my_email_verification_token: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
