@@ -7,7 +7,7 @@ import CategorySidebar, { type CategoryType } from "@/components/CategorySidebar
 import MobileCategoryBar from "@/components/MobileCategoryBar";
 import ReportTable from "@/components/ReportTable";
 import MobileBottomBar from "@/components/MobileBottomBar";
-import AddEntryDialog from "@/components/AddEntryDialog";
+import AddEntryDialog from "@/components/LazyAddEntryDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { consumePendingAddEntry } from "@/lib/pendingAddEntry";
 import { TrendingUp, Clock } from "lucide-react";
