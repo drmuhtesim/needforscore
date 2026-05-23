@@ -67,11 +67,14 @@ async function buildEntityMeta(
   if (!category) return null;
 
   const label = CATEGORY_LABEL[category] ?? category;
-  let display = category === "phone" ? `Telefon ${slug}` : `@${slug.toLowerCase()}`;
+  const isPhone = category === "phone";
+
+  // For phone, never embed any digits in social meta — keep it generic.
+  let display = isPhone ? "Telefon raporu" : `@${slug.toLowerCase()}`;
   let count = 0;
   let avg: number | null = null;
 
-  if (category !== "phone") {
+  if (!isPhone) {
     const { data } = await supabase
       .from("entries")
       .select("rating")
@@ -85,16 +88,21 @@ async function buildEntityMeta(
     }
   }
 
-  const title = `${display} — ${label} güvenilirlik & yorumlar | ${SITE_NAME}`;
-  const desc =
-    (count
-      ? `${display} hakkında ${count} entry${avg != null ? `, ortalama puan ${avg.toFixed(1)}/10. ` : ". "}`
-      : `${display} için Score topluluğunun ${label} güvenilirlik analizi. `) +
-    "Score'da yorum yap, puanla.";
+  const title = isPhone
+    ? `Telefon raporu | ${SITE_NAME}`
+    : `${display} — ${label} güvenilirlik & yorumlar | ${SITE_NAME}`;
+  const desc = isPhone
+    ? "Telefon numarası raporları yalnızca tam numarayı bilen kullanıcılar tarafından aranabilir. Gizliliğe öncelik veriyoruz."
+    : ((count
+        ? `${display} hakkında ${count} entry${avg != null ? `, ortalama puan ${avg.toFixed(1)}/10. ` : ". "}`
+        : `${display} için Score topluluğunun ${label} güvenilirlik analizi. `) +
+       "Score'da yorum yap, puanla.");
 
-  const image = `${OG_IMAGE_BASE}?category=${encodeURIComponent(category)}&handle=${encodeURIComponent(slug.toLowerCase())}`;
+  const image = isPhone
+    ? DEFAULT_OG_IMAGE
+    : `${OG_IMAGE_BASE}?category=${encodeURIComponent(category)}&handle=${encodeURIComponent(slug.toLowerCase())}`;
 
-  return { title, desc: desc.slice(0, 200), url, image };
+  return { title, desc: desc.slice(0, 200), url, image, noindex: isPhone };
 }
 
 function injectMeta(
