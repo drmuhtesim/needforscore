@@ -44,10 +44,22 @@ export const buildProfileUrl = (raw: string, category: Exclude<CategoryType, "al
     case "twitter":
       return `https://x.com/${handle}`;
     case "phone":
-      return `tel:${raw.replace(/[^\d+]/g, "")}`;
+      // Never expose the raw number via tel: links — privacy-first.
+      return null;
     default:
       return null;
   }
+};
+
+export const formatTargetDisplay = (raw: string, category: Exclude<CategoryType, "all">): string => {
+  const cleaned = cleanTarget(raw);
+  if (category === "score" || category === "instagram" || category === "tiktok" || category === "twitter") {
+    return `@${cleaned}`;
+  }
+  if (category === "phone") {
+    return maskPhone(raw);
+  }
+  return raw;
 };
 
 export const formatTargetDisplay = (raw: string, category: Exclude<CategoryType, "all">): string => {
