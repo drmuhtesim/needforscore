@@ -62,18 +62,6 @@ export const formatTargetDisplay = (raw: string, category: Exclude<CategoryType,
   return raw;
 };
 
-export const formatTargetDisplay = (raw: string, category: Exclude<CategoryType, "all">): string => {
-  const cleaned = cleanTarget(raw);
-  if (category === "score" || category === "instagram" || category === "tiktok" || category === "twitter") {
-    return `@${cleaned}`;
-  }
-  if (category === "phone") {
-    const parsed = parsePhoneNumberFromString(raw);
-    return parsed ? parsed.formatInternational() : raw;
-  }
-  return raw;
-};
-
 /**
  * Canonical "stored" form of a target — used both when persisting to the DB
  * and when previewing back to the user. Handles get cleaned + lowercased,
