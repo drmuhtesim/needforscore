@@ -37,7 +37,8 @@ const CATEGORY_SEGMENTS: Record<string, string> = {
   phone: "phone",
 };
 
-const CATEGORY_FILTERS = ["instagram", "tiktok", "twitter", "score", "phone"];
+// Phone excluded for privacy — phone entity pages are noindex.
+const CATEGORY_FILTERS = ["instagram", "tiktok", "twitter", "score"];
 
 const sha256Hex = async (input: string): Promise<string> => {
   const data = new TextEncoder().encode(input);
