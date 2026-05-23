@@ -1,5 +1,6 @@
 import type { CategoryType } from "@/components/CategorySidebar";
 import { isValidPhoneNumber, parsePhoneNumberFromString } from "libphonenumber-js";
+import { maskPhone } from "@/lib/phoneMask";
 
 export const platformRegex: Record<Exclude<CategoryType, "all" | "phone">, RegExp> = {
   score: /^[a-z0-9_.]{3,30}$/i,
