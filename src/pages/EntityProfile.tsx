@@ -127,8 +127,9 @@ const EntityProfile = ({ segment }: { segment: string }) => {
   const selected = (selectedId && entries.find((e) => e.id === selectedId)) || entries[0];
 
   const display = formatTargetDisplay(selected.target, category);
-  const publicTitle = category === "phone" ? `Telefon ${slug}` : display;
+  const publicTitle = category === "phone" ? display : display;
   const canonical = `/${segment}/${slug}`;
+  const isPhone = category === "phone";
   const ratings = entries.map((e) => e.rating).filter((r) => typeof r === "number");
   const avgRating = ratings.length ? ratings.reduce((s, v) => s + v, 0) / ratings.length : null;
 
@@ -173,7 +174,8 @@ const EntityProfile = ({ segment }: { segment: string }) => {
         canonical={canonical}
         image={DEFAULT_OG_IMAGE}
         type="profile"
-        jsonLd={[aggregateLd, breadcrumbLd]}
+        noindex={isPhone}
+        jsonLd={isPhone ? undefined : [aggregateLd, breadcrumbLd]}
       />
       <Header />
       <main className="max-w-4xl mx-auto px-4 py-6">

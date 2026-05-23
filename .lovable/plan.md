@@ -1,63 +1,88 @@
-# İlk Açılış / "Refresh Atınca Düzeliyor" Sorununun Düzeltilmesi
 
-## Tespit edilen kök nedenler
+## Hedef
 
-Kodu inceledim. Sorunun gerçek nedeni Next.js hydration değil (proje Vite/React SPA) — birden fazla küçük problem üst üste binmiş durumda:
+Mevcut Score platformunu bozmadan, **sadece `phone` kategorisi** için gizlilik odaklı bir katman eklemek:
+- Public görünümde tam numara asla render edilmesin → her yerde `0532 *** ** 67` maske.
+- Google ve diğer crawler'lar phone entry sayfalarını **indeksleyemesin**.
+- DB'deki mevcut `entries.target` (E.164) korunur; yeni alana ihtiyaç yok.
 
-### 1) Auth race condition (asıl neden)
-`src/hooks/useEntries.ts` queryKey'i `user?.id ?? "anon"` içeriyor ama `enabled` yok. Akış şu:
+Diğer kategoriler (instagram, tiktok, twitter, score) aynen kalır.
 
-1. Sayfa yüklenir → `AuthContext.loading = true`, `user = null`
-2. `useEntries` hemen "anon" queryKey ile RPC'yi çağırır (henüz JWT yok, header'sız gider)
-3. `supabase.auth.getSession()` localStorage'dan session'ı geri yükler → `user` set olur
-4. queryKey değişir → ikinci RPC çağrısı (bu sefer JWT ile)
-5. İlk cevap "anon" cache'inde kalır, ikinci cevap gelene kadar UI ilkini gösterir — DB yükü %99 olduğunda ikincisi çok geç gelir ve kullanıcı boş/yarım liste görür. Refresh'te session anında hazır olduğu için tek istek gider ve sayfa açılır.
+---
 
-Lovable Stack Overflow notundaki "useAuthReady" pattern'ı tam bu durum için. Kod halihazırda `AuthContext.loading` expose ediyor ama kullanılmıyor.
+## 1. Maskeleme yardımcısı (frontend)
 
-### 2) Boş Suspense fallback
-`src/App.tsx`'te lazy route'lar var ama fallback `<div className="min-h-screen bg-background" />` — yani tamamen boş. Chunk yavaş yüklenirken kullanıcı bembeyaz/siyah ekran görüyor ve "açılmıyor" sanıyor.
+Yeni dosya: `src/lib/phoneMask.ts`
 
-### 3) Service worker kill-switch reload davranışı
-`public/sw.js` activate sırasında **tüm açık sekmelerde** `client.navigate(url + ?sw-cleanup=...)` çağırıyor. Eski SW'si olan ziyaretçilerde bu, ilk ziyarette otomatik bir reload demek. Çoğu kullanıcı için bir kez çalıştı (localStorage `score-sw-cleanup-version` set edildi) — ama ilk seferki o reload "ilk açılışta yüklenmiyor, refresh düzeltiyor" hissini birebir yaratıyor.
+- `maskPhone(e164: string): string` — `libphonenumber-js` ile parse edip ülke koduna göre maskeler.
+  - TR örnek: `+905321234567` → `+90 532 *** ** 67`
+  - Genel kural: ülke kodu + son 2 hane görünür, ortadaki tüm rakamlar `*`.
+  - Parse edilemezse: tüm rakamları gizleyip son 2'yi gösterir.
+- `maskPhoneShort(e164)` — kompakt varyant (`*** ** 67`) liste/satır için.
 
-### 4) ReportTable loading state'i çıplak metin
-Veri beklerken sadece "yükleniyor..." text'i var. Skeleton yok, kullanıcı boş ekran sanıyor.
+## 2. `src/lib/platforms.ts` — `formatTargetDisplay` / `formatTargetPreview`
 
-## Yapılacaklar
+`category === "phone"` dallarını `maskPhone(...)` kullanacak şekilde değiştir.  
+→ Bu tek değişiklikle EntryCard, EntryRow, EntryDetail, AddEntryDialog önizleme, EntityProfile başlığı, search önerileri, vs. otomatik olarak maskeli gösterime geçer (hepsi bu yardımcıyı çağırıyor).
 
-### A. Auth-ready gating (`src/hooks/useEntries.ts` ve `useEntry`)
-- `useAuth()`'tan `loading` değerini de al
-- `useQuery({ enabled: !loading, ... })` ekle
-- queryKey'i `loading ? "loading" : (user?.id ?? "anon")` yap → loading sırasında query hiç çalışmasın, tek seferde doğru kullanıcıyla atılsın
-- Aynı pattern'ı race açısından kritik diğer hook'lara da uygula: `useNotifications`, mesaj listesi, profil sayfası query'leri (kısa audit yapacağım, sadece auth.uid()'ye bağımlı olanlara)
+`buildProfileUrl` içindeki `tel:` linki phone için **kaldırılır** (`return null`) — tıklanıp tam numarayı açmasın.
 
-### B. App.tsx Suspense fallback'i görünür yap
-Boş `<div>` yerine merkezde küçük bir spinner + arka planda Header iskeleti. Eski tasarımla uyumlu, jank yaratmayacak şekilde.
+## 3. EntityProfile & EntryDetail başlıkları
 
-### C. ReportTable skeleton
-`isLoading` dalında 6-8 adet `<Skeleton />` satırı (zaten `src/components/ui/skeleton.tsx` mevcut) — kullanıcı veri geldiğini hissetsin.
+- `EntityProfile.tsx` (`segment="phone"`): sayfanın H1'i ve `<SEO title>` artık masked değeri kullanır. Slug zaten hash bazlı (`tr-xx-67-abcd1234`), URL'de tam numara yok — bu kısım iyi durumda.
+- `EntryDetail.tsx`: phone entries için target render eden yerleri masked değere bağla.
 
-### D. Service worker reload davranışını yumuşat
-`public/sw.js` ve `public/service-worker.js` activate handler'ında `client.navigate(...)` kısmını kaldır. Cache silme + `clients.claim()` + `unregister()` yeterli — yeni asset zaten ağdan gelecek. Bu, eski SW'si olan kullanıcılarda gereksiz reload'u yok eder.
-(İki dosya da içerik olarak aynı; ikisini de güncelleyeceğim.)
+## 4. Search davranışı
 
-### E. (Opsiyonel ama önerilen) `staleTime` arttırma yerine `placeholderData`
-Auth değiştiğinde queryKey değişiyor — React Query yeni anahtarda eski veriyi göstermiyor. `placeholderData: (prev) => prev` ekleyerek auth resolve olurken UI'ın bomboş kalmasını engelle. Sadece feed/entries için.
+`src/components/SearchBar.tsx` ve `Index.tsx` arama akışı:
+- Kullanıcı tam numarayı yazıp aratınca: input `target_normalized` ile eşleşir → mevcut RPC zaten sonuç döndürür.
+- **Yeni kısıtlama:** phone kategorisindeki entry'ler, ana liste sayfasında (`/` veya `?cat=phone`) yalnızca **arama terimi varsa** gösterilsin. Boş aramada phone entries listelenmez → public browsable directory engellenmiş olur.
+- `get_entries_feed` RPC'sine müdahale etmek yerine, frontend tarafında `Index.tsx` içinde: `category === "phone" && !searchTerm` → boş state + "Bir telefon numarası arayın" CTA.
 
-## Yapmayacaklarım
-- DB tarafına ek migration **yok**. Bu loop bir frontend timing meselesi, DB yükü meselesi değil.
-- Realtime / cron / RPC değişikliği **yok** (zaten önceki turlarda optimize edildi).
-- Tema, içerik, layout değişikliği **yok**.
+## 5. noindex (phone-only)
 
-## Etkilenecek dosyalar
-- `src/hooks/useEntries.ts` (auth gating + placeholderData)
-- `src/hooks/useNotifications.ts` (auth gating)
-- `src/App.tsx` (Suspense fallback)
-- `src/components/ReportTable.tsx` (skeleton loading state)
-- `public/sw.js`, `public/service-worker.js` (reload davranışını kaldır)
+`src/pages/EntityProfile.tsx` içinde `segment="phone"` ise `<SEO noindex>` true.  
+`SEO.tsx` zaten `noindex` propunu destekliyor.
 
-## Beklenen sonuç
-Soğuk başlatmada (incognito / hard reload) feed tek RPC çağrısıyla doğru kullanıcı kimliğiyle yüklenir; lazy chunk yüklenirken kullanıcı görsel feedback alır; eski SW'li cihazlarda istenmeyen otomatik reload olmaz.
+Index sayfasında `?cat=phone` query'si aktifse de `<SEO noindex>` ekle.
 
-Onaylarsan implement edebilirim.
+## 6. robots.txt
+
+`public/robots.txt` güncelle:
+- Tüm `User-agent` bloklarına (Googlebot, Bingbot, AI crawler'lar, default `*`):
+  ```
+  Disallow: /phone/
+  ```
+- Sosyal preview crawler'ları (Twitterbot, facebookexternalhit, LinkedInBot) için de aynı disallow eklenir → link önizlemesinde de numara çıkmaz.
+
+## 7. Sitemap
+
+`supabase/functions/sitemap/index.ts` — phone kategorisindeki entry'leri sitemap'e **eklemeyi durdur**. Sadece score/instagram/tiktok/twitter kalsın. (Mevcut kodu okuyup category filter ekleyeceğim.)
+
+## 8. OG prerender / og-image
+
+`supabase/functions/og-prerender/index.ts` ve `og-image/index.ts` phone entry istendiğinde:
+- title/description'da tam numarayı maskeli versiyonla değiştir.
+- `<meta name="robots" content="noindex,nofollow">` ekle.
+
+## 9. Yardımcı kontroller
+
+- `Header` / search sonuç chip'leri, `UserHoverCard`, `ReportTable` gibi başka tüketicilerde target gösteren yerleri tara — `formatTargetDisplay` kullananlar otomatik düzelir, manuel string birleştirme varsa düzeltilir.
+- Form önizlemesi (AddEntryDialog "şu numarayı puanlamak üzeresin: ...") da maskeli versiyon.
+
+## 10. Memory güncellemesi
+
+`mem://index.md` Core'a ek satır:
+> Phone kategorisinde public her yerde maskeli gösterim (`maskPhone`). Phone entry sayfaları `noindex`. `/phone/` robots.txt'de disallow. Boş aramada phone listelenmez.
+
+---
+
+## Kapsam dışı (bu iterasyonda yok)
+
+Removal request sistemi, risk score yeniden tasarımı, landing redesign, captcha, KVKK sayfası, multilingual — sen "öncelik: gizlilik & maskeleme & noindex" dedin. Bu maddeleri sonraki turlarda ayrı plan olarak ele alacağım.
+
+## Teknik notlar
+
+- DB migration **yok** — `entries.target` E.164 olarak kalır, sadece RLS halihazırda public okumayı serbest bırakıyor; ama UI hiçbir yerde ham değeri render etmeyecek.
+- DB'den ham numarayı çekmek hâlâ teknik olarak mümkün (RLS public select açık). Bunu gerçekten kapatmak istersen ayrı bir plan gerekir: `get_entries_feed`'i sadece `masked_target` döndürecek şekilde değiştirip `entries` tablosunda `SELECT target` iznini revoke etmek. Şu an için kapsam dışı — sen "mevcut veriyi koru" dedin, ama bunu istersen söyle, ikinci iterasyon olarak eklerim.
+- Build sonrası şunları doğrulayacağım: EntryCard/EntryDetail/EntityProfile'da phone entry maskeli görünüyor, `/phone/...` sayfası response head'inde `noindex`, `robots.txt` `/phone/`'u disallow ediyor, boş aramada `?cat=phone` listesi boş.

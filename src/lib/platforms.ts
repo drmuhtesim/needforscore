@@ -1,5 +1,6 @@
 import type { CategoryType } from "@/components/CategorySidebar";
 import { isValidPhoneNumber, parsePhoneNumberFromString } from "libphonenumber-js";
+import { maskPhone } from "@/lib/phoneMask";
 
 export const platformRegex: Record<Exclude<CategoryType, "all" | "phone">, RegExp> = {
   score: /^[a-z0-9_.]{3,30}$/i,
@@ -43,7 +44,8 @@ export const buildProfileUrl = (raw: string, category: Exclude<CategoryType, "al
     case "twitter":
       return `https://x.com/${handle}`;
     case "phone":
-      return `tel:${raw.replace(/[^\d+]/g, "")}`;
+      // Never expose the raw number via tel: links — privacy-first.
+      return null;
     default:
       return null;
   }
@@ -55,8 +57,7 @@ export const formatTargetDisplay = (raw: string, category: Exclude<CategoryType,
     return `@${cleaned}`;
   }
   if (category === "phone") {
-    const parsed = parsePhoneNumberFromString(raw);
-    return parsed ? parsed.formatInternational() : raw;
+    return maskPhone(raw);
   }
   return raw;
 };
@@ -89,8 +90,7 @@ export const formatTargetPreview = (
   const canonical = canonicalizeTarget(raw, category);
   let display: string;
   if (category === "phone") {
-    const parsed = parsePhoneNumberFromString(canonical);
-    display = parsed ? parsed.formatInternational() : canonical;
+    display = maskPhone(canonical);
   } else {
     display = canonical ? `@${canonical}` : "";
   }

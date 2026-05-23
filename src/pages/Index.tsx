@@ -96,6 +96,8 @@ const Index = () => {
   const tfRaw = t("filters.timeFilters", { returnObjects: true });
   const timeFilters = Array.isArray(tfRaw) ? (tfRaw as string[]) : ["5m", "1h", "6h", "24h", "7d", "30d"];
 
+  const phoneGate = category === "phone" && !searchQuery.trim();
+
   return (
     <div className="min-h-screen bg-background flex flex-col pb-14 lg:pb-0">
       <SEO
@@ -103,6 +105,7 @@ const Index = () => {
         description="Instagram, TikTok, X, telefon ve Score kullanıcılarını puanla; dolandırıcıları ifşa et, güvenilir hesapları keşfet. Topluluk tabanlı OSINT platformu."
         canonical="/"
         image={DEFAULT_OG_IMAGE}
+        noindex={category === "phone"}
         jsonLd={HOME_JSONLD}
       />
       <Header />
@@ -175,7 +178,16 @@ const Index = () => {
           </div>
 
           {/* Table */}
-          <ReportTable category={category} searchQuery={searchQuery} />
+          {phoneGate ? (
+            <div className="px-4 py-16 text-center space-y-3">
+              <p className="text-base font-semibold">Telefon araması gizliliğe tabidir</p>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Telefon numarası raporlarına ulaşmak için yukarıdaki arama kutusuna tam numarayı yazıp aratın. Liste halinde gösterim yapılmaz.
+              </p>
+            </div>
+          ) : (
+            <ReportTable category={category} searchQuery={searchQuery} />
+          )}
         </main>
       </div>
       <MobileBottomBar />
