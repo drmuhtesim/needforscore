@@ -45,7 +45,7 @@ const OG_IMAGE_BASE = `${Deno.env.get("SUPABASE_URL")}/functions/v1/og-image`;
 
 async function buildEntityMeta(
   path: string,
-): Promise<{ title: string; desc: string; url: string; image: string } | null> {
+): Promise<{ title: string; desc: string; url: string; image: string; noindex?: boolean } | null> {
   // /x/:slug, /instagram/:slug, /tiktok/:slug, /phone/:slug, /score/:username
   const m = path.match(/^\/([a-z]+)\/([^/?#]+)/i);
   if (!m) return null;
