@@ -174,7 +174,8 @@ const EntityProfile = ({ segment }: { segment: string }) => {
         canonical={canonical}
         image={DEFAULT_OG_IMAGE}
         type="profile"
-        jsonLd={[aggregateLd, breadcrumbLd]}
+        noindex={isPhone}
+        jsonLd={isPhone ? undefined : [aggregateLd, breadcrumbLd]}
       />
       <Header />
       <main className="max-w-4xl mx-auto px-4 py-6">
