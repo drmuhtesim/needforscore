@@ -1,72 +1,100 @@
 # Search engines
 User-agent: Googlebot
 Allow: /
+Disallow: /phone/
+Disallow: /auth
+Disallow: /onboarding/
+Disallow: /verify-email
+Disallow: /unsubscribe
+Disallow: /messages
+Disallow: /notifications
 
 User-agent: Bingbot
 Allow: /
+Disallow: /phone/
 
 User-agent: DuckDuckBot
 Allow: /
+Disallow: /phone/
 
 User-agent: Yandex
 Allow: /
+Disallow: /phone/
 
 # Social previews
 User-agent: Twitterbot
 Allow: /
+Disallow: /phone/
 
 User-agent: facebookexternalhit
 Allow: /
+Disallow: /phone/
 
 User-agent: LinkedInBot
 Allow: /
+Disallow: /phone/
 
 # AI / LLM crawlers
 User-agent: GPTBot
 Allow: /
+Disallow: /phone/
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /phone/
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /phone/
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /phone/
 
 User-agent: Claude-Web
 Allow: /
+Disallow: /phone/
 
 User-agent: anthropic-ai
 Allow: /
+Disallow: /phone/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /phone/
 
 User-agent: Perplexity-User
 Allow: /
+Disallow: /phone/
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /phone/
 
 User-agent: Applebot
 Allow: /
+Disallow: /phone/
 
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /phone/
 
 User-agent: CCBot
 Allow: /
+Disallow: /phone/
 
 User-agent: cohere-ai
 Allow: /
+Disallow: /phone/
 
 User-agent: Bytespider
 Allow: /
+Disallow: /phone/
 
 # Default
 User-agent: *
 Allow: /
+Disallow: /phone/
 Disallow: /auth
 Disallow: /onboarding/
 Disallow: /verify-email
