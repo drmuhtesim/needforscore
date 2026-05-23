@@ -174,6 +174,10 @@ Deno.serve(async (req) => {
   const meta = await buildEntityMeta(path);
   if (meta) {
     html = injectMeta(html, meta);
+    if (meta.noindex) {
+      // Inject a robots meta as well so JS crawlers see it.
+      html = html.replace(/<\/head>/i, `  <meta name="robots" content="noindex,nofollow">\n</head>`);
+    }
   }
 
   return new Response(html, {
@@ -181,7 +185,7 @@ Deno.serve(async (req) => {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "Cache-Control": "public, max-age=300, s-maxage=600",
-      "X-Robots-Tag": "all",
+      "X-Robots-Tag": meta?.noindex ? "noindex, nofollow" : "all",
     },
   });
 });
