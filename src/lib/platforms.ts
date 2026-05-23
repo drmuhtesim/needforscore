@@ -90,8 +90,7 @@ export const formatTargetPreview = (
   const canonical = canonicalizeTarget(raw, category);
   let display: string;
   if (category === "phone") {
-    const parsed = parsePhoneNumberFromString(canonical);
-    display = parsed ? parsed.formatInternational() : canonical;
+    display = maskPhone(canonical);
   } else {
     display = canonical ? `@${canonical}` : "";
   }
