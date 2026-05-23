@@ -115,6 +115,9 @@ Deno.serve(async (req) => {
       .range(from, from + PAGE - 1);
     if (error || !data || data.length === 0) break;
     for (const e of data) {
+      const cat = e.category as string;
+      // Skip phone entries entirely from sitemap (privacy).
+      if (cat === "phone") continue;
       // Individual entry detail (kept for backwards compatibility + deep linking)
       entries.push({
         loc: `${SITE_URL}/e/${e.id}`,
@@ -122,7 +125,6 @@ Deno.serve(async (req) => {
         changefreq: "weekly",
         priority: "0.5",
       });
-      const cat = e.category as string;
       const tgt = e.target_normalized as string | null;
       if (!tgt || cat === "score") continue;
       const seg = CATEGORY_SEGMENTS[cat];
