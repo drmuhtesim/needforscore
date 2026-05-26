@@ -206,16 +206,41 @@ export const LinkPreviewProvider = ({ children }: { children: ReactNode }) => {
   const embed = useMemo(() => (url ? detectEmbed(url) : null), [url]);
   const host = url ? safeHostname(url) : "";
 
-  // ESC + scroll lock
+  // ESC + scroll lock. We pin the body with `position: fixed` and a
+  // negative top offset so iOS/Android don't reset the scroll position
+  // while the overlay is open. Filters live in URL state on Index, so
+  // they're untouched — we only need to preserve scrollY here.
   useEffect(() => {
     if (!url) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
     document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
     };
   }, [url, close]);
 
