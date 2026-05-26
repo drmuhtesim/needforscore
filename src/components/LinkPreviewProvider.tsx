@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import { ArrowLeft, ExternalLink, Globe, RefreshCw, X } from "lucide-react";
 import { detectEmbed, providerLabel, type EmbedDescriptor } from "@/lib/embedProviders";
-import { supabase } from "@/integrations/supabase/client";
 
 /**
  * In-app smart link preview. Two render modes:
