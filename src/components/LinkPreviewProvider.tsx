@@ -60,16 +60,6 @@ const metaCache = new Map<string, Meta>();
 const fetchMeta = async (url: string): Promise<Meta | null> => {
   if (metaCache.has(url)) return metaCache.get(url)!;
   try {
-    const { data, error } = await supabase.functions.invoke<Meta>("link-metadata", {
-      method: "GET" as never,
-      // Functions client doesn't support query params directly; use raw fetch.
-    } as never);
-    if (!error && data) {
-      metaCache.set(url, data);
-      return data;
-    }
-  } catch { /* fall through to raw fetch */ }
-  try {
     const base = (import.meta.env.VITE_SUPABASE_URL as string) ?? "";
     const anon = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string) ?? "";
     const res = await fetch(`${base}/functions/v1/link-metadata?url=${encodeURIComponent(url)}`, {
