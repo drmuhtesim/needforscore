@@ -30,6 +30,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { buildProfileUrl, cleanTarget, formatTargetDisplay } from "@/lib/platforms";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
+import { linkifyText } from "@/lib/linkify";
+import { useLinkPreview } from "@/components/LinkPreviewProvider";
 
 
 interface CommentRow {
