@@ -17,5 +17,7 @@ project_id = "nppfwggoqqfhyczclqcd"
     verify_jwt = true
   [functions.resolve-social-url]
     verify_jwt = false
+  [functions.link-metadata]
+    verify_jwt = false
   [functions.send-transactional-email]
     verify_jwt = true
