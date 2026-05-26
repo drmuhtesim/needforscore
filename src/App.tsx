@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { LinkPreviewProvider } from "@/components/LinkPreviewProvider";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
 
 const Index = lazy(() => import("./pages/Index.tsx"));
@@ -72,39 +73,41 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <OnboardingGate />
-          <ErrorBoundary label="App">
-            <Suspense fallback={
-              <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="h-8 w-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin" aria-label="Yükleniyor" />
-              </div>
-            }>
+          <LinkPreviewProvider>
+            <ErrorBoundary label="App">
+              <Suspense fallback={
+                <div className="min-h-screen bg-background flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin" aria-label="Yükleniyor" />
+                </div>
+              }>
 
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
-                <Route path="/onboarding/username" element={<UsernameOnboarding />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
-                <Route path="/e/:id" element={<LegacyEntryRedirect />} />
-                <Route path="/u/:username" element={<LegacyUserRedirect />} />
-                <Route path="/score/:username" element={<UserProfile />} />
-                <Route path="/instagram/:slug" element={<EntityProfile segment="instagram" />} />
-                <Route path="/tiktok/:slug" element={<EntityProfile segment="tiktok" />} />
-                <Route path="/x/:slug" element={<EntityProfile segment="x" />} />
-                <Route path="/twitter/:slug" element={<EntityProfile segment="twitter" />} />
-                <Route path="/phone/:slug" element={<EntityProfile segment="phone" />} />
-                <Route path="/messages" element={<Messages />} />
-                <Route path="/notifications" element={<NotificationsPage />} />
-                <Route path="/mod/login" element={<ModLogin />} />
-                <Route path="/mod" element={<ModDashboard />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/unsubscribe" element={<Unsubscribe />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
+                  <Route path="/onboarding/username" element={<UsernameOnboarding />} />
+                  <Route path="/verify-email" element={<VerifyEmail />} />
+                  <Route path="/e/:id" element={<LegacyEntryRedirect />} />
+                  <Route path="/u/:username" element={<LegacyUserRedirect />} />
+                  <Route path="/score/:username" element={<UserProfile />} />
+                  <Route path="/instagram/:slug" element={<EntityProfile segment="instagram" />} />
+                  <Route path="/tiktok/:slug" element={<EntityProfile segment="tiktok" />} />
+                  <Route path="/x/:slug" element={<EntityProfile segment="x" />} />
+                  <Route path="/twitter/:slug" element={<EntityProfile segment="twitter" />} />
+                  <Route path="/phone/:slug" element={<EntityProfile segment="phone" />} />
+                  <Route path="/messages" element={<Messages />} />
+                  <Route path="/notifications" element={<NotificationsPage />} />
+                  <Route path="/mod/login" element={<ModLogin />} />
+                  <Route path="/mod" element={<ModDashboard />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/unsubscribe" element={<Unsubscribe />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
+          </LinkPreviewProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
