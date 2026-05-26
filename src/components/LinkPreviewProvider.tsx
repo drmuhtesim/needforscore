@@ -1,16 +1,14 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { ArrowLeft, ExternalLink, Globe } from "lucide-react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { ArrowLeft, ExternalLink, Globe, RefreshCw, X } from "lucide-react";
 
 /**
- * Tek tıkla davranış:
- *   - Harici link tıklanır tıklanmaz yeni sekmede açılır (window.open).
- *   - Aynı anda needforscore tarafında küçük bir alt-banner gösterilir:
- *     "Bağlantı yeni sekmede açıldı · needforscore'a dön".
- *   - "Geri dön" butonu banner'ı kapatır; kullanıcı zaten needforscore
- *     sekmesindedir, yeni sekmeyi kapatmasıyla geri dönüş tamamlanır.
+ * Harici link tıklandığında, link kendi sekmemizde tam ekran bir overlay
+ * içinde iframe olarak açılır. Üst barda "needforscore'a dön" butonu
+ * vardır — kullanıcı tek tıkla geri döner, hiç siteden ayrılmaz.
  *
- * Eski iframe önizleme sheet'i kaldırıldı — kullanıcılar artık çift tıklamak
- * zorunda değil ve embed engelleyen sitelerde boş iframe görmüyor.
+ * Bazı siteler (X-Frame-Options / CSP) iframe içinde açılmayı engeller.
+ * Bu durumda overlay yine açık kalır ve kullanıcıya "Yeni sekmede aç"
+ * fallback'ı sunulur; geri dön butonu her zaman görünür.
  */
 type Ctx = { open: (url: string) => void };
 const LinkPreviewCtx = createContext<Ctx | null>(null);
@@ -30,61 +28,149 @@ const safeHostname = (url: string): string => {
 };
 
 export const LinkPreviewProvider = ({ children }: { children: ReactNode }) => {
-  const [lastUrl, setLastUrl] = useState<string | null>(null);
+  const [url, setUrl] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const open = useCallback((next: string) => {
-    try {
-      window.open(next, "_blank", "noopener,noreferrer");
-    } catch {
-      window.location.href = next;
-      return;
-    }
-    setLastUrl(next);
+    setUrl(next);
+    setLoaded(false);
+    setBlocked(false);
+    setReloadKey((k) => k + 1);
   }, []);
 
-  const dismiss = useCallback(() => setLastUrl(null), []);
+  const close = useCallback(() => {
+    setUrl(null);
+    setLoaded(false);
+    setBlocked(false);
+  }, []);
 
-  // 8 saniye sonra otomatik kapan
+  // ESC ile kapatma + scroll lock
   useEffect(() => {
-    if (!lastUrl) return;
-    const t = window.setTimeout(() => setLastUrl(null), 8000);
-    return () => window.clearTimeout(t);
-  }, [lastUrl]);
+    if (!url) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [url, close]);
 
-  const host = lastUrl ? safeHostname(lastUrl) : "";
+  // Embed engelleyen siteler için: 4 sn içinde load olmazsa fallback göster
+  useEffect(() => {
+    if (!url) return;
+    const t = window.setTimeout(() => {
+      if (!loaded) setBlocked(true);
+    }, 4000);
+    return () => window.clearTimeout(t);
+  }, [url, loaded, reloadKey]);
+
+  const host = url ? safeHostname(url) : "";
 
   return (
     <LinkPreviewCtx.Provider value={{ open }}>
       {children}
-      {lastUrl && (
+      {url && (
         <div
-          className="fixed inset-x-0 bottom-4 z-[100] flex justify-center px-4 pointer-events-none"
-          role="status"
-          aria-live="polite"
+          className="fixed inset-0 z-[100] flex flex-col bg-background animate-in fade-in-0"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${host} önizlemesi`}
         >
-          <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-border bg-background/95 backdrop-blur shadow-xl pl-3 pr-1 py-1 animate-in fade-in-0 slide-in-from-bottom-4 max-w-[95vw]">
-            <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
-            <div className="min-w-0 flex flex-col leading-tight">
-              <span className="text-[11px] text-muted-foreground">Yeni sekmede açıldı</span>
-              <span className="text-xs font-mono truncate max-w-[40vw] sm:max-w-xs">{host}</span>
+          {/* Üst bar */}
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-background/95 backdrop-blur shrink-0">
+            <button
+              type="button"
+              onClick={close}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-semibold hover:opacity-90 shrink-0"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="hidden xs:inline sm:inline">needforscore'a dön</span>
+              <span className="xs:hidden sm:hidden">Geri</span>
+            </button>
+            <div className="flex items-center gap-1.5 min-w-0 flex-1 px-2">
+              <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span className="text-xs font-mono truncate text-muted-foreground">{host}</span>
             </div>
+            <button
+              type="button"
+              onClick={() => {
+                setLoaded(false);
+                setBlocked(false);
+                setReloadKey((k) => k + 1);
+              }}
+              className="p-2 rounded-full hover:bg-muted text-muted-foreground"
+              aria-label="Yenile"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
             <a
-              href={lastUrl}
+              href={url}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="ml-1 inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] text-muted-foreground hover:text-foreground"
-              aria-label="Bağlantıyı tekrar aç"
+              className="p-2 rounded-full hover:bg-muted text-muted-foreground"
+              aria-label="Yeni sekmede aç"
             >
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink className="h-4 w-4" />
             </a>
             <button
               type="button"
-              onClick={dismiss}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90"
+              onClick={close}
+              className="p-2 rounded-full hover:bg-muted text-muted-foreground"
+              aria-label="Kapat"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              needforscore'a dön
+              <X className="h-4 w-4" />
             </button>
+          </div>
+
+          {/* İçerik */}
+          <div className="relative flex-1 bg-muted/30">
+            <iframe
+              key={reloadKey}
+              ref={iframeRef}
+              src={url}
+              onLoad={() => setLoaded(true)}
+              className="w-full h-full border-0 bg-background"
+              referrerPolicy="no-referrer"
+              sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+              title={host}
+            />
+            {blocked && !loaded && (
+              <div className="absolute inset-0 flex items-center justify-center p-6 bg-background/95">
+                <div className="max-w-sm text-center space-y-4">
+                  <Globe className="h-10 w-10 mx-auto text-muted-foreground" />
+                  <div>
+                    <p className="font-semibold">Bu site önizlemeyi engelliyor</p>
+                    <p className="text-sm text-muted-foreground mt-1 break-all">{host}</p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Yeni sekmede aç
+                    </a>
+                    <button
+                      type="button"
+                      onClick={close}
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-border text-sm hover:bg-muted"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      needforscore'a dön
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
