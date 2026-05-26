@@ -30,6 +30,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { buildProfileUrl, cleanTarget, formatTargetDisplay } from "@/lib/platforms";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
+import { linkifyText } from "@/lib/linkify";
+import { useLinkPreview } from "@/components/LinkPreviewProvider";
 
 
 interface CommentRow {
@@ -71,6 +73,7 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
   const { user, profile } = useAuth();
   const { isModerator } = useUserRoles();
   const qc = useQueryClient();
+  const { open: openLinkPreview } = useLinkPreview();
   const { data: entry, isLoading } = useEntry(id);
   const [verifying, setVerifying] = useState(false);
   const [iVerified, setIVerified] = useState(false);
@@ -343,6 +346,12 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
                   {profileUrl && (
                     <a
                       href={profileUrl}
+                      onClick={(e) => {
+                        if (/^https?:\/\//i.test(profileUrl)) {
+                          e.preventDefault();
+                          openLinkPreview(profileUrl);
+                        }
+                      }}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
@@ -518,7 +527,7 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
                         </p>
                       ) : (
                         <p className="mt-0.5 text-[15px] leading-snug text-foreground/95 whitespace-pre-wrap break-words">
-                          {cleanCommentContent(c.content)}
+                          {linkifyText(cleanCommentContent(c.content))}
                         </p>
                       )}
 
@@ -619,7 +628,7 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
                                   </p>
                                 ) : (
                                   <p className="mt-1 text-foreground/95 whitespace-pre-wrap break-words">
-                                    {cleanCommentContent(r.content)}
+                                    {linkifyText(cleanCommentContent(r.content))}
                                   </p>
                                 )}
                               </div>
