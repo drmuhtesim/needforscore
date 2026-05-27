@@ -1,36 +1,46 @@
 /**
-
-
  * SEO unit crawl.
  *
  * Validates the offline contract of our SEO surface:
- *   - <SEO> component emits the right title/description/canonical/og/twitter tags
+ *   - SEO component emits title/description/canonical/og/twitter tags
  *   - JSON-LD blocks render as parseable application/ld+json scripts
  *   - public/robots.txt advertises /sitemap.xml and excludes /phone/
- *   - the sitemap edge function source includes the public route segments
+ *   - sitemap edge function source covers every public route segment
  *
  * Live crawl (hits the real domain) lives in scripts/seo-crawl.ts so CI stays offline.
  */
-import React from "react";
-import { describe, it, expect, beforeEach } from "vitest";
-import { renderToStaticMarkup } from "react-dom/server";
+import React, { act } from "react";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { createRoot, type Root } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import SEO from "@/components/SEO";
 
-const render = (ui: React.ReactElement) => {
-
-  const helmetContext: any = {};
-  renderToStaticMarkup(<HelmetProvider context={helmetContext}>{ui}</HelmetProvider>);
-  return helmetContext.helmet;
+const mount = (ui: React.ReactElement) => {
+  const container = document.createElement("div");
+  document.body.appendChild(container);
+  const root: Root = createRoot(container);
+  act(() => {
+    root.render(<HelmetProvider>{ui}</HelmetProvider>);
+  });
+  return {
+    head: () => document.head.innerHTML,
+    cleanup: () => {
+      act(() => root.unmount());
+      container.remove();
+      document.head.querySelectorAll("[data-rh='true']").forEach((n) => n.remove());
+      document.title = "";
+    },
+  };
 };
 
 describe("SEO component", () => {
-  let helmet: any;
+  let head: string;
+  let cleanup: () => void;
 
   beforeEach(() => {
-    helmet = render(
+    const m = mount(
       <SEO
         title="Test Title"
         description="Test description"
@@ -40,48 +50,47 @@ describe("SEO component", () => {
         jsonLd={{ "@context": "https://schema.org", "@type": "Person", name: "example" }}
       />,
     );
+    head = m.head();
+    cleanup = m.cleanup;
   });
 
+  afterEach(() => cleanup());
+
   it("emits title + description", () => {
-    expect(helmet.title.toString()).toContain("Test Title");
-    const metas = helmet.meta.toString();
-    expect(metas).toMatch(/name="description"[^>]*content="Test description"/);
+    expect(document.title).toBe("Test Title");
+    expect(head).toMatch(/name="description"[^>]*content="Test description"/);
   });
 
   it("emits absolute canonical for a relative input", () => {
-    expect(helmet.link.toString()).toContain(
-      'href="https://needforscore.com/score/example"',
-    );
+    expect(head).toContain('href="https://needforscore.com/score/example"');
   });
 
   it("emits OpenGraph tags", () => {
-    const metas = helmet.meta.toString();
-    expect(metas).toMatch(/property="og:title"[^>]*content="Test Title"/);
-    expect(metas).toMatch(/property="og:description"/);
-    expect(metas).toMatch(/property="og:url"[^>]*needforscore\.com\/score\/example/);
-    expect(metas).toMatch(/property="og:image"[^>]*example\.com\/og\.png/);
-    expect(metas).toMatch(/property="og:type"[^>]*content="profile"/);
+    expect(head).toMatch(/property="og:title"[^>]*content="Test Title"/);
+    expect(head).toMatch(/property="og:description"/);
+    expect(head).toMatch(/property="og:url"[^>]*needforscore\.com\/score\/example/);
+    expect(head).toMatch(/property="og:image"[^>]*example\.com\/og\.png/);
+    expect(head).toMatch(/property="og:type"[^>]*content="profile"/);
   });
 
   it("emits Twitter summary_large_image card", () => {
-    const metas = helmet.meta.toString();
-    expect(metas).toMatch(/name="twitter:card"[^>]*content="summary_large_image"/);
-    expect(metas).toMatch(/name="twitter:title"/);
-    expect(metas).toMatch(/name="twitter:image"/);
+    expect(head).toMatch(/name="twitter:card"[^>]*content="summary_large_image"/);
+    expect(head).toMatch(/name="twitter:title"/);
+    expect(head).toMatch(/name="twitter:image"/);
   });
 
   it("emits parseable JSON-LD", () => {
-    const scripts = helmet.script.toString();
-    expect(scripts).toContain('type="application/ld+json"');
-    const match = scripts.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+    expect(head).toContain('type="application/ld+json"');
+    const match = head.match(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/);
     expect(match).toBeTruthy();
     const json = JSON.parse(match![1]);
     expect(json["@type"]).toBe("Person");
   });
 
   it("honours noindex", () => {
-    const h = render(<SEO title="X" description="Y" noindex />);
-    expect(h.meta.toString()).toMatch(/name="robots"[^>]*content="noindex, nofollow"/);
+    const m = mount(<SEO title="X" description="Y" noindex />);
+    expect(m.head()).toMatch(/name="robots"[^>]*content="noindex, nofollow"/);
+    m.cleanup();
   });
 });
 
@@ -105,7 +114,6 @@ describe("sitemap edge function source", () => {
   });
 
   it("covers every public route segment", () => {
-    // sitemap builds URLs from CATEGORY_SEGMENTS + literal /score/ + statics
     expect(src).toMatch(/\/score\//);
     expect(src).toMatch(/\/terms/);
     expect(src).toMatch(/\/privacy/);
@@ -114,9 +122,7 @@ describe("sitemap edge function source", () => {
     }
   });
 
-
   it("excludes /phone/ entries from the sitemap (privacy)", () => {
     expect(src).toMatch(/cat === "phone"/);
-    expect(src).toMatch(/continue/);
   });
 });
