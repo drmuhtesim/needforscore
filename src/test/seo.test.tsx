@@ -2,7 +2,7 @@
  * SEO unit crawl.
  *
  * Validates the offline contract of our SEO surface:
- *   - <SEO> component emits the right title/description/canonical/og:*/twitter:* tags
+ *   - <SEO> component emits the right title/description/canonical/og/twitter tags
  *   - JSON-LD blocks render as parseable application/ld+json scripts
  *   - public/robots.txt advertises /sitemap.xml and excludes /phone/
  *   - the sitemap edge function source includes the public route segments
