@@ -1,0 +1,23 @@
+# Score (NeedForScore)
+
+> Score (needforscore.com) is a Turkish community-driven OSINT platform where users rate and expose scams across Instagram, TikTok, X (Twitter), phone numbers, and Score users themselves. Each entry gets community ratings (1–10) and risk badges (safe / suspicious / dangerous).
+
+Score is intentionally minimal and data-dense, inspired by dexscreener.com. Public entries are visible to anyone; phone-number pages are masked and intentionally not indexed.
+
+## Pages
+
+- [Home / feed](/): Latest community entries across Instagram, TikTok, X, and Score users — sortable, filterable by category, searchable.
+- [Sign in / sign up](/auth): Email + password or Google authentication to start rating and commenting.
+- [User agreement (Turkish)](/terms): Kullanıcı sözleşmesi — terms of use for the Score platform.
+- [Privacy policy (Turkish)](/privacy): KVKK-uyumlu gizlilik politikası — how user data is processed and stored.
+
+## Categories
+
+- Instagram accounts — `/instagram/{handle}`
+- TikTok accounts — `/tiktok/{handle}`
+- X / Twitter accounts — `/x/{handle}`
+- Score users — `/score/{username}`
+
+## Optional
+
+- [Sitemap](/sitemap.xml): Full list of indexable entity pages.
