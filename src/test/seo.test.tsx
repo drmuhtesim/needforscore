@@ -44,7 +44,7 @@ describe("SEO component", () => {
   });
 
   it("emits absolute canonical for a relative input", () => {
-    expect(out.link).toContain('href="https://needforscore.com/score/example"');
+    expect(out.link).toContain('href="https://www.needforscore.com/score/example"');
   });
 
   it("emits OpenGraph tags", () => {
@@ -93,7 +93,7 @@ describe("sitemap edge function source", () => {
   const src = readFileSync(resolve("supabase/functions/sitemap/index.ts"), "utf8");
 
   it("uses the canonical site URL", () => {
-    expect(src).toContain('SITE_URL = "https://needforscore.com"');
+    expect(src).toContain('SITE_URL = "https://www.needforscore.com"');
   });
 
   it("covers every public route segment", () => {

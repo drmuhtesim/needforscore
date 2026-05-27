@@ -102,4 +102,4 @@ Disallow: /unsubscribe
 Disallow: /messages
 Disallow: /notifications
 
-Sitemap: https://needforscore.com/sitemap.xml
+Sitemap: https://www.needforscore.com/sitemap.xml
