@@ -104,11 +104,16 @@ describe("sitemap edge function source", () => {
     expect(src).toContain('SITE_URL = "https://needforscore.com"');
   });
 
-  it("emits every public route segment", () => {
-    for (const seg of ["/score/", "/instagram/", "/tiktok/", "/x/", "/terms", "/privacy"]) {
+  it("covers every public route segment", () => {
+    // sitemap builds URLs from CATEGORY_SEGMENTS + literal /score/ + statics
+    expect(src).toMatch(/\/score\//);
+    expect(src).toMatch(/\/terms/);
+    expect(src).toMatch(/\/privacy/);
+    for (const seg of ['"instagram"', '"tiktok"', '"x"']) {
       expect(src.includes(seg)).toBe(true);
     }
   });
+
 
   it("excludes /phone/ entries from the sitemap (privacy)", () => {
     expect(src).toMatch(/cat === "phone"/);
