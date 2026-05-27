@@ -92,11 +92,17 @@ const UserProfile = () => {
   const displayName = (profile as any).show_display_name && profile.display_name ? profile.display_name : profile.username;
   const seoTitle = `@${profile.username} — ${displayName} | ${SITE_NAME}`;
   const bio = (profile as any).show_bio ? (profile as any).bio : null;
-  const seoDesc = bio
-    ? String(bio).slice(0, 155)
-    : `@${profile.username} kullanıcısının Score profili: ${entries.length} entry, ${commentCount} deneyim${
-        avgRating != null ? `, ortalama puan ${avgRating.toFixed(1)}/10` : ""
-      }. ${categories.length ? `Kategoriler: ${categories.join(", ")}.` : ""}`.slice(0, 155);
+  const statsSuffix = `@${profile.username} kullanıcısının Score profili: ${entries.length} entry, ${commentCount} deneyim${
+    avgRating != null ? `, ortalama puan ${avgRating.toFixed(1)}/10` : ""
+  }.${categories.length ? ` Kategoriler: ${categories.join(", ")}.` : ""}`;
+  const bioDesc = bio ? String(bio).trim() : "";
+  const seoDesc = (
+    bioDesc.length >= 50
+      ? bioDesc
+      : bioDesc
+        ? `${bioDesc} — ${statsSuffix}`
+        : statsSuffix
+  ).slice(0, 155);
   const ogImage = ((profile as any).show_avatar && profile.avatar_url) || DEFAULT_OG_IMAGE;
 
   const personLd: Record<string, any> = {
