@@ -1,4 +1,6 @@
+// @vitest-environment node
 /**
+
  * SEO unit crawl.
  *
  * Validates the offline contract of our SEO surface:
