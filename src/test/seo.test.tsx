@@ -9,6 +9,7 @@
  *
  * Live crawl (hits the real domain) lives in scripts/seo-crawl.ts so CI stays offline.
  */
+import React from "react";
 import { describe, it, expect, beforeEach } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { HelmetProvider } from "react-helmet-async";
@@ -17,6 +18,7 @@ import { resolve } from "path";
 import SEO from "@/components/SEO";
 
 const render = (ui: React.ReactElement) => {
+
   const helmetContext: any = {};
   renderToStaticMarkup(<HelmetProvider context={helmetContext}>{ui}</HelmetProvider>);
   return helmetContext.helmet;
