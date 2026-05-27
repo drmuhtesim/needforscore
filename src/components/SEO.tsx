@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-export const SITE_URL = "https://needforscore.com";
+export const SITE_URL = "https://www.needforscore.com";
 export const SITE_NAME = "Score (NeedForScore)";
 export const DEFAULT_OG_IMAGE =
   "https://storage.googleapis.com/gpt-engineer-file-uploads/ZIFI5J5XtxTPJYoUuTh2VF2lc3v1/social-images/social-1777753002392-IMG_8199.webp";
