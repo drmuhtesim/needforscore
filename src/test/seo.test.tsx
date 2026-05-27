@@ -42,8 +42,8 @@ describe("SEO component", () => {
   let head: string;
   let cleanup: () => void;
 
-  beforeEach(() => {
-    const m = mount(
+  beforeEach(async () => {
+    const m = await mount(
       <SEO
         title="Test Title"
         description="Test description"
@@ -57,7 +57,7 @@ describe("SEO component", () => {
     cleanup = m.cleanup;
   });
 
-  afterEach(() => cleanup());
+  afterEach(async () => await cleanup());
 
   it("emits title + description", () => {
     expect(document.title).toBe("Test Title");
@@ -90,12 +90,13 @@ describe("SEO component", () => {
     expect(json["@type"]).toBe("Person");
   });
 
-  it("honours noindex", () => {
-    const m = mount(<SEO title="X" description="Y" noindex />);
+  it("honours noindex", async () => {
+    const m = await mount(<SEO title="X" description="Y" noindex />);
     expect(m.head()).toMatch(/name="robots"[^>]*content="noindex, nofollow"/);
-    m.cleanup();
+    await m.cleanup();
   });
 });
+
 
 describe("robots.txt", () => {
   const txt = readFileSync(resolve("public/robots.txt"), "utf8");
