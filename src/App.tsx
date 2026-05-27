@@ -7,6 +7,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LinkPreviewProvider } from "@/components/LinkPreviewProvider";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
+import NoindexHead from "./components/NoindexHead.tsx";
+
 
 const Index = lazy(() => import("./pages/Index.tsx"));
 const Auth = lazy(() => import("./pages/Auth.tsx"));
