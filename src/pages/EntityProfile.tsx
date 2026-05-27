@@ -169,17 +169,22 @@ const EntityProfile = ({ segment }: { segment: string }) => {
     ],
   };
 
+  const ogImage = isPhone
+    ? DEFAULT_OG_IMAGE
+    : `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/og-image?category=${encodeURIComponent(category)}&handle=${encodeURIComponent(resolvedTarget ?? slug ?? "")}`;
+
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title={seoTitle}
         description={seoDesc}
         canonical={canonical}
-        image={DEFAULT_OG_IMAGE}
+        image={ogImage}
         type="profile"
         noindex={isPhone}
         jsonLd={isPhone ? undefined : [aggregateLd, breadcrumbLd]}
       />
+
       <Header />
       <main className="max-w-4xl mx-auto px-4 py-6">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
