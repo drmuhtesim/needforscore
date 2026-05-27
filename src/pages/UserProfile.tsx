@@ -8,7 +8,7 @@ import UserScore from "@/components/UserScore";
 import LinkedAccountsPanel from "@/components/LinkedAccountsPanel";
 import ProfileEditDialog from "@/components/ProfileEditDialog";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import SEO, { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from "@/components/SEO";
+import SEO, { SITE_URL, SITE_NAME } from "@/components/SEO";
 import EntryDetail from "@/pages/EntryDetail";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
