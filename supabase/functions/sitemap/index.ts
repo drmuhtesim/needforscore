@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { parsePhoneNumberFromString } from "https://esm.sh/libphonenumber-js@1.11.7";
 
-const SITE_URL = "https://needforscore.com";
+const SITE_URL = "https://www.needforscore.com";
 
 const corsHeaders: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",

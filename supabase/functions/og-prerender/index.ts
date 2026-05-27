@@ -8,7 +8,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
-const SITE_URL = "https://needforscore.com";
+const SITE_URL = "https://www.needforscore.com";
 const SITE_NAME = "Score (NeedForScore)";
 const DEFAULT_OG_IMAGE =
   "https://storage.googleapis.com/gpt-engineer-file-uploads/ZIFI5J5XtxTPJYoUuTh2VF2lc3v1/social-images/social-1777753002392-IMG_8199.webp";
