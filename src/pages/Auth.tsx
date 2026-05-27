@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Mail, Lock, User as UserIcon, ArrowLeft } from "lucide-react";
 import scoreLogo from "@/assets/score-logo.jpeg";
+import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useToast } from "@/hooks/use-toast";
@@ -182,6 +183,16 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO
+        title={mode === "signup" ? "Kayıt ol — Score" : "Giriş yap — Score"}
+        description={
+          mode === "signup"
+            ? "Score'a kayıt ol; Instagram, TikTok, X ve telefon numaralarını puanlamaya, yorum yapmaya başla."
+            : "Score hesabınla giriş yap ve topluluk puanlamalarına katıl."
+        }
+        canonical="/auth"
+        noindex
+      />
       <div className="border-b border-border bg-card/80 backdrop-blur-sm">
         <div className="flex items-center justify-between px-4 lg:px-6 h-14 max-w-5xl mx-auto w-full">
           <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm">

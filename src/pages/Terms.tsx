@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import scoreLogo from "@/assets/score-logo.jpeg";
+import SEO from "@/components/SEO";
 
 const Terms = () => {
   const { i18n } = useTranslation();
@@ -10,6 +11,15 @@ const Terms = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={isTR ? "Kullanıcı Sözleşmesi — Score" : "Terms of Service — Score"}
+        description={
+          isTR
+            ? "Score (needforscore.com) kullanıcı sözleşmesi: platform kuralları, hak ve yükümlülükler, içerik politikası."
+            : "Score (needforscore.com) terms of service: platform rules, user rights and responsibilities, content policy."
+        }
+        canonical="/terms"
+      />
       <div className="border-b border-border bg-card/80 backdrop-blur-sm">
         <div className="flex items-center justify-between px-4 lg:px-6 h-14 max-w-3xl mx-auto w-full">
           <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm">
