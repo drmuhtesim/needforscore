@@ -17,23 +17,26 @@ import { readFileSync } from "fs";
 import { resolve } from "path";
 import SEO from "@/components/SEO";
 
-const mount = (ui: React.ReactElement) => {
+const mount = async (ui: React.ReactElement) => {
   const container = document.createElement("div");
   document.body.appendChild(container);
   const root: Root = createRoot(container);
-  act(() => {
+  await act(async () => {
     root.render(<HelmetProvider>{ui}</HelmetProvider>);
   });
+  // Helmet flushes head mutations via requestAnimationFrame; give it a tick.
+  await new Promise((r) => setTimeout(r, 0));
   return {
     head: () => document.head.innerHTML,
-    cleanup: () => {
-      act(() => root.unmount());
+    cleanup: async () => {
+      await act(async () => root.unmount());
       container.remove();
       document.head.querySelectorAll("[data-rh='true']").forEach((n) => n.remove());
       document.title = "";
     },
   };
 };
+
 
 describe("SEO component", () => {
   let head: string;
