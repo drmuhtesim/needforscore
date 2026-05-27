@@ -149,7 +149,7 @@ const FallbackCard = ({ url, host }: FallbackCardProps) => {
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <Globe className="h-12 w-12 text-muted-foreground/50" />
+              <Globe className="h-12 w-12 text-muted-foreground" />
             </div>
           )}
         </div>
