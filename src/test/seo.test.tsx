@@ -1,7 +1,9 @@
+// @vitest-environment node
 /**
  * SEO unit crawl — offline contract checks.
  * Live crawl lives in scripts/seo-crawl.ts.
  */
+
 import React from "react";
 import { describe, it, expect } from "vitest";
 import { renderToString } from "react-dom/server";
