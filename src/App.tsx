@@ -7,6 +7,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LinkPreviewProvider } from "@/components/LinkPreviewProvider";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
+import NoindexHead from "./components/NoindexHead.tsx";
+
 
 const Index = lazy(() => import("./pages/Index.tsx"));
 const Auth = lazy(() => import("./pages/Auth.tsx"));
@@ -84,9 +86,9 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
-                  <Route path="/auth/callback" element={<AuthCallback />} />
-                  <Route path="/onboarding/username" element={<UsernameOnboarding />} />
-                  <Route path="/verify-email" element={<VerifyEmail />} />
+                  <Route path="/auth/callback" element={<><NoindexHead title="Giriş yapılıyor" /><AuthCallback /></>} />
+                  <Route path="/onboarding/username" element={<><NoindexHead title="Kullanıcı adı seç" /><UsernameOnboarding /></>} />
+                  <Route path="/verify-email" element={<><NoindexHead title="E-posta doğrulama" /><VerifyEmail /></>} />
                   <Route path="/e/:id" element={<LegacyEntryRedirect />} />
                   <Route path="/u/:username" element={<LegacyUserRedirect />} />
                   <Route path="/score/:username" element={<UserProfile />} />
@@ -95,14 +97,15 @@ const App = () => (
                   <Route path="/x/:slug" element={<EntityProfile segment="x" />} />
                   <Route path="/twitter/:slug" element={<EntityProfile segment="twitter" />} />
                   <Route path="/phone/:slug" element={<EntityProfile segment="phone" />} />
-                  <Route path="/messages" element={<Messages />} />
-                  <Route path="/notifications" element={<NotificationsPage />} />
-                  <Route path="/mod/login" element={<ModLogin />} />
-                  <Route path="/mod" element={<ModDashboard />} />
+                  <Route path="/messages" element={<><NoindexHead title="Mesajlar" /><Messages /></>} />
+                  <Route path="/notifications" element={<><NoindexHead title="Bildirimler" /><NotificationsPage /></>} />
+                  <Route path="/mod/login" element={<><NoindexHead title="Moderatör girişi" /><ModLogin /></>} />
+                  <Route path="/mod" element={<><NoindexHead title="Moderasyon paneli" /><ModDashboard /></>} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
-                  <Route path="/unsubscribe" element={<Unsubscribe />} />
+                  <Route path="/unsubscribe" element={<><NoindexHead title="E-posta aboneliğinden çık" /><Unsubscribe /></>} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>

@@ -141,6 +141,16 @@ const UserProfile = () => {
       { "@type": "ListItem", position: 3, name: `@${profile.username}`, item: profileUrl },
     ],
   };
+  const profilePageLd: Record<string, any> = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    url: profileUrl,
+    name: seoTitle,
+    description: seoDesc,
+    dateCreated: (profile as any).created_at,
+    dateModified: (profile as any).updated_at,
+    mainEntity: personLd,
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -150,8 +160,9 @@ const UserProfile = () => {
         canonical={`/score/${profile.username}`}
         image={ogImage}
         type="profile"
-        jsonLd={[personLd, breadcrumbLd]}
+        jsonLd={[profilePageLd, breadcrumbLd]}
       />
+
       <Header />
       <div className="max-w-3xl mx-auto px-4 py-6">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
