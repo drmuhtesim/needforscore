@@ -133,7 +133,10 @@ const EntityProfile = ({ segment }: { segment: string }) => {
   const ratings = entries.map((e) => e.rating).filter((r) => typeof r === "number");
   const avgRating = ratings.length ? ratings.reduce((s, v) => s + v, 0) / ratings.length : null;
 
-  const seoTitle = `${publicTitle} — ${categoryLabel[category]} güvenilirlik & yorumlar | ${SITE_NAME}`;
+  const seoTitleRaw = `${publicTitle} — ${categoryLabel[category]} | ${SITE_NAME}`;
+  const seoTitle = seoTitleRaw.length > 60
+    ? `${publicTitle.slice(0, 60 - (` — ${categoryLabel[category]} | ${SITE_NAME}`.length))}… — ${categoryLabel[category]} | ${SITE_NAME}`
+    : seoTitleRaw;
   const seoDesc = (
     `${publicTitle} hakkında ${entries.length} entry` +
     (avgRating != null ? `, ortalama puan ${avgRating.toFixed(1)}/10. ` : ". ") +
