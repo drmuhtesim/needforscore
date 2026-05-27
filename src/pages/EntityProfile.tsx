@@ -159,6 +159,30 @@ const EntityProfile = ({ segment }: { segment: string }) => {
       ratingCount: entries.length,
     };
   }
+  // Per-entry community reviews (lightweight; helps rich-result eligibility).
+  if (entries.length > 0) {
+    aggregateLd.review = entries.slice(0, 20).map((e) => ({
+      "@type": "Review",
+      datePublished: new Date(e.created_at).toISOString().slice(0, 10),
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: String(e.rating),
+        bestRating: "10",
+        worstRating: "1",
+      },
+      reviewBody: (e.description ?? "").replace(/\*\*/g, "").slice(0, 280),
+    }));
+  }
+  // DiscussionForumPosting for the currently selected entry (entry + comments page).
+  const discussionLd = {
+    "@context": "https://schema.org",
+    "@type": "DiscussionForumPosting",
+    headline: `${publicTitle} — ${categoryLabel[category]}`,
+    url: `${SITE_URL}${canonical}${selectedId ? `?e=${selectedId}` : ""}`,
+    datePublished: new Date(selected.created_at).toISOString(),
+    articleBody: (selected.description ?? "").replace(/\*\*/g, "").slice(0, 500),
+    about: { "@type": "Thing", name: publicTitle },
+  };
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -168,6 +192,7 @@ const EntityProfile = ({ segment }: { segment: string }) => {
       { "@type": "ListItem", position: 3, name: publicTitle, item: `${SITE_URL}${canonical}` },
     ],
   };
+
 
   const ogImage = isPhone
     ? DEFAULT_OG_IMAGE
