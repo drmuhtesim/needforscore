@@ -102,4 +102,4 @@ Disallow: /unsubscribe
 Disallow: /messages
 Disallow: /notifications
 
-Sitemap: https://nppfwggoqqfhyczclqcd.supabase.co/functions/v1/sitemap
+Sitemap: https://needforscore.com/sitemap.xml
