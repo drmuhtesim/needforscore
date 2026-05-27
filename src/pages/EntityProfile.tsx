@@ -207,7 +207,7 @@ const EntityProfile = ({ segment }: { segment: string }) => {
         image={ogImage}
         type="profile"
         noindex={isPhone}
-        jsonLd={isPhone ? undefined : [aggregateLd, breadcrumbLd]}
+        jsonLd={isPhone ? undefined : [aggregateLd, discussionLd, breadcrumbLd]}
       />
 
       <Header />
