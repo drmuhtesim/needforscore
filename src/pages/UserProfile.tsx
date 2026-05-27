@@ -103,7 +103,7 @@ const UserProfile = () => {
         ? `${bioDesc} — ${statsSuffix}`
         : statsSuffix
   ).slice(0, 155);
-  const ogImage = ((profile as any).show_avatar && profile.avatar_url) || DEFAULT_OG_IMAGE;
+  const ogImage = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/og-image?category=score&handle=${encodeURIComponent(profile.username)}`;
 
   const personLd: Record<string, any> = {
     "@context": "https://schema.org",
