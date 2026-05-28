@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications, type AppNotification } from "@/hooks/useNotifications";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buildEntityUrl, type EntityCategory } from "@/lib/entitySlugs";
+import NoindexHead from "@/components/NoindexHead";
 
 const NotificationsPage = () => {
   const { t } = useTranslation();
@@ -46,6 +47,7 @@ const NotificationsPage = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <NoindexHead title="Bildirimler" description="Score hesabınıza ait özel bildirimler. Bu sayfa arama motorlarınca dizine eklenmez." />
       <Header />
       <main className="flex-1 max-w-2xl mx-auto w-full px-3 sm:px-4 py-4 pb-20 lg:pb-4">
         <div className="flex items-center justify-between mb-4">

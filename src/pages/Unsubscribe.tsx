@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import NoindexHead from "@/components/NoindexHead";
 
 const Unsubscribe = () => {
   const [params] = useSearchParams();
@@ -43,6 +44,7 @@ const Unsubscribe = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <NoindexHead title="E-posta aboneliğinden çık" description="Score e-posta listesinden çıkış sayfası. Bu sayfa arama motorlarınca dizine eklenmez." />
       <div className="max-w-md w-full bg-card border border-border rounded-xl p-8 text-center space-y-4">
         {state === "loading" && (<><Loader2 className="h-12 w-12 mx-auto text-primary animate-spin" /><h1 className="text-xl font-bold">Yükleniyor…</h1></>)}
         {state === "ready" && (

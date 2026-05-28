@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Send, ArrowLeft, Check, CheckCheck } from "lucide-react";
 import { getOrCreateConversation } from "@/lib/messaging";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
+import NoindexHead from "@/components/NoindexHead";
 
 interface ConversationRow {
   id: string;
@@ -201,6 +202,7 @@ const Messages = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col">
+      <NoindexHead title="Mesajlar" description="Score üzerinde özel mesajlaşma sayfası. Bu alan arama motorlarınca dizine eklenmez." />
       <Header />
       <main className="flex-1 flex min-h-0 pb-14 lg:pb-0">
         {/* Konuşma listesi (WA chat list) */}

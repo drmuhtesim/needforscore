@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import NoindexHead from "@/components/NoindexHead";
 
 const VerifyEmail = () => {
   const { t } = useTranslation();
@@ -30,6 +31,7 @@ const VerifyEmail = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <NoindexHead title="E-posta doğrulama" description="Score hesap e-posta doğrulama sayfası. Bu sayfa arama motorlarınca dizine eklenmez." />
       <div className="max-w-md w-full bg-card border border-border rounded-xl p-8 text-center space-y-4">
         {state === "loading" && (
           <>
