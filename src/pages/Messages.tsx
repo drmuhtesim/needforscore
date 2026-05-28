@@ -201,6 +201,7 @@ const Messages = () => {
 
   return (
     <div className="h-screen bg-background flex flex-col">
+      <NoindexHead title="Mesajlar" description="Score üzerinde özel mesajlaşma sayfası. Bu alan arama motorlarınca dizine eklenmez." />
       <Header />
       <main className="flex-1 flex min-h-0 pb-14 lg:pb-0">
         {/* Konuşma listesi (WA chat list) */}
