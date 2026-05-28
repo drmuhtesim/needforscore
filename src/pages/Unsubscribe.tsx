@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import NoindexHead from "@/components/NoindexHead";
 
 const Unsubscribe = () => {
   const [params] = useSearchParams();
