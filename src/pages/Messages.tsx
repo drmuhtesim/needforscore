@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Send, ArrowLeft, Check, CheckCheck } from "lucide-react";
 import { getOrCreateConversation } from "@/lib/messaging";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
+import NoindexHead from "@/components/NoindexHead";
 
 interface ConversationRow {
   id: string;
