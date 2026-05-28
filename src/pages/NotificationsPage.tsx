@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications, type AppNotification } from "@/hooks/useNotifications";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buildEntityUrl, type EntityCategory } from "@/lib/entitySlugs";
+import NoindexHead from "@/components/NoindexHead";
 
 const NotificationsPage = () => {
   const { t } = useTranslation();
