@@ -96,7 +96,7 @@ const Index = () => {
   const tfRaw = t("filters.timeFilters", { returnObjects: true });
   const timeFilters = Array.isArray(tfRaw) ? (tfRaw as string[]) : ["5m", "1h", "6h", "24h", "7d", "30d"];
 
-  const phoneGate = category === "phone" && !searchQuery.trim();
+  
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-14 lg:pb-0">
