@@ -178,16 +178,7 @@ const Index = () => {
           </div>
 
           {/* Table */}
-          {phoneGate ? (
-            <div className="px-4 py-16 text-center space-y-3">
-              <p className="text-base font-semibold">Telefon araması gizliliğe tabidir</p>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                Telefon numarası raporlarına ulaşmak için yukarıdaki arama kutusuna tam numarayı yazıp aratın. Liste halinde gösterim yapılmaz.
-              </p>
-            </div>
-          ) : (
-            <ReportTable category={category} searchQuery={searchQuery} />
-          )}
+          <ReportTable category={category} searchQuery={searchQuery} />
         </main>
       </div>
       <MobileBottomBar />
