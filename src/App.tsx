@@ -110,6 +110,12 @@ const App = () => (
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/unsubscribe" element={<><NoindexHead title="E-posta aboneliğinden çık" /><Unsubscribe /></>} />
+                  <Route path="/community-token" element={<CommunityToken />} />
+                  <Route path="/community-token/why" element={<WhyCommunityToken />} />
+                  <Route path="/community-token/tokenomics" element={<Tokenomics />} />
+                  <Route path="/community-token/whitepaper" element={<Whitepaper />} />
+                  <Route path="/community-token/roadmap" element={<Roadmap />} />
+                  <Route path="/community-token/faq" element={<TokenFAQ />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
 
                   <Route path="*" element={<NotFound />} />
