@@ -41,13 +41,6 @@ const Header = () => {
           </span>
         </Link>
 
-        <Link
-          to="/community-token"
-          className="hidden md:inline-flex ml-2 items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-emerald-200 border border-emerald-400/40 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.9)]" />
-          Community Token
-        </Link>
 
         <div className="flex items-center gap-2">
           {/* Desktop: Score it / Add experience CTA — bigger, eye-catching */}
