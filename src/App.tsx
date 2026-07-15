@@ -11,6 +11,7 @@ import NoindexHead from "./components/NoindexHead.tsx";
 
 
 const Index = lazy(() => import("./pages/Index.tsx"));
+const Landing = lazy(() => import("./pages/Landing.tsx"));
 const Auth = lazy(() => import("./pages/Auth.tsx"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback.tsx"));
 const LegacyEntryRedirect = lazy(() => import("./pages/LegacyEntryRedirect.tsx"));
@@ -90,7 +91,8 @@ const App = () => (
               }>
 
                 <Routes>
-                  <Route path="/" element={<Index />} />
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/app" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/auth/callback" element={<><NoindexHead title="Giriş yapılıyor" /><AuthCallback /></>} />
                   <Route path="/onboarding/username" element={<><NoindexHead title="Kullanıcı adı seç" /><UsernameOnboarding /></>} />
