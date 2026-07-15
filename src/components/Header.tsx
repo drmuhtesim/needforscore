@@ -34,7 +34,7 @@ const Header = () => {
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <EmailVerifyBanner />
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
-        <Link to="/" className="flex items-center gap-2" aria-label="Score — needforscore.com">
+        <Link to="/app" className="flex items-center gap-2" aria-label="Score — needforscore.com">
           <img src={scoreLogo} alt="Score logo" width={32} height={32} fetchPriority="high" decoding="async" className="h-8 w-8 rounded-lg object-cover shadow-sm" />
           <span className="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-[hsl(195_85%_60%)] via-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] bg-clip-text text-transparent">
             Score
