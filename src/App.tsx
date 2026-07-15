@@ -27,6 +27,12 @@ const EntityProfile = lazy(() => import("./pages/EntityProfile.tsx"));
 const LegacyUserRedirect = lazy(() => import("./pages/LegacyUserRedirect.tsx"));
 const ModDashboard = lazy(() => import("./pages/ModDashboard.tsx"));
 const ModLogin = lazy(() => import("./pages/ModLogin.tsx"));
+const CommunityToken = lazy(() => import("./pages/token/CommunityToken.tsx"));
+const WhyCommunityToken = lazy(() => import("./pages/token/WhyCommunityToken.tsx"));
+const Tokenomics = lazy(() => import("./pages/token/Tokenomics.tsx"));
+const Whitepaper = lazy(() => import("./pages/token/Whitepaper.tsx"));
+const Roadmap = lazy(() => import("./pages/token/Roadmap.tsx"));
+const TokenFAQ = lazy(() => import("./pages/token/FAQ.tsx"));
 
 
 // Global react-query defaults:
