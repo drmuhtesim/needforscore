@@ -146,6 +146,9 @@ const Header = () => {
           </button>
         </div>
       </div>
+          <Link to="/community-token" className="block text-sm font-bold text-emerald-400" onClick={() => setMobileMenu(false)}>
+            ✦ Community Token
+          </Link>
 
       {mobileMenu && (
         <div className="md:hidden border-t border-border bg-card p-4 space-y-3">
