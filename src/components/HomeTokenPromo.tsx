@@ -35,12 +35,20 @@ const HomeTokenPromo = () => {
             </p>
           </div>
 
-          <Link
-            to="/community-token"
-            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-background bg-gradient-to-r from-emerald-400 to-teal-400 shadow-[0_0_25px_rgba(16,185,129,0.45)] hover:shadow-[0_0_35px_rgba(16,185,129,0.75)] transition-all"
-          >
-            Learn More <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="shrink-0 flex flex-col gap-2">
+            <Link
+              to="/community-token"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-bold text-background bg-gradient-to-r from-emerald-400 to-teal-400 shadow-[0_0_25px_rgba(16,185,129,0.45)] hover:shadow-[0_0_35px_rgba(16,185,129,0.75)] transition-all"
+            >
+              Learn More <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/app"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full font-semibold border border-emerald-400/40 text-emerald-200 hover:bg-emerald-500/10 transition-colors"
+            >
+              Launch App <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>

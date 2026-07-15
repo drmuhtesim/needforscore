@@ -28,6 +28,12 @@ const CommunityToken = () => {
             Learn More <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
+            to="/app"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-emerald-200 border border-emerald-400/40 hover:bg-emerald-500/10 transition-colors"
+          >
+            Launch App <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
             to="/community-token/whitepaper"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold border border-emerald-400/30 text-emerald-200 hover:bg-emerald-500/10 transition-colors"
           >
