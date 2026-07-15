@@ -10,6 +10,9 @@ const normalizeLang = (lng?: string): "tr" | "en" => {
   return "en";
 };
 
+// Default language is English worldwide; users can switch to Turkish manually.
+// The previous geo-based auto-switch to TR was removed intentionally.
+
 /**
  * Geo-aware default language detector.
  * - If user is in Turkey → Turkish
