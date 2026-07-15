@@ -6,8 +6,8 @@ import { GlassCard, GradientHeading, Prose, Disclaimer } from "@/components/toke
 const CommunityToken = () => {
   return (
     <TokenLayout
-      title="Community Token — NeedForScore"
-      description="The NeedForScore Community Token exists to grow a global community fighting online fraud and building digital trust."
+      title="$SCORE — NeedForScore Community Token"
+      description="$SCORE is the Community Token that grows a global community fighting online fraud and building digital trust on NeedForScore."
       canonical="/community-token"
     >
       <div className="text-center mb-10 animate-fade-in">
@@ -15,7 +15,7 @@ const CommunityToken = () => {
           <Sparkles className="h-3.5 w-3.5" />
           COMMUNITY-FIRST · MISSION-DRIVEN
         </div>
-        <GradientHeading>The NeedForScore Community Token</GradientHeading>
+        <GradientHeading>$SCORE — The NeedForScore Community Token</GradientHeading>
         <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
           A token built to unite a global community around a single mission: reduce online scams and increase trust
           on the internet. The product always comes first — the token exists to support community growth.
