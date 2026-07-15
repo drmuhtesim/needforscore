@@ -110,6 +110,7 @@ const Index = () => {
         jsonLd={HOME_JSONLD}
       />
       <Header />
+      <HomeTokenPromo />
 
       {pendingTarget !== null && (
         <AddEntryDialog
