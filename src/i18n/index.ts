@@ -79,7 +79,7 @@ i18n
     interpolation: { escapeValue: false },
     react: { useSuspense: false },
     detection: {
-      order: ["localStorage", "geoDefault", "navigator"],
+      order: ["localStorage", "navigator"],
       caches: ["localStorage"],
       lookupLocalStorage: "lang",
     },
