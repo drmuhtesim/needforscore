@@ -11,7 +11,6 @@ import NoindexHead from "./components/NoindexHead.tsx";
 
 
 const Index = lazy(() => import("./pages/Index.tsx"));
-const Landing = lazy(() => import("./pages/Landing.tsx"));
 const Auth = lazy(() => import("./pages/Auth.tsx"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback.tsx"));
 const LegacyEntryRedirect = lazy(() => import("./pages/LegacyEntryRedirect.tsx"));
@@ -28,12 +27,6 @@ const EntityProfile = lazy(() => import("./pages/EntityProfile.tsx"));
 const LegacyUserRedirect = lazy(() => import("./pages/LegacyUserRedirect.tsx"));
 const ModDashboard = lazy(() => import("./pages/ModDashboard.tsx"));
 const ModLogin = lazy(() => import("./pages/ModLogin.tsx"));
-const CommunityToken = lazy(() => import("./pages/token/CommunityToken.tsx"));
-const WhyCommunityToken = lazy(() => import("./pages/token/WhyCommunityToken.tsx"));
-const Tokenomics = lazy(() => import("./pages/token/Tokenomics.tsx"));
-const Whitepaper = lazy(() => import("./pages/token/Whitepaper.tsx"));
-const Roadmap = lazy(() => import("./pages/token/Roadmap.tsx"));
-const TokenFAQ = lazy(() => import("./pages/token/FAQ.tsx"));
 
 
 // Global react-query defaults:
@@ -91,8 +84,7 @@ const App = () => (
               }>
 
                 <Routes>
-                  <Route path="/" element={<Landing />} />
-                  <Route path="/app" element={<Index />} />
+                  <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/auth/callback" element={<><NoindexHead title="Giriş yapılıyor" /><AuthCallback /></>} />
                   <Route path="/onboarding/username" element={<><NoindexHead title="Kullanıcı adı seç" /><UsernameOnboarding /></>} />
@@ -112,12 +104,6 @@ const App = () => (
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/unsubscribe" element={<><NoindexHead title="E-posta aboneliğinden çık" /><Unsubscribe /></>} />
-                  <Route path="/community-token" element={<CommunityToken />} />
-                  <Route path="/community-token/why" element={<WhyCommunityToken />} />
-                  <Route path="/community-token/tokenomics" element={<Tokenomics />} />
-                  <Route path="/community-token/whitepaper" element={<Whitepaper />} />
-                  <Route path="/community-token/roadmap" element={<Roadmap />} />
-                  <Route path="/community-token/faq" element={<TokenFAQ />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
 
                   <Route path="*" element={<NotFound />} />

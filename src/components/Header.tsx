@@ -34,19 +34,11 @@ const Header = () => {
     <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <EmailVerifyBanner />
       <div className="flex items-center justify-between px-4 lg:px-6 h-14">
-        <Link to="/app" className="flex items-center gap-2" aria-label="Score — needforscore.com">
+        <Link to="/" className="flex items-center gap-2" aria-label="Score — needforscore.com">
           <img src={scoreLogo} alt="Score logo" width={32} height={32} fetchPriority="high" decoding="async" className="h-8 w-8 rounded-lg object-cover shadow-sm" />
           <span className="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-[hsl(195_85%_60%)] via-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] bg-clip-text text-transparent">
             Score
           </span>
-        </Link>
-
-        <Link
-          to="/community-token"
-          className="hidden md:inline-flex ml-2 items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-emerald-200 border border-emerald-400/40 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.9)]" />
-          Community Token
         </Link>
 
         <div className="flex items-center gap-2">
@@ -146,9 +138,6 @@ const Header = () => {
           </button>
         </div>
       </div>
-          <Link to="/community-token" className="block text-sm font-bold text-emerald-400" onClick={() => setMobileMenu(false)}>
-            ✦ Community Token
-          </Link>
 
       {mobileMenu && (
         <div className="md:hidden border-t border-border bg-card p-4 space-y-3">

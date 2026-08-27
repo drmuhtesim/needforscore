@@ -12,7 +12,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { consumePendingAddEntry } from "@/lib/pendingAddEntry";
 import { TrendingUp, Clock } from "lucide-react";
 import SEO, { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from "@/components/SEO";
-import HomeTokenPromo from "@/components/HomeTokenPromo";
 
 const HOME_JSONLD = [
   {
@@ -110,7 +109,6 @@ const Index = () => {
         jsonLd={HOME_JSONLD}
       />
       <Header />
-      <HomeTokenPromo />
 
       {pendingTarget !== null && (
         <AddEntryDialog
