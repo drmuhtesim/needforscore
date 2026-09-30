@@ -91,6 +91,10 @@ const CommentForm = ({ entryId, canReplyAsTarget, remaining }: Props) => {
     setAsTarget(false);
     setRating(5);
     qc.invalidateQueries({ queryKey: ["comments", entryId] });
+    // Refetch entry detail (avg rating) and the home feed so the new score
+    // shows up immediately instead of after a manual reload.
+    qc.invalidateQueries({ queryKey: ["entry", entryId] });
+    qc.invalidateQueries({ queryKey: ["entries"] });
   };
 
   if (reachedLimit) {

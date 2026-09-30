@@ -45,7 +45,7 @@ const Index = () => {
   const initialCat = (searchParams.get("cat") ?? "all") as CategoryType;
   const [category, setCategory] = useState<CategoryType>(initialCat);
   const [searchQuery, setSearchQuery] = useState(initialQ);
-  const [timeFilter, setTimeFilter] = useState<string>("24h");
+  const [timeFilter, setTimeFilter] = useState<string>("30d");
   const [pendingTarget, setPendingTarget] = useState<string | null>(null);
   const [pendingCategory, setPendingCategory] = useState<Exclude<CategoryType, "all"> | undefined>(undefined);
   const [pendingOpen, setPendingOpen] = useState(false);
@@ -178,7 +178,7 @@ const Index = () => {
           </div>
 
           {/* Table */}
-          <ReportTable category={category} searchQuery={searchQuery} />
+          <ReportTable category={category} searchQuery={searchQuery} timeFilter={timeFilter} />
         </main>
       </div>
       <MobileBottomBar />

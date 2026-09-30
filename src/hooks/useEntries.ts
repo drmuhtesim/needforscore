@@ -28,18 +28,19 @@ export interface EntryRow {
   last_comment_excerpt?: string | null;
 }
 
-export const useEntries = (category: CategoryType, search: string) => {
+export const useEntries = (category: CategoryType, search: string, timeFilter?: string) => {
   const { user, loading: authLoading } = useAuth();
 
   return useQuery({
     enabled: !authLoading,
     placeholderData: (prev) => prev,
-    queryKey: ["entries", user?.id ?? "anon", category, search],
+    queryKey: ["entries", user?.id ?? "anon", category, search, timeFilter ?? "all"],
     queryFn: async (): Promise<EntryRow[]> => {
       const { data, error } = await (supabase as any).rpc("get_entries_feed", {
         _category: category,
         _search: search.trim(),
         _limit: 100,
+        _time_filter: timeFilter ?? null,
       });
       if (error) throw error;
 
