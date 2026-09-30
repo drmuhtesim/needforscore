@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import { useLinkPreview } from "@/components/LinkPreviewProvider";
+import { cleanUrl, isSameOriginUrl, openExternalUrl } from "@/lib/deepLinking";
 
 // Matches http(s)://… and bare domain.tld/… (no protocol). Stops at
 // whitespace and common trailing punctuation.
@@ -11,36 +11,30 @@ const TRAILING = /[.,;:!?)\]}'"»]+$/;
 const ensureProtocol = (raw: string): string =>
   /^https?:\/\//i.test(raw) ? raw : `https://${raw.replace(/^\/+/, "")}`;
 
-const isSameOrigin = (url: string): boolean => {
-  try {
-    return new URL(url).origin === window.location.origin;
-  } catch {
-    return false;
-  }
-};
-
 interface AutoLinkProps {
   href: string;
   children: ReactNode;
 }
 
 /**
- * Clickable URL inside user content. Opens the in-app preview sheet for
- * external links; uses a normal anchor for same-origin URLs.
+ * Clickable URL inside user content. External links open directly in the
+ * target app (or a new browser tab); internal links navigate normally.
  */
 const AutoLink = ({ href, children }: AutoLinkProps) => {
-  const { open } = useLinkPreview();
-  const external = !isSameOrigin(href);
+  const internal = isSameOriginUrl(href);
   return (
     <a
       href={href}
-      target="_blank"
+      target={internal ? undefined : "_blank"}
       rel="noopener noreferrer nofollow"
       onClick={(e) => {
-        if (!external) return;
+        if (internal) return;
         e.preventDefault();
         e.stopPropagation();
-        open(href);
+        if (!openExternalUrl(href)) {
+          // Unsafe / unparseable URL — do nothing rather than navigate blindly.
+          return;
+        }
       }}
       className="text-primary hover:underline break-all"
     >
@@ -72,7 +66,7 @@ export const linkifyText = (text: string): ReactNode => {
     const start = m.index;
     const end = start + url.length;
     if (start > last) parts.push(text.slice(last, start));
-    const href = ensureProtocol(url);
+    const href = cleanUrl(ensureProtocol(url)) ?? ensureProtocol(url);
     parts.push(
       <AutoLink key={`${start}-${end}`} href={href}>
         {url}
