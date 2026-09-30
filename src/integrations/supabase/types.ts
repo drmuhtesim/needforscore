@@ -609,7 +609,12 @@ export type Database = {
       }
       get_email_by_username: { Args: { _username: string }; Returns: string }
       get_entries_feed: {
-        Args: { _category?: string; _limit?: number; _search?: string }
+        Args: {
+          _category?: string
+          _limit?: number
+          _search?: string
+          _time_filter?: string
+        }
         Returns: {
           avg_rating: number
           category: Database["public"]["Enums"]["entry_category"]
