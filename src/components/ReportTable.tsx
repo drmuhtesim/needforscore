@@ -22,16 +22,17 @@ import {
 interface ReportTableProps {
   category: CategoryType;
   searchQuery: string;
+  timeFilter?: string;
 }
 
 const PAGE_SIZE = 25;
 const AUTO_OPEN_DELAY_MS = 700;
 
-const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
+const ReportTable = ({ category, searchQuery, timeFilter }: ReportTableProps) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: entries = [], isLoading } = useEntries(category, searchQuery);
+  const { data: entries = [], isLoading } = useEntries(category, searchQuery, timeFilter);
   const [page, setPage] = useState(1);
   const [ctaOpen, setCtaOpen] = useState(false);
   const [signupPromptOpen, setSignupPromptOpen] = useState(false);
@@ -42,7 +43,7 @@ const ReportTable = ({ category, searchQuery }: ReportTableProps) => {
 
   useEffect(() => {
     setPage(1);
-  }, [category, searchQuery, entries.length]);
+  }, [category, searchQuery, timeFilter, entries.length]);
 
   const pageCount = Math.max(1, Math.ceil(entries.length / PAGE_SIZE));
   const paged = useMemo(
