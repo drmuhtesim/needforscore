@@ -31,7 +31,7 @@ import { toast } from "@/hooks/use-toast";
 import { buildProfileUrl, cleanTarget, formatTargetDisplay } from "@/lib/platforms";
 import { applyProfilePrivacy, PROFILE_PRIVACY_FIELDS } from "@/lib/profilePrivacy";
 import { linkifyText } from "@/lib/linkify";
-import { useLinkPreview } from "@/components/LinkPreviewProvider";
+import { openExternalUrl } from "@/lib/deepLinking";
 
 
 interface CommentRow {
@@ -73,7 +73,6 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
   const { user, profile } = useAuth();
   const { isModerator } = useUserRoles();
   const qc = useQueryClient();
-  const { open: openLinkPreview } = useLinkPreview();
   const { data: entry, isLoading } = useEntry(id);
   const [verifying, setVerifying] = useState(false);
   const [iVerified, setIVerified] = useState(false);
@@ -349,7 +348,8 @@ const EntryDetail = ({ idOverride, embedded }: EntryDetailProps = {}) => {
                       onClick={(e) => {
                         if (/^https?:\/\//i.test(profileUrl)) {
                           e.preventDefault();
-                          openLinkPreview(profileUrl);
+                          e.stopPropagation();
+                          openExternalUrl(profileUrl);
                         }
                       }}
                       target="_blank"
