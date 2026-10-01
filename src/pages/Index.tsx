@@ -45,7 +45,7 @@ const Index = () => {
   const initialCat = (searchParams.get("cat") ?? "all") as CategoryType;
   const [category, setCategory] = useState<CategoryType>(initialCat);
   const [searchQuery, setSearchQuery] = useState(initialQ);
-  const [timeFilter, setTimeFilter] = useState<string>("30d");
+  const [timeFilter, setTimeFilter] = useState<string>("all");
   const [pendingTarget, setPendingTarget] = useState<string | null>(null);
   const [pendingCategory, setPendingCategory] = useState<Exclude<CategoryType, "all"> | undefined>(undefined);
   const [pendingOpen, setPendingOpen] = useState(false);
@@ -94,7 +94,8 @@ const Index = () => {
   };
 
   const tfRaw = t("filters.timeFilters", { returnObjects: true });
-  const timeFilters = Array.isArray(tfRaw) ? (tfRaw as string[]) : ["5m", "1h", "6h", "24h", "7d", "30d"];
+  const TF_KEYS = ["all", "5m", "1h", "6h", "24h", "7d", "30d"];
+  const tfLabels = Array.isArray(tfRaw) ? (tfRaw as string[]) : TF_KEYS;
 
   
 
@@ -156,7 +157,7 @@ const Index = () => {
               <TrendingUp className="h-4 w-4 text-primary" />
               <span className="text-sm font-semibold">{t("filters.featured")}</span>
               <div className="flex items-center gap-1 ml-3">
-                {timeFilters.map((t) => (
+                {TF_KEYS.map((t, i) => (
                   <button
                     key={t}
                     onClick={() => setTimeFilter(t)}
@@ -166,7 +167,7 @@ const Index = () => {
                         : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     }`}
                   >
-                    {t}
+                    {tfLabels[i] ?? t}
                   </button>
                 ))}
               </div>
@@ -178,7 +179,7 @@ const Index = () => {
           </div>
 
           {/* Table */}
-          <ReportTable category={category} searchQuery={searchQuery} timeFilter={timeFilter} />
+          <ReportTable category={category} searchQuery={searchQuery} timeFilter={timeFilter === "all" ? undefined : timeFilter} />
         </main>
       </div>
       <MobileBottomBar />

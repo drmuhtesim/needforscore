@@ -116,7 +116,7 @@
   "filters": {
     "featured": "Öne çıkanlar",
     "lastUpdate": "Son güncelleme: az önce",
-    "timeFilters": ["5D", "1S", "6S", "24S", "7G", "30G"]
+    "timeFilters": ["Tümü", "5D", "1S", "6S", "24S", "7G", "30G"]
   },
   "table": {
     "target": "Hedef",

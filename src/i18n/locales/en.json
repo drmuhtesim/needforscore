@@ -116,7 +116,7 @@
   "filters": {
     "featured": "Featured",
     "lastUpdate": "Last updated: just now",
-    "timeFilters": ["5m", "1h", "6h", "24h", "7d", "30d"]
+    "timeFilters": ["All", "5m", "1h", "6h", "24h", "7d", "30d"]
   },
   "table": {
     "target": "Target",
