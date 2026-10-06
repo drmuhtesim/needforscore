@@ -39,13 +39,14 @@ const MobileBottomBar = () => {
   return (
     <nav
       aria-label={t("header.mobileNav") as string}
-      className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+      className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_24px_hsl(330_85%_60%/0.25)] bg-gradient-to-r from-[hsl(285_85%_60%/0.18)] via-[hsl(330_85%_60%/0.14)] to-[hsl(25_95%_60%/0.18)]"
     >
+      <div aria-hidden className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-[hsl(195_85%_60%)] via-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]" />
       <ul className="grid grid-cols-5 h-14">
         <li>
           <Link
             to="/"
-            className={`${itemBase} ${isActive("/") ? "text-primary" : "text-muted-foreground"}`}
+            className={`${itemBase} ${isActive("/") ? "text-primary" : "text-foreground/80"}`}
           >
             <Home className="h-5 w-5" />
             {t("nav.home")}
@@ -60,7 +61,7 @@ const MobileBottomBar = () => {
                 ? "text-primary"
                 : hasUnreadMessages
                   ? "text-safe"
-                  : "text-muted-foreground"
+                  : "text-foreground/80"
             }`}
             aria-label={t("nav.messages") as string}
           >
@@ -84,9 +85,9 @@ const MobileBottomBar = () => {
               <button
                 type="button"
                 aria-label={t("entry.add") as string}
-                className="flex items-center justify-center h-12 w-12 rounded-full ring-2 ring-primary shadow-[0_0_18px_hsl(var(--primary)/0.55)] -mt-3 active:scale-95 transition-transform bg-card"
+                className="flex items-center justify-center h-12 w-12 rounded-full ring-2 ring-[hsl(330_85%_60%)] shadow-[0_0_20px_hsl(330_85%_60%/0.6)] -mt-3 active:scale-95 transition-transform bg-gradient-to-tr from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]"
               >
-                <Plus className="h-6 w-6 text-primary" strokeWidth={2.75} />
+                <Plus className="h-6 w-6 text-white" strokeWidth={2.75} />
               </button>
             }
           />
@@ -95,7 +96,7 @@ const MobileBottomBar = () => {
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className={`${itemBase} text-muted-foreground`}
+            className={`${itemBase} text-foreground/80`}
             aria-label={t("search.usersTitle") as string}
           >
             <Search className="h-5 w-5" />
@@ -107,14 +108,14 @@ const MobileBottomBar = () => {
             <Link
               to={`/score/${profile.username}`}
               className={`${itemBase} ${
-                pathname.startsWith("/score/") ? "text-primary" : "text-muted-foreground"
+                pathname.startsWith("/score/") ? "text-primary" : "text-foreground/80"
               }`}
             >
               <UserIcon className="h-5 w-5" />
               {t("nav.profile")}
             </Link>
           ) : (
-            <Link to="/auth?mode=signin" className={`${itemBase} text-muted-foreground`}>
+            <Link to="/auth?mode=signin" className={`${itemBase} text-foreground/80`}>
               <LogIn className="h-5 w-5" />
               {t("header.signIn")}
             </Link>
