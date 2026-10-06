@@ -127,19 +127,23 @@ const openWithScheme = (scheme: string, webUrl: string): void => {
 /** Platform detected from an arbitrary URL. */
 type Platform = "instagram" | "tiktok" | "twitter" | "whatsapp" | "phone" | "web";
 
-const detectPlatform = (url: string): { platform: Platform; handle?: string } => {
+const detectPlatform = (url: string): { platform: Platform; handle?: string; isProfilePath: boolean } => {
   try {
     const u = new URL(ensureProtocol(url));
-    if (u.protocol === "tel:") return { platform: "phone", handle: u.pathname };
+    if (u.protocol === "tel:") return { platform: "phone", handle: u.pathname, isProfilePath: true };
     const host = u.hostname.replace(/^www\./, "").toLowerCase();
     const seg = u.pathname.split("/").filter(Boolean);
-    if (host.endsWith("instagram.com")) return { platform: "instagram", handle: seg[0] };
-    if (host.endsWith("tiktok.com")) return { platform: "tiktok", handle: seg[0]?.replace(/^@/, "") };
-    if (host === "x.com" || host.endsWith("twitter.com")) return { platform: "twitter", handle: seg[0] };
-    if (host === "wa.me" || host.endsWith("whatsapp.com")) return { platform: "whatsapp", handle: seg[0] };
-    return { platform: "web" };
+    // Only a single-segment path is a plain profile (e.g. x.com/user).
+    // Deeper paths (status/video/reel/…) point at specific content and must
+    // keep the full URL so the destination post opens, not the profile.
+    const isProfilePath = seg.length === 1;
+    if (host.endsWith("instagram.com")) return { platform: "instagram", handle: seg[0], isProfilePath };
+    if (host.endsWith("tiktok.com")) return { platform: "tiktok", handle: seg[0]?.replace(/^@/, ""), isProfilePath };
+    if (host === "x.com" || host.endsWith("twitter.com")) return { platform: "twitter", handle: seg[0], isProfilePath };
+    if (host === "wa.me" || host.endsWith("whatsapp.com")) return { platform: "whatsapp", handle: seg[0], isProfilePath };
+    return { platform: "web", isProfilePath: false };
   } catch {
-    return { platform: "web" };
+    return { platform: "web", isProfilePath: false };
   }
 };
 
