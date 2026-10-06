@@ -42,7 +42,7 @@ const MobileBottomBar = () => {
       className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_24px_hsl(330_85%_60%/0.25)] bg-gradient-to-r from-[hsl(285_85%_60%/0.18)] via-[hsl(330_85%_60%/0.14)] to-[hsl(25_95%_60%/0.18)]"
     >
       <div aria-hidden className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-[hsl(195_85%_60%)] via-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]" />
-      <ul className="grid grid-cols-5 h-14">
+      <ul className="grid grid-cols-5 h-16">
         <li>
           <Link
             to="/"
@@ -85,7 +85,7 @@ const MobileBottomBar = () => {
               <button
                 type="button"
                 aria-label={t("entry.add") as string}
-                className="flex items-center justify-center h-12 w-12 rounded-full ring-2 ring-[hsl(330_85%_60%)] shadow-[0_0_20px_hsl(330_85%_60%/0.6)] -mt-3 active:scale-95 transition-transform bg-gradient-to-tr from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]"
+                className="flex items-center justify-center h-11 w-11 rounded-full ring-2 ring-[hsl(330_85%_60%)] shadow-[0_0_20px_hsl(330_85%_60%/0.6)] active:scale-95 transition-transform bg-gradient-to-tr from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]"
               >
                 <Plus className="h-6 w-6 text-white" strokeWidth={2.75} />
               </button>
