@@ -231,9 +231,17 @@ export const openExternalUrl = (rawUrl: string): boolean => {
     return true;
   }
 
-  const { platform, handle } = detectPlatform(url);
+  const { platform, handle, isProfilePath } = detectPlatform(url);
 
   if (!isMobileDevice()) {
+    openWeb(url);
+    return true;
+  }
+
+  // Deep content links (a specific tweet, video, reel…) go straight to the
+  // full web URL — universal links still hand off to the installed app, and
+  // the exact post opens instead of the author's profile.
+  if (!isProfilePath && platform !== "whatsapp") {
     openWeb(url);
     return true;
   }
@@ -243,7 +251,7 @@ export const openExternalUrl = (rawUrl: string): boolean => {
       if (handle && !["p", "reel", "reels", "tv", "stories", "explore"].includes(handle)) {
         openWithScheme(`instagram://user?username=${encodeURIComponent(handle)}`, url);
       } else {
-        openWithScheme(`instagram://media?url=${encodeURIComponent(url)}`, url);
+        openWeb(url);
       }
       return true;
     case "tiktok":
