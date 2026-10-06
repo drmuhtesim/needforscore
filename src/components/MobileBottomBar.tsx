@@ -6,7 +6,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/hooks/useNotifications";
 import AddEntryDialog from "./LazyAddEntryDialog";
 import UserSearchDialog from "./UserSearchDialog";
-import scoreLogo from "@/assets/score-logo.jpeg";
 
 /**
  * Mobil cihazlarda sayfanın en altında sabit duran navigasyon barı.
