@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Home, User as UserIcon, LogIn, Search, MessageSquare } from "lucide-react";
+import { Home, User as UserIcon, LogIn, Search, MessageSquare, Plus } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
