@@ -32,8 +32,6 @@ const TRACKING_PARAMS = [
   "si",
   "ref_src",
   "ref_url",
-  "s",
-  "t",
 ];
 
 const SAFE_PROTOCOLS = new Set(["http:", "https:", "tel:", "mailto:"]);
@@ -61,10 +59,7 @@ export const cleanUrl = (raw: string): string | null => {
     const u = new URL(ensureProtocol(raw));
     if (!SAFE_PROTOCOLS.has(u.protocol)) return null;
     if (u.protocol === "http:" || u.protocol === "https:") {
-      // Never strip params that carry the actual content (e.g. youtube ?v=)
-      const keep = new Set(["v", "list", "clip", "video", "channel"]);
       for (const p of TRACKING_PARAMS) {
-        if (keep.has(p)) continue;
         u.searchParams.delete(p);
       }
     }
@@ -132,19 +127,23 @@ const openWithScheme = (scheme: string, webUrl: string): void => {
 /** Platform detected from an arbitrary URL. */
 type Platform = "instagram" | "tiktok" | "twitter" | "whatsapp" | "phone" | "web";
 
-const detectPlatform = (url: string): { platform: Platform; handle?: string } => {
+const detectPlatform = (url: string): { platform: Platform; handle?: string; isProfilePath: boolean } => {
   try {
     const u = new URL(ensureProtocol(url));
-    if (u.protocol === "tel:") return { platform: "phone", handle: u.pathname };
+    if (u.protocol === "tel:") return { platform: "phone", handle: u.pathname, isProfilePath: true };
     const host = u.hostname.replace(/^www\./, "").toLowerCase();
     const seg = u.pathname.split("/").filter(Boolean);
-    if (host.endsWith("instagram.com")) return { platform: "instagram", handle: seg[0] };
-    if (host.endsWith("tiktok.com")) return { platform: "tiktok", handle: seg[0]?.replace(/^@/, "") };
-    if (host === "x.com" || host.endsWith("twitter.com")) return { platform: "twitter", handle: seg[0] };
-    if (host === "wa.me" || host.endsWith("whatsapp.com")) return { platform: "whatsapp", handle: seg[0] };
-    return { platform: "web" };
+    // Only a single-segment path is a plain profile (e.g. x.com/user).
+    // Deeper paths (status/video/reel/…) point at specific content and must
+    // keep the full URL so the destination post opens, not the profile.
+    const isProfilePath = seg.length === 1;
+    if (host.endsWith("instagram.com")) return { platform: "instagram", handle: seg[0], isProfilePath };
+    if (host.endsWith("tiktok.com")) return { platform: "tiktok", handle: seg[0]?.replace(/^@/, ""), isProfilePath };
+    if (host === "x.com" || host.endsWith("twitter.com")) return { platform: "twitter", handle: seg[0], isProfilePath };
+    if (host === "wa.me" || host.endsWith("whatsapp.com")) return { platform: "whatsapp", handle: seg[0], isProfilePath };
+    return { platform: "web", isProfilePath: false };
   } catch {
-    return { platform: "web" };
+    return { platform: "web", isProfilePath: false };
   }
 };
 
@@ -232,9 +231,17 @@ export const openExternalUrl = (rawUrl: string): boolean => {
     return true;
   }
 
-  const { platform, handle } = detectPlatform(url);
+  const { platform, handle, isProfilePath } = detectPlatform(url);
 
   if (!isMobileDevice()) {
+    openWeb(url);
+    return true;
+  }
+
+  // Deep content links (a specific tweet, video, reel…) go straight to the
+  // full web URL — universal links still hand off to the installed app, and
+  // the exact post opens instead of the author's profile.
+  if (!isProfilePath && platform !== "whatsapp") {
     openWeb(url);
     return true;
   }
@@ -244,7 +251,7 @@ export const openExternalUrl = (rawUrl: string): boolean => {
       if (handle && !["p", "reel", "reels", "tv", "stories", "explore"].includes(handle)) {
         openWithScheme(`instagram://user?username=${encodeURIComponent(handle)}`, url);
       } else {
-        openWithScheme(`instagram://media?url=${encodeURIComponent(url)}`, url);
+        openWeb(url);
       }
       return true;
     case "tiktok":
