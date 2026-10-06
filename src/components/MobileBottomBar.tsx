@@ -85,7 +85,7 @@ const MobileBottomBar = () => {
               <button
                 type="button"
                 aria-label={t("entry.add") as string}
-                className="flex items-center justify-center h-11 w-11 rounded-full ring-2 ring-[hsl(330_85%_60%)] shadow-[0_0_20px_hsl(330_85%_60%/0.6)] self-center mt-1 active:scale-95 transition-transform bg-gradient-to-tr from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]"
+                className="flex items-center justify-center h-11 w-11 rounded-full ring-2 ring-[hsl(330_85%_60%)] shadow-[0_0_20px_hsl(330_85%_60%/0.6)] active:scale-95 transition-transform bg-gradient-to-tr from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]"
               >
                 <Plus className="h-6 w-6 text-white" strokeWidth={2.75} />
               </button>
