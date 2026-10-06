@@ -46,7 +46,7 @@ const MobileBottomBar = () => {
         <li>
           <Link
             to="/"
-            className={`${itemBase} ${isActive("/") ? "text-primary" : "text-muted-foreground"}`}
+            className={`${itemBase} ${isActive("/") ? "text-primary" : "text-foreground/80"}`}
           >
             <Home className="h-5 w-5" />
             {t("nav.home")}
@@ -61,7 +61,7 @@ const MobileBottomBar = () => {
                 ? "text-primary"
                 : hasUnreadMessages
                   ? "text-safe"
-                  : "text-muted-foreground"
+                  : "text-foreground/80"
             }`}
             aria-label={t("nav.messages") as string}
           >
@@ -96,7 +96,7 @@ const MobileBottomBar = () => {
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className={`${itemBase} text-muted-foreground`}
+            className={`${itemBase} text-foreground/80`}
             aria-label={t("search.usersTitle") as string}
           >
             <Search className="h-5 w-5" />
@@ -108,14 +108,14 @@ const MobileBottomBar = () => {
             <Link
               to={`/score/${profile.username}`}
               className={`${itemBase} ${
-                pathname.startsWith("/score/") ? "text-primary" : "text-muted-foreground"
+                pathname.startsWith("/score/") ? "text-primary" : "text-foreground/80"
               }`}
             >
               <UserIcon className="h-5 w-5" />
               {t("nav.profile")}
             </Link>
           ) : (
-            <Link to="/auth?mode=signin" className={`${itemBase} text-muted-foreground`}>
+            <Link to="/auth?mode=signin" className={`${itemBase} text-foreground/80`}>
               <LogIn className="h-5 w-5" />
               {t("header.signIn")}
             </Link>
