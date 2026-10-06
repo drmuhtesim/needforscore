@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Home, User as UserIcon, LogIn, Search, MessageSquare } from "lucide-react";
+import { Home, User as UserIcon, LogIn, Search, MessageSquare, Plus } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/hooks/useNotifications";
 import AddEntryDialog from "./LazyAddEntryDialog";
 import UserSearchDialog from "./UserSearchDialog";
-import scoreLogo from "@/assets/score-logo.jpeg";
 
 /**
  * Mobil cihazlarda sayfanın en altında sabit duran navigasyon barı.
@@ -85,9 +84,9 @@ const MobileBottomBar = () => {
               <button
                 type="button"
                 aria-label={t("entry.add") as string}
-                className="flex items-center justify-center h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary shadow-[0_0_18px_hsl(var(--primary)/0.55)] -mt-3 active:scale-95 transition-transform bg-card"
+                className="flex items-center justify-center h-12 w-12 rounded-full ring-2 ring-primary shadow-[0_0_18px_hsl(var(--primary)/0.55)] -mt-3 active:scale-95 transition-transform bg-card"
               >
-                <img src={scoreLogo} alt="" className="h-full w-full object-cover" />
+                <Plus className="h-6 w-6 text-primary" strokeWidth={2.75} />
               </button>
             }
           />
