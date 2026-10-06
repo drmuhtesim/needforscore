@@ -32,8 +32,6 @@ const TRACKING_PARAMS = [
   "si",
   "ref_src",
   "ref_url",
-  "s",
-  "t",
 ];
 
 const SAFE_PROTOCOLS = new Set(["http:", "https:", "tel:", "mailto:"]);
@@ -61,10 +59,7 @@ export const cleanUrl = (raw: string): string | null => {
     const u = new URL(ensureProtocol(raw));
     if (!SAFE_PROTOCOLS.has(u.protocol)) return null;
     if (u.protocol === "http:" || u.protocol === "https:") {
-      // Never strip params that carry the actual content (e.g. youtube ?v=)
-      const keep = new Set(["v", "list", "clip", "video", "channel"]);
       for (const p of TRACKING_PARAMS) {
-        if (keep.has(p)) continue;
         u.searchParams.delete(p);
       }
     }
