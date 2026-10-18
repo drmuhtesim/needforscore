@@ -75,7 +75,6 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
 
   const [category, setCategory] = useState<Cat>(sanitizeCategory(initialCategory));
   const [target, setTarget] = useState(sanitizeTarget(initialTarget));
-  const [about, setAbout] = useState("");
   const [rating, setRating] = useState(5);
   const [description, setDescription] = useState("");
   const [media, setMedia] = useState<PendingFile[]>([]);
@@ -207,7 +206,6 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const reset = () => {
     setCategory("instagram");
     setTarget("");
-    setAbout("");
     setRating(5);
     setDescription("");
     media.forEach((m) => URL.revokeObjectURL(m.previewUrl));
@@ -218,11 +216,10 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
     if (!user) return;
     const schema = z.object({
       target: z.string().trim().min(1).max(200),
-      about: z.string().trim().min(5).max(30),
       description: z.string().trim().min(10).max(2000),
       rating: z.number().int().min(1).max(10),
     });
-    const parsed = schema.safeParse({ target, about, description, rating });
+    const parsed = schema.safeParse({ target, description, rating });
     if (!parsed.success || !formatValid) {
       toast({ title: t("entry.invalidInput"), description: t("entry.checkFields"), variant: "destructive" });
       return;
@@ -268,7 +265,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
     }
 
     const cleanedTarget = canonicalizeTarget(target, category);
-    const fullDescription = `**${about.trim()}**\n\n${description.trim()}`;
+    const fullDescription = description.trim();
 
     const { data, error } = await supabase
       .from("entries")
@@ -495,56 +492,6 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="about">{t("entry.about")}</Label>
-            {(() => {
-              const len = about.trim().length;
-              const tooShort = len > 0 && len < 5;
-              const tooLong = len > 30;
-              const valid = len >= 5 && len <= 30;
-              const ringClass = tooShort || tooLong
-                ? "border-danger focus-visible:ring-danger"
-                : valid
-                ? "border-safe focus-visible:ring-safe"
-                : "";
-              const helpClass = tooShort || tooLong
-                ? "text-danger"
-                : valid
-                ? "text-safe"
-                : "text-muted-foreground";
-              const counterClass = tooLong
-                ? "text-danger"
-                : valid
-                ? "text-safe"
-                : "text-muted-foreground";
-              return (
-                <>
-                  <Input
-                    id="about"
-                    value={about}
-                    onChange={(e) => setAbout(e.target.value.slice(0, 30))}
-                    placeholder={t("entry.aboutPlaceholder") as string}
-                    maxLength={30}
-                    aria-invalid={tooShort || tooLong}
-                    className={ringClass}
-                  />
-                  <div className="flex items-center justify-between text-[11px] font-mono">
-                    <span className={helpClass}>
-                      {valid
-                        ? (t("entry.aboutOk") as string)
-                        : tooShort
-                        ? (t("entry.aboutTooShort") as string)
-                        : tooLong
-                        ? (t("entry.aboutTooLong") as string)
-                        : (t("entry.aboutHelp") as string)}
-                    </span>
-                    <span className={counterClass}>{about.length}/30</span>
-                  </div>
-                </>
-              );
-            })()}
-          </div>
-
           {(() => {
             const level =
               rating <= 2
@@ -633,7 +580,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
         <div className="px-4 sm:px-6 py-3 border-t border-border/40 bg-background/95 backdrop-blur shrink-0">
           <Button
             onClick={() => setConfirmOpen(true)}
-            disabled={submitting || !formatValid || description.trim().length < 10 || about.trim().length < 5 || about.trim().length > 30}
+            disabled={submitting || !formatValid || description.trim().length < 10}
             className="w-full bg-gradient-to-r from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)] text-white border-0 hover:opacity-90"
           >
             {submitting ? t("entry.submitting") : t("entry.publish")}
@@ -641,7 +588,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
         </div>
       </DialogContent>
 
-      {/* Onay penceresi: hedef + kategori + about önizlemesi */}
+      {/* Onay penceresi: hedef + kategori önizlemesi */}
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -663,14 +610,6 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
                 {t("entry.confirmCategoryLabel")}
               </span>
               <span className="font-semibold capitalize">{category}</span>
-            </div>
-            <div className="flex items-start justify-between gap-3">
-              <span className="text-xs uppercase tracking-wider text-muted-foreground font-mono">
-                {t("entry.confirmAboutLabel")}
-              </span>
-              <span className="text-right max-w-[70%] break-words">
-                {about.trim().length > 80 ? `${about.trim().slice(0, 80)}…` : about.trim()}
-              </span>
             </div>
           </div>
 
