@@ -79,49 +79,30 @@ export const isSameOriginUrl = (raw: string): boolean => {
   }
 };
 
-/** Open an https URL in a new tab, safely. */
+/**
+ * Open an https URL in a new tab, safely. Uses a synthetic anchor click:
+ * `window.open(url, "_blank", "noopener")` always returns null, which used to
+ * trigger a same-tab fallback — opening the link twice and navigating
+ * NeedForScore away. Never navigate the current tab to an external URL.
+ */
 const openWeb = (url: string): void => {
-  const win = window.open(url, "_blank", "noopener,noreferrer");
-  if (win) win.opener = null;
-  else window.location.href = url; // popup blocked → same-tab navigation
+  const a = document.createElement("a");
+  a.href = url;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 };
 
 /**
- * Try a native app scheme, fall back to the web URL if nothing handled it.
- * On iOS we use a hidden iframe (Safari suppresses the scheme error dialog);
- * on Android we set location directly.
+ * Previously tried custom app schemes with a timed web fallback, which caused
+ * duplicate opens. Universal Links / App Links on the https URL already hand
+ * off to the installed app, so we just open the web URL once.
  */
-const openWithScheme = (scheme: string, webUrl: string): void => {
-  let handled = false;
-  const onHide = () => {
-    if (document.hidden) handled = true;
-  };
-  document.addEventListener("visibilitychange", onHide);
-  window.addEventListener("pagehide", onHide);
-
-  const cleanup = () => {
-    document.removeEventListener("visibilitychange", onHide);
-    window.removeEventListener("pagehide", onHide);
-  };
-
-  if (isIOS()) {
-    const frame = document.createElement("iframe");
-    frame.style.display = "none";
-    frame.src = scheme;
-    document.body.appendChild(frame);
-    window.setTimeout(() => frame.remove(), 1200);
-  } else {
-    try {
-      window.location.href = scheme;
-    } catch {
-      /* unsupported scheme */
-    }
-  }
-
-  window.setTimeout(() => {
-    cleanup();
-    if (!handled && !document.hidden) openWeb(webUrl);
-  }, 900);
+const openWithScheme = (_scheme: string, webUrl: string): void => {
+  openWeb(webUrl);
 };
 
 /** Platform detected from an arbitrary URL. */
