@@ -492,7 +492,6 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
             )}
           </div>
 
-
           {(() => {
             const level =
               rating <= 2
