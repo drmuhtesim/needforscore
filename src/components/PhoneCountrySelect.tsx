@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown } from "lucide-react";
-import { getCountryCallingCode, type Country } from "libphonenumber-js";
+import { getCountryCallingCode, type CountryCode as Country } from "libphonenumber-js";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 

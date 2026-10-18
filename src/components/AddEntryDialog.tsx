@@ -6,7 +6,7 @@ import { ExternalLink, Plus } from "lucide-react";
 import { z } from "zod";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import type { Country } from "libphonenumber-js";
+import type { CountryCode as Country } from "libphonenumber-js";
 import PhoneCountrySelect from "./PhoneCountrySelect";
 import { expectedDigits, phoneLengthStatus } from "@/lib/phoneLength";
 import {

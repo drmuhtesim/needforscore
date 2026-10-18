@@ -1,4 +1,4 @@
-import { getExampleNumber, parsePhoneNumberFromString, isValidPhoneNumber, type Country } from "libphonenumber-js";
+import { getExampleNumber, parsePhoneNumberFromString, isValidPhoneNumber, type CountryCode as Country } from "libphonenumber-js";
 import examples from "libphonenumber-js/mobile/examples";
 
 export type PhoneLengthStatus =
