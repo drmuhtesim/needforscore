@@ -6,6 +6,9 @@ import { ExternalLink, Plus } from "lucide-react";
 import { z } from "zod";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import type { CountryCode as Country } from "libphonenumber-js";
+import PhoneCountrySelect from "./PhoneCountrySelect";
+import { expectedDigits, phoneLengthStatus } from "@/lib/phoneLength";
 import {
   Dialog,
   DialogContent,
@@ -51,7 +54,7 @@ interface AddEntryDialogProps {
 }
 
 const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openProp, onOpenChange }: AddEntryDialogProps = {}) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
@@ -79,6 +82,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
   const [submitting, setSubmitting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [scoreUserStatus, setScoreUserStatus] = useState<"idle" | "checking" | "exists" | "missing">("idle");
+  const [phoneCountry, setPhoneCountry] = useState<Country | undefined>("TR");
 
   // When the dialog is opened (controlled or uncontrolled) with an initialTarget,
   // sync the target/category fields so the search query auto-fills.
@@ -393,9 +397,19 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
               <div className="phone-input-wrapper">
                 <PhoneInput
                   international
+                  countryCallingCodeEditable={false}
                   defaultCountry="TR"
+                  country={phoneCountry}
+                  onCountryChange={(c) => setPhoneCountry(c as Country | undefined)}
+                  countrySelectComponent={PhoneCountrySelect}
                   value={target}
-                  onChange={(v) => setTarget(v ?? "")}
+                  onChange={(v) => {
+                    const next = v ?? "";
+                    const st = phoneLengthStatus(next, phoneCountry);
+                    // Block typing beyond the country's digit count.
+                    if (st.kind === "long" && next.length > target.length) return;
+                    setTarget(next);
+                  }}
                   placeholder={t(`entry.placeholder.phone`) as string}
                   className="font-mono"
                 />
@@ -412,7 +426,38 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
                 autoCorrect="off"
               />
             )}
-            {target.trim() && (
+            {category === "phone" && (() => {
+              const st = phoneLengthStatus(target, phoneCountry);
+              const exp = expectedDigits(phoneCountry);
+              const tr = i18n.language?.startsWith("tr");
+              if (st.kind === "empty")
+                return exp ? (
+                  <p className="text-xs text-muted-foreground">
+                    {tr ? `Ülke kodundan sonra ${exp} haneli numarayı girin.` : `Enter the ${exp}-digit number after the country code.`}
+                  </p>
+                ) : null;
+              if (st.kind === "ok")
+                return <p className="text-xs text-safe">✓ {t("entry.formatOk")}</p>;
+              if (st.kind === "short")
+                return (
+                  <p className="text-xs text-suspicious">
+                    {tr ? `${st.expected} hane olmalı — ${st.diff} rakam eksik.` : `Must be ${st.expected} digits — ${st.diff} missing.`}
+                  </p>
+                );
+              if (st.kind === "long")
+                return (
+                  <p className="text-xs text-danger">
+                    {tr ? `${st.expected} hane olmalı — ${st.diff} rakam fazla.` : `Must be ${st.expected} digits — ${st.diff} too many.`}
+                  </p>
+                );
+              return (
+                <p className="text-xs text-danger">
+                  ✗ {t("entry.phoneInvalid")}
+                  {st.expected ? (tr ? ` (${st.expected} hane, numaranın başını kontrol edin)` : ` (${st.expected} digits, check the prefix)`) : ""}
+                </p>
+              );
+            })()}
+            {category !== "phone" && target.trim() && (
               <div className="text-xs">
                 {formatValid ? (
                   <div className="flex items-center justify-between text-safe">
@@ -430,7 +475,7 @@ const AddEntryDialog = ({ trigger, initialTarget, initialCategory, open: openPro
                   </div>
                 ) : (
                   <span className="text-danger">
-                    ✗ {category === "phone" ? t("entry.phoneInvalid") : t("entry.formatBad")}
+                    ✗ {t("entry.formatBad")}
                   </span>
                 )}
               </div>
