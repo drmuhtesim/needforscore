@@ -48,7 +48,7 @@ const MobileBottomBar = () => {
             to="/"
             className={`${itemBase} ${isActive("/") ? "text-primary" : "text-foreground/80"}`}
           >
-            <Home className="h-5 w-5" />
+            <Home className="h-6 w-6" strokeWidth={2.25} />
             {t("nav.home")}
           </Link>
         </li>
@@ -67,10 +67,11 @@ const MobileBottomBar = () => {
           >
             <span className="relative">
               <MessageSquare
-                className={`h-5 w-5 ${hasUnreadMessages ? "text-safe" : ""}`}
+                className={`h-6 w-6 ${hasUnreadMessages ? "text-safe" : ""}`}
+                strokeWidth={2.25}
               />
               {user && hasUnreadMessages && (
-                <span className="absolute -top-1 -right-2 min-w-[14px] h-3.5 px-1 rounded-full bg-safe text-background text-[9px] font-bold inline-flex items-center justify-center">
+                <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-safe text-background text-[10px] font-bold inline-flex items-center justify-center">
                   {unreadMessages > 9 ? "9+" : unreadMessages}
                 </span>
               )}
@@ -85,9 +86,9 @@ const MobileBottomBar = () => {
               <button
                 type="button"
                 aria-label={t("entry.add") as string}
-                className="flex items-center justify-center h-11 w-11 rounded-full ring-2 ring-[hsl(330_85%_60%)] shadow-[0_0_20px_hsl(330_85%_60%/0.6)] active:scale-95 transition-transform bg-gradient-to-tr from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]"
+                className="flex items-center justify-center h-12 w-12 rounded-full ring-2 ring-[hsl(330_85%_60%)] shadow-[0_0_24px_hsl(330_85%_60%/0.65)] active:scale-95 transition-transform bg-gradient-to-tr from-[hsl(285_85%_60%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]"
               >
-                <Plus className="h-6 w-6 text-white" strokeWidth={2.75} />
+                <Plus className="h-7 w-7 text-white" strokeWidth={2.75} />
               </button>
             }
           />
@@ -99,7 +100,7 @@ const MobileBottomBar = () => {
             className={`${itemBase} text-foreground/80`}
             aria-label={t("search.usersTitle") as string}
           >
-            <Search className="h-5 w-5" />
+            <Search className="h-6 w-6" strokeWidth={2.25} />
             {t("nav.search")}
           </button>
         </li>
@@ -111,12 +112,12 @@ const MobileBottomBar = () => {
                 pathname.startsWith("/score/") ? "text-primary" : "text-foreground/80"
               }`}
             >
-              <UserIcon className="h-5 w-5" />
+              <UserIcon className="h-6 w-6" strokeWidth={2.25} />
               {t("nav.profile")}
             </Link>
           ) : (
             <Link to="/auth?mode=signin" className={`${itemBase} text-foreground/80`}>
-              <LogIn className="h-5 w-5" />
+              <LogIn className="h-6 w-6" strokeWidth={2.25} />
               {t("header.signIn")}
             </Link>
           )}
