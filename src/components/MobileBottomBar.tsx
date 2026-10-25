@@ -34,15 +34,15 @@ const MobileBottomBar = () => {
 
   const isActive = (p: string) => pathname === p;
   const itemBase =
-    "h-full w-full flex flex-col items-center justify-center gap-0.5 text-[10px] active:bg-secondary/60 transition-colors";
+    "h-full w-full flex flex-col items-center justify-center gap-1 text-[11px] font-medium tracking-tight active:bg-secondary/60 transition-colors";
 
   return (
     <nav
       aria-label={t("header.mobileNav") as string}
-      className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_24px_hsl(330_85%_60%/0.25)] bg-gradient-to-r from-[hsl(285_85%_60%/0.18)] via-[hsl(330_85%_60%/0.14)] to-[hsl(25_95%_60%/0.18)]"
+      className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-card/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_28px_hsl(330_85%_60%/0.28)] bg-gradient-to-r from-[hsl(285_85%_60%/0.18)] via-[hsl(330_85%_60%/0.14)] to-[hsl(25_95%_60%/0.18)]"
     >
       <div aria-hidden className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-[hsl(195_85%_60%)] via-[hsl(285_85%_65%)] via-[hsl(330_85%_60%)] to-[hsl(25_95%_60%)]" />
-      <ul className="grid grid-cols-5 h-14">
+      <ul className="grid grid-cols-5 h-16 max-w-md mx-auto px-1">
         <li>
           <Link
             to="/"
